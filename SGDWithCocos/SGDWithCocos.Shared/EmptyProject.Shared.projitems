@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>1ba0a85d-808f-4826-9228-4341ba8de542</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SGDWithCocos</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlColourPicker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlHuePicker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlPotentiometer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlSaturationPicker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlSlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlStepper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlSwitch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCInvocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9SpriteFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9SpriteFrame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\IDisplay.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\IPermissionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\IPopUpWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\IResizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\ISaveAndLoad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\ITextToSpeech.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layers\GameLayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layers\StartLayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\IconReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\FolderModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\StoredIconModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\IconModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\IconStorageObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\StoredIconReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\GamePage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameStartScene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tags\EditTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tags\SpriteTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tags\StringTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tags\Tags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteMaker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\PopUpWindow.cs" />
+  </ItemGroup>
+</Project>

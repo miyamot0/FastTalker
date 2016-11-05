@@ -1,0 +1,26 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:.\
+/intermediateDir:obj
+/platform:Android
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+
+#---------------------------------- Content ---------------------------------#
+
+#begin Fonts/MarkerFelt-22.xnb
+/importer:
+/processor:
+/build:Fonts/MarkerFelt-22.xnb
+
+#begin Fonts/MarkerFelt-36.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MarkerFelt-36.spritefont
+
