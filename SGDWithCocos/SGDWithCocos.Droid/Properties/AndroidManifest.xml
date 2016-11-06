@@ -4,5 +4,5 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.CAMERA" />
-	<application android:label="CPCA" android:icon="@drawable/Icon"></application>
+	<application android:label="FastTalker" android:icon="@drawable/Icon"></application>
 </manifest>

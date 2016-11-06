@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Tags
 {
+    /// <summary>
+    /// Sprite types for meta-icons
+    /// </summary>
     public class SpriteTypes
     {
         public const int SpeakerTag = 01;
@@ -45,5 +48,6 @@ namespace SGDWithCocos.Tags
         public const int StoredIconTag = 14;
         public const int CloseWindowTag = 15;
         public const int FolderTag = 16;
+        public const int BorderTag = 17;
     }
 }

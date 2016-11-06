@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Tags
 {
+    /// <summary>
+    /// Edit types for passing modifications from UI to individual icons
+    /// </summary>
     public class EditTypes
     {
         public const int None = 0;

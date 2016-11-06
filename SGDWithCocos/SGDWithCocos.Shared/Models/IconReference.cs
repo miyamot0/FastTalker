@@ -29,6 +29,9 @@ using CocosSharp;
 
 namespace SGDWithCocos.Models
 {
+    /// <summary>
+    /// Serialization model for icons
+    /// </summary>
     public class IconReference
     {
         public CCSprite Sprite;
@@ -36,6 +39,13 @@ namespace SGDWithCocos.Models
         public float TextScale;
         public bool TextVisible;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <param name="base64"></param>
+        /// <param name="textScale"></param>
+        /// <param name="textVisible"></param>
         public IconReference(CCSprite sprite, string base64, float textScale, bool textVisible)
         {
             Sprite = sprite;

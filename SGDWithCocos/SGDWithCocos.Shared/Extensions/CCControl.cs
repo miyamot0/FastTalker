@@ -25,8 +25,6 @@
  * Converted to c++ / cocos2d-x by Angus C
  */
 
-
-
 using System;
 
 namespace CocosSharp

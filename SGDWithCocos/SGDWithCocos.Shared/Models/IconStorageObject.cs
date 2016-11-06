@@ -29,6 +29,9 @@ using System.Collections.Generic;
 
 namespace SGDWithCocos.Models
 {
+    /// <summary>
+    /// Serialization model for icons
+    /// </summary>
     public class IconStorageObject
     {
         public List<IconModel> Icons { get; set; }
@@ -36,6 +39,9 @@ namespace SGDWithCocos.Models
         public List<FolderModel> Folders { get; set; }
         public bool SingleMode { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public IconStorageObject()
         {
             Icons = new List<IconModel>();

@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Tags
 {
+    /// <summary>
+    /// Enumerates for icon types for loop
+    /// </summary>
     public enum Tag
     {
         None,

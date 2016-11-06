@@ -45,6 +45,9 @@ using SGDWithCocos.Shared.Layers;
 
 namespace SGDWithCocos.Shared.Pages
 {
+    /// <summary>
+    /// X-platform page for Xamarin Forms 
+    /// </summary>
     public class GamePage : ContentPage
     {
         public CocosSharpView gameView;
@@ -52,8 +55,14 @@ namespace SGDWithCocos.Shared.Pages
         GameLayer mLayer;
         int width, height;
 
+        /// <summary>
+        /// NativeGame object
+        /// </summary>
         public CocosSharpView GameView { get; private set; }
 
+        /// <summary>
+        /// Constructor, with DependencyService calls to native display metrics
+        /// </summary>
         public GamePage()
         {
             width = DependencyService.Get<IDisplay>().Width;
@@ -71,6 +80,9 @@ namespace SGDWithCocos.Shared.Pages
             Content = gameView;
         }
 
+        /// <summary>
+        /// Base methods
+        /// </summary>
         protected override void OnDisappearing()
         {
             if (gameView != null)
@@ -81,30 +93,49 @@ namespace SGDWithCocos.Shared.Pages
             base.OnDisappearing();
         }
 
+        /// <summary>
+        /// Base methods
+        /// </summary>
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
             if (gameView != null)
+            {
                 gameView.Paused = false;
+            }
         }
 
+        /// <summary>
+        /// Base methods
+        /// </summary>
+        /// <returns></returns>
         protected override bool OnBackButtonPressed()
         {
             base.OnBackButtonPressed();
             return true;
         }
 
+        /// <summary>
+        /// Call action sheet with possible modifications to icon
+        /// </summary>
+        /// <param name="counter">Icon reference</param>
         public async void CallActionSheet(int counter)
         {
             string buttonSelect = await GetActionSheet();
             
+            /*
+            
+            TODO toggle hiding of image
+
             if (buttonSelect == StringTypes.HideImage)
             {
-                // TODO
                 //mLayer.ToggleSpriteImage(counter);
             }
-            else if (buttonSelect == StringTypes.ChangeSizeUp)
+
+            */
+
+            if (buttonSelect == StringTypes.ChangeSizeUp)
             {
                 mLayer.UpdateSpriteSize(counter, EditTypes.UpdateSizeUp);
             }
@@ -139,6 +170,10 @@ namespace SGDWithCocos.Shared.Pages
             }
         }
 
+        /// <summary>
+        /// Async-able task related to a scrollable, action sheet
+        /// </summary>
+        /// <returns>Task w/ result</returns>
         public Task<string> GetActionSheet()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -146,8 +181,11 @@ namespace SGDWithCocos.Shared.Pages
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var mAction = await DisplayActionSheet("Edit Current Icon? ", "Cancel", "OK",
-                    // TODO
-                    //StringTypes.HideImage,
+                    /*                     
+                    TODO Hide image 
+                    StringTypes.HideImage                     
+                    */
+
                     StringTypes.ChangeSizeUp,
                     StringTypes.ChangeSizeDefault,
                     StringTypes.ChangeSizeDown,
@@ -162,6 +200,10 @@ namespace SGDWithCocos.Shared.Pages
             return tcs.Task;
         }
 
+        /// <summary>
+        /// Async-able task related to the color for a folder
+        /// </summary>
+        /// <returns></returns>
         public Task<string> GetFolderColor()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -170,13 +212,23 @@ namespace SGDWithCocos.Shared.Pages
             {
                 var mAction = await DisplayActionSheet("Color for Folder? ",
                     "Cancel", "OK",
-                    "Red", "Blue", "Green", "Pink", "Light Blue", "Purple");
+                    "Red", 
+                    "Blue", 
+                    "Green", 
+                    "Pink", 
+                    "Light Blue", 
+                    "Purple");
                 tcs.SetResult(mAction);
             });
 
             return tcs.Task;
         }
 
+        /// <summary>
+        /// Async-able task related to naming an icon
+        /// </summary>
+        /// <param name="mQuestion">Query text for user</param>
+        /// <returns></returns>
         public Task<string> GetNamingWindow(string mQuestion)
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -202,17 +254,21 @@ namespace SGDWithCocos.Shared.Pages
             return tcs.Task;
         }
 
+        /// <summary>
+        /// Cross-platform call to gallery for Android and iOS
+        /// </summary>
         public async void CallImagePicker()
         {
             try
             {
-                var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Plugin.Permissions.Abstractions.Permission.Photos);
+                var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Photos);
 
                 if (status != PermissionStatus.Granted)
                 {
+                    // Request permissions
                     if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Photos))
                     {
-                    await DisplayAlert("Need photos", "Need access to photos to make icon", "OK");
+                        await DisplayAlert("Need photos", "Need access to photos to make icon", "OK");
                     }
 
                     var results = await CrossPermissions.Current.RequestPermissionsAsync(new[] { Permission.Photos });
@@ -221,14 +277,17 @@ namespace SGDWithCocos.Shared.Pages
 
                 if (status == PermissionStatus.Granted)
                 {
+                    // If permissions granted, query selection and call back
+
                     var results = await GetImageSelection();
                     mLayer.CallBackIcon(results[0], results[1], results[2]);
                 }
                 else if (status != PermissionStatus.Unknown)
                 {
+                    // If permissions not granted, report back to user
+
                     await DisplayAlert("Location Denied", "Can not continue, try again.", "OK");
                 }
-
             }
             catch (Exception ex)
             {
@@ -236,14 +295,82 @@ namespace SGDWithCocos.Shared.Pages
             }
         }
 
+        /// <summary>
+        /// Async-able task related to selecting existing photos
+        /// </summary>
+        /// <returns>String array of [base64, image label, photo extension]</returns>
+        public Task<string[]> GetImageSelection()
+        {
+            TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (!CrossMedia.Current.IsPickPhotoSupported)
+                {
+                    // If photo picking isn't supported, return with blank array
+
+                    await DisplayAlert("Photos Not Supported", ":( Permission not granted to photos.", "OK");
+                    tcs.SetResult(new string[] { "", "", "" });
+                }
+
+                try
+                {
+                    var file = await CrossMedia.Current.PickPhotoAsync();
+
+                    if (file == null || file.Path == null) return;
+
+                    if (File.Exists(@file.Path))
+                    {
+                        // If the photo can be found, query user for icon label
+
+                        var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
+                        popup.PopupClosed += (o, closedArgs) =>
+                        {
+                            if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
+                            {
+                                // If user provides valid name, convert image file to base64 and return
+
+                                byte[] imageArray = File.ReadAllBytes(@file.Path);
+                                string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                                var extension = Path.GetExtension(@file.Path);
+
+                                tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
+                            }
+                            else
+                            {
+                                tcs.SetResult(new string[] { "", "", "" });
+                            }
+                        };
+
+                        popup.Show();
+                    }
+                    else
+                    {
+                        tcs.SetResult(new string[] { "", "", "" });
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            });
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Cross-platform call to camera for Android and iOS
+        /// </summary>
         public async void CallImageTaker()
         {
             try
             {
-                var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Plugin.Permissions.Abstractions.Permission.Camera);
+                var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Camera);
 
                 if (status != PermissionStatus.Granted)
                 {
+                    // Request permissions
+
                     if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Camera))
                     {
                         await DisplayAlert("Need camera", "Will need it take pictures", "OK");
@@ -255,32 +382,114 @@ namespace SGDWithCocos.Shared.Pages
 
                 if (status == PermissionStatus.Granted)
                 {
+                    // If permissions granted, query selection and call back
+
                     var results = await GetImageCamera();
                     mLayer.CallBackIcon(results[0], results[1], results[2]);
                 }
                 else if (status != PermissionStatus.Unknown)
                 {
+                    // If permissions not granted, report back to user
+
                     await DisplayAlert("Location Denied", "Can not continue, try again.", "OK");
                 }
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
-
         }
 
+        /// <summary>
+        /// Async-able task related to taking photos
+        /// </summary>
+        /// <returns></returns>
+        public Task<string[]> GetImageCamera()
+        {
+            TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                if (!(CrossMedia.Current.IsCameraAvailable && CrossMedia.Current.IsTakePhotoSupported))
+                {
+                    // If photo taking isn't supported, return with blank array
+
+                    await DisplayAlert("Photos Not Supported", ":( Permission not granted to photos.", "OK");
+                    tcs.SetResult(new string[] { "", "", "" });
+                }
+
+                // Options related to image storage
+                var mediaOptions = new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                {
+                    Directory = "SGDPhotos",
+                    Name = $"{DateTime.UtcNow}.jpg"
+                };
+
+                var file = await CrossMedia.Current.TakePhotoAsync(mediaOptions);
+                string newPath = "";
+
+                if (file == null || file.Path == null) return;
+
+                if (File.Exists(@file.Path))
+                {
+                    // To accomodate varying camera sizes, crop center-square for uniform display
+
+                    var path = Path.GetDirectoryName(@file.Path);
+                    var fName = Path.GetFileNameWithoutExtension(@file.Path);
+                    fName = fName + "crop.jpg";
+                    newPath = Path.Combine(path, fName);
+                    DependencyService.Get<IResizer>().ResizeBitmaps(@file.Path, @newPath);
+
+                    // If the photo can be found, query user for icon label
+
+                    var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
+                    popup.PopupClosed += (o, closedArgs) =>
+                    {
+                        if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
+                        {
+                            // If user provides valid name, convert image file to base64 and return
+
+                            byte[] imageArray = File.ReadAllBytes(@newPath);
+                            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                            var extension = Path.GetExtension(@newPath);
+
+                            tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
+                        }
+                        else
+                        {
+                            tcs.SetResult(new string[] { "", "", "" });
+                        }
+                    };
+
+                    popup.Show();
+                }
+                else
+                {
+                    tcs.SetResult(new string[] { "", "", "" });
+                }
+            });
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Construct and name/specify Folder sprite
+        /// </summary>
+        /// <param name="mList">List of existing folder names</param>
         public async void GetFolderSetup(List<string> mList)
         {
             var folderName = await GetNamingWindow("Please name the folder");
 
             if (mList.Contains(folderName.Trim().ToLower()))
             {
+                // return if the existing name already exists
+
                 return;
             }
             else if (folderName.Trim().Length > 0)
             {
+                // Query user related to folder color
+
                 var folderColor = await GetFolderColor();
 
                 var assetName = "";
@@ -312,141 +521,43 @@ namespace SGDWithCocos.Shared.Pages
 
                 if (folderColor.Trim().Length > 0)
                 {
+                    // if a color was supplied, create the necessary folder in the field
+
                     mLayer.MakeIconFolder(assetName, folderName);
                 }
             }
         }
-
-        public Task<string[]> GetImageSelection()
-        {
-            TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
-
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                if (!CrossMedia.Current.IsPickPhotoSupported)
-                {
-                    Console.WriteLine("not supported");
-                    await DisplayAlert("Photos Not Supported", ":( Permission not granted to photos.", "OK");
-                    tcs.SetResult(new string[] { "", "", "" });
-                }
-
-                var file = await CrossMedia.Current.PickPhotoAsync();
-
-                if (file == null || file.Path == null) return;
-
-                if (File.Exists(@file.Path))
-                {
-                    Console.WriteLine("file found!");
-
-                    var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
-                    popup.PopupClosed += (o, closedArgs) =>
-                    {
-                        if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
-                        {
-                            byte[] imageArray = File.ReadAllBytes(@file.Path);
-                            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-                            var extension = Path.GetExtension(@file.Path);
-
-                            tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
-                        }
-                        else
-                        {
-                            tcs.SetResult(new string[] { "", "", "" });
-                        }
-                    };
-
-                    popup.Show();
-                }
-                else
-                {
-                    tcs.SetResult(new string[] { "", "", "" });
-                }
-
-            });
-
-            return tcs.Task;
-        }
-
-        public Task<string[]> GetImageCamera()
-        {
-            TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
-
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-
-                if (!(CrossMedia.Current.IsCameraAvailable && CrossMedia.Current.IsTakePhotoSupported))
-                {
-                    Console.WriteLine("not supported");
-                    await DisplayAlert("Photos Not Supported", ":( Permission not granted to photos.", "OK");
-                    tcs.SetResult(new string[] { "", "", "" });
-                }
-
-                var mediaOptions = new Plugin.Media.Abstractions.StoreCameraMediaOptions
-                {
-                    Directory = "SGDPhotos",
-                    Name = $"{DateTime.UtcNow}.jpg"
-                };
-
-                var file = await CrossMedia.Current.TakePhotoAsync(mediaOptions);
-                string newPath = "";
-
-                if (file == null || file.Path == null) return;
-
-                if (File.Exists(@file.Path))
-                {
-                    Console.WriteLine("file found!");
-
-                    var path = Path.GetDirectoryName(@file.Path);
-                    var fName = Path.GetFileNameWithoutExtension(@file.Path);
-
-                    fName = fName + "crop.jpg";
-
-                    newPath = Path.Combine(path, fName);
-
-                    DependencyService.Get<IResizer>().ResizeBitmaps(@file.Path, @newPath);
-
-                    var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
-                    popup.PopupClosed += (o, closedArgs) =>
-                    {
-                        if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
-                        {
-                            byte[] imageArray = File.ReadAllBytes(@newPath);
-                            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-                            var extension = Path.GetExtension(@newPath);
-
-                            tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
-                        }
-                        else
-                        {
-                            tcs.SetResult(new string[] { "", "", "" });
-                        }
-                    };
-
-                    popup.Show();
-                }
-                else
-                {
-                    tcs.SetResult(new string[] { "", "", "" });
-                }
-
-            });
-
-            return tcs.Task;
-        }
-
+        
+        /// <summary>
+        /// Cross-platform call to get JSON-saved boards from local storage
+        /// </summary>
+        /// <param name="boardName">name for JSON file</param>
+        /// <returns>JSON string</returns>
         public string GetBoards(string boardName)
         {
             return DependencyService.Get<ISaveAndLoad>().LoadJSON(boardName);
         }
 
+        /// <summary>
+        /// Cross-platform calls to save all icons/folders into local storage
+        /// </summary>
+        /// <param name="icons">All icons in field, folder or typical</param>
+        /// <param name="storedIcons">All saved icons</param>
+        /// <param name="inSingleMode">If in single or framed mode</param>
         public void SaveBoards(List<IconReference> icons, List<StoredIconReference> storedIcons, bool inSingleMode)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
+                // List of icons
                 List<IconModel> mJsonIconArray = new List<IconModel>();
+
+                // List of folders
                 List<FolderModel> mJsonFolderArray = new List<FolderModel>();
+
+                // List of icons stored in folders
                 List<StoredIconModel> mJsonStoredIconArray = new List<StoredIconModel>();
 
+                // For active icons, save in respective lists
                 foreach (IconReference iconRef in icons)
                 {
                     if (iconRef.Sprite.Tag == SpriteTypes.IconTag)
@@ -513,20 +624,26 @@ namespace SGDWithCocos.Shared.Pages
                     mJsonStoredIconArray.Add(mModel);
                 }
 
+                // Json storage object
                 var mIconStorage = new IconStorageObject();
                 mIconStorage.Icons = mJsonIconArray;
                 mIconStorage.Folders = mJsonFolderArray;
                 mIconStorage.StoredIcons = mJsonStoredIconArray;
                 mIconStorage.SingleMode = inSingleMode;
 
+                // Serialized object
                 var mJsonString = JsonConvert.SerializeObject(mIconStorage);
 
-                Console.WriteLine("saved!");
-
+                // Cross-platform call to save a JSON-based text file
                 DependencyService.Get<ISaveAndLoad>().SaveJSON("IconBoard", mJsonString);
             });
         }
 
+        /// <summary>
+        /// Loading event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void LoadGame(object sender, EventArgs e)
         {
             var nativeGameView = sender as CCGameView;
@@ -538,33 +655,19 @@ namespace SGDWithCocos.Shared.Pages
                 int width = nativeGameView.DesignResolution.Width;
                 int height = nativeGameView.DesignResolution.Height;
 
-                CCSizeI viewSize = nativeGameView.ViewSize;
-                CCSizeI designResolution = nativeGameView.DesignResolution;
-
-                // Determine whether to use the high or low def versions of our images
-                // Make sure the default texel to content size ratio is set correctly
-                // Of course you're free to have a finer set of image resolutions e.g (ld, hd, super-hd)
-                /*
-                if (designResolution.Width < viewSize.Width)
-                {
-                    contentSearchPaths.Add("Images/Hd");
-                    CCSprite.DefaultTexelToContentSizeRatio = 2.0f;
-                }
-                else
-                {
-                    contentSearchPaths.Add("Images/Ld");
-                    CCSprite.DefaultTexelToContentSizeRatio = 1.0f;
-                }
-                */
-
+                // Show the start screen
                 nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
-
                 nativeGameView.RunWithScene(new GameStartScene(nativeGameView, width, height, this));
 
+                // Begin building the icon-based scene
                 ConstructGameScene(nativeGameView);
             }
         }
 
+        /// <summary>
+        /// Construct the icon communication board scene
+        /// </summary>
+        /// <param name="nativeGameView"></param>
         public void ConstructGameScene(CCGameView nativeGameView)
         {
             gameScene = new CCScene(nativeGameView);
@@ -577,6 +680,8 @@ namespace SGDWithCocos.Shared.Pages
             {
                 try
                 {
+                    // Attempt to deserialize icons
+
                     jsonObject = JsonConvert.DeserializeObject<IconStorageObject>(json);
                 }
                 catch
@@ -585,8 +690,10 @@ namespace SGDWithCocos.Shared.Pages
                 }
             }
 
+            // Create layer for icon board scene
             mLayer = new GameLayer(width, height, jsonObject, this);
 
+            // Add layer to icon board scene
             gameScene.AddLayer(mLayer);
         }
     }

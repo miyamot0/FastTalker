@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Tags
 {
+    /// <summary>
+    /// Default string tags, static for comparative logic
+    /// </summary>
     public static class StringTypes
     {
         public static string HideImage = "Toggle Image";

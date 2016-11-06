@@ -30,21 +30,41 @@ using SGDWithCocos.Tags;
 
 namespace SGDWithCocos.Utilities
 {
+    /// <summary>
+    /// Class devoted to encapsulating necessary sprites
+    /// </summary>
     public class SpriteMaker
     {
+        /// <summary>
+        /// Measures necessary for dynamic field size, both Android and iOS
+        /// </summary>
         public float DynamicWidth = 0f,
                      DynamicHeight = 0f,
                      padding = 10,
                      margin = 10,
                      adjustment = 1f;
 
+        /// <summary>
+        /// Size agnostic proportions for framed sentence field
+        /// </summary>
         private const float sentenceFrameWidth = 0.75f,
                             sentenceFrameHeight = 0.2f;
 
+        /// <summary>
+        /// Scaling factor
+        /// </summary>
         private float dimension = -1f;
 
+        /// <summary>
+        /// Blank constructor
+        /// </summary>
         public SpriteMaker() { }
 
+        /// <summary>
+        /// Constructor following assigned field size
+        /// </summary>
+        /// <param name="dynamicWidth"></param>
+        /// <param name="dynamicHeight"></param>
         public SpriteMaker(float dynamicWidth, float dynamicHeight)
         {
             DynamicWidth = dynamicWidth;
@@ -53,6 +73,10 @@ namespace SGDWithCocos.Utilities
             dimension = (DynamicWidth * 0.1f);
         }
 
+        /// <summary>
+        /// Construct and return sentence frame sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeSentenceFrame()
         {
             var sentenceFrame = new CCSprite("frameWhite");
@@ -63,6 +87,10 @@ namespace SGDWithCocos.Utilities
             return sentenceFrame;
         }
 
+        /// <summary>
+        /// Construct and return speaker icon sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeSpeakerFrame()
         {
             var speakerFrame = new CCSprite("Speaker_Icon");
@@ -77,6 +105,10 @@ namespace SGDWithCocos.Utilities
             return speakerFrame;
         }
 
+        /// <summary>
+        /// Construct and return "Add Icon" sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeAddButton()
         {
             var parentSprite = new CCSprite("BlankFrame")
@@ -116,6 +148,10 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return "Add Folder" sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeAddFolderButton()
         {
             var parentSprite = new CCSprite("BlankFrame")
@@ -154,6 +190,10 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return "Remove Icon" sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeRemoveButton()
         {
             var parentSprite = new CCSprite("BlankFrame")
@@ -192,6 +232,10 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return "Take Photo" sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite TakePhotoButton()
         {
             var parentSprite = new CCSprite("BlankFrame")
@@ -231,6 +275,10 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return "Single" frame sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeSingleButton()
         {
             var parentSprite = new CCSprite("BlankFrame")
@@ -269,6 +317,10 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return "Multi" frame sprite
+        /// </summary>
+        /// <returns></returns>
         public CCSprite MakeMultiButton()
         {
             var parentSprite = new CCSprite("BlankFrame")
@@ -307,6 +359,13 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return templated letter sprite
+        /// </summary>
+        /// <param name="letter">Sprite Tag reference</param>
+        /// <param name="positionX">x pos</param>
+        /// <param name="positionY">y pos</param>
+        /// <returns></returns>
         public CCSprite MakeTitleIcon(string letter, float positionX, float positionY)
         {
             var parentSprite = new CCSprite(letter)
@@ -319,6 +378,17 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return icon sprite with image from base64 string
+        /// </summary>
+        /// <param name="base64string">base64 string</param>
+        /// <param name="iconSpeechText">speech tag</param>
+        /// <param name="positionX">x pos</param>
+        /// <param name="positionY">y pos</param>
+        /// <param name="scale">scale set</param>
+        /// <param name="textScale">text set</param>
+        /// <param name="textVisible">text visible?</param>
+        /// <returns></returns>
         public CCSprite MakeIconBase64(string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             scale = (scale == -1) ? 1 : scale;
@@ -367,6 +437,15 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Construct and return folder frame
+        /// </summary>
+        /// <param name="assetName">name of folder sprite</param>
+        /// <param name="folderName">name of folder</param>
+        /// <param name="positionX">x pos</param>
+        /// <param name="positionY">y pos</param>
+        /// <param name="scale">scaled size</param>
+        /// <returns></returns>
         public CCSprite MakeFolder(string assetName, string folderName, float positionX, float positionY, float scale)
         {
             var parentSprite = new CCSprite("BlankFrame");

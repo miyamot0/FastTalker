@@ -32,6 +32,9 @@ using SGDWithCocos.Shared.Pages;
 
 namespace SGDWithCocos.Scenes
 {
+    /// <summary>
+    /// Base scene for entering the mobile application
+    /// </summary>
     public class GameStartScene : CCScene
     {
         GamePage mGamePage;
@@ -44,6 +47,13 @@ namespace SGDWithCocos.Scenes
         CCFiniteTimeAction scaleLabelAction;
         CCFiniteTimeAction tintLabelAction;
 
+        /// <summary>
+        /// Scene constructor for game start
+        /// </summary>
+        /// <param name="gameView">Native game object reference</param>
+        /// <param name="width">native width</param>
+        /// <param name="height">native height</param>
+        /// <param name="gamePage">Reference to page in game view</param>
         public GameStartScene(CCGameView gameView, int width, int height, GamePage gamePage) : base(gameView)
         {
             mGamePage = gamePage;
@@ -57,6 +67,9 @@ namespace SGDWithCocos.Scenes
             LoadMenu();
         }
 
+        /// <summary>
+        /// Construct and return background sprite
+        /// </summary>
         void CreateLayers()
         {
             mainLayer = new StartLayer();
@@ -71,8 +84,12 @@ namespace SGDWithCocos.Scenes
             mainLayer.AddChild(blueBackground, 0);
 
             AddLayer(mainLayer);
+
         }
 
+        /// <summary>
+        /// Construct actions and necessary bounds/locations
+        /// </summary>
         void LoadStartLabels()
         {
             var bounds = mainLayer.VisibleBoundsWorldspace;
@@ -88,6 +105,9 @@ namespace SGDWithCocos.Scenes
                 new CCTintTo(1.0f, 255, 255, 255));
         }
 
+        /// <summary>
+        /// Construct Menu and control buttons to begin application
+        /// </summary>
         void LoadMenu()
         {
             var bounds = mainLayer.VisibleBoundsWorldspace;
@@ -113,19 +133,16 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(buttonControl);
 
+
+
         }
 
+        /// <summary>
+        /// Button press event, begin scene-based communication app
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PressedButton(object sender, EventArgs e)
-        {
-            GameView.Director.ReplaceScene(mGamePage.gameScene);
-        }
-
-        public override void OnEnter()
-        {
-            base.OnEnter();
-        }
-
-        void StartGamePressed(object sender)
         {
             GameView.Director.ReplaceScene(mGamePage.gameScene);
         }

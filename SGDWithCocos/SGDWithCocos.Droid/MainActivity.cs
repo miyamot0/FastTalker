@@ -33,7 +33,7 @@ using SGDWithCocos.Shared;
 
 namespace SGDWithCocos.Droid
 {
-    [Activity (Label = "CPCA",
+    [Activity (Label = "FastTalker",
         AlwaysRetainTaskState = true,
         Icon = "@drawable/icon",
         ScreenOrientation = ScreenOrientation.Landscape,

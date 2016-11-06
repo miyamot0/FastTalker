@@ -38,18 +38,11 @@ using SGDWithCocos.Utilities;
 using Newtonsoft.Json;
 using SGDWithCocos.Shared.Pages;
 
-// TODO
-// Load and/or Selection window
-// 1 - Add new/Load existing
-
-// Intro window, first time use
-// 1 - Hold speaker for 10 s and release for add/edit mode
-// 2 - Add downloaded pictures from gallery/album 
-// 3 - Take a picture with camera
-// 4 - Resize images and words as needed!
-
 namespace SGDWithCocos.Shared.Layers
 {
+    /// <summary>
+    /// Game Layer
+    /// </summary>
     public class GameLayer : CCLayerColor
     {
         GamePage GamePageParent { get; set; }
@@ -87,13 +80,22 @@ namespace SGDWithCocos.Shared.Layers
                   Green = new CCColor3B(0, 255, 0),
                   LightBlue = new CCColor3B(0, 0, 155);
 
+        // Logicals for editing, frame state
         bool inEditMode = false,
              inSingleMode = false,
              isModal = false;
 
+        // Time metrics, for screen press and save intervals
         float totalDuration = 0f,
               saveInterval = 60f;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="_dynamicWidth">Device width</param>
+        /// <param name="_dynamicHeight">Device height</param>
+        /// <param name="json">JSON string for icons, nullable</param>
+        /// <param name="_gamePage">Page reference</param>
         public GameLayer(float _dynamicWidth, float _dynamicHeight, IconStorageObject json, GamePage _gamePage) : base(CCColor4B.Gray)
         {
             this.Color = CCColor3B.Gray;
@@ -106,13 +108,14 @@ namespace SGDWithCocos.Shared.Layers
 
             MakeStaticSprites();
 
-            LoadSprites(json);          
+            LoadSprites(json);
 
             Schedule(RunGameLogic);
         }
 
-        #region Draw Methods
-
+        /// <summary>
+        /// Touch listener, swallow touches by default
+        /// </summary>
         public void MakeListener()
         {
             mListener = new CCEventListenerTouchOneByOne();
@@ -122,6 +125,9 @@ namespace SGDWithCocos.Shared.Layers
             mListener.OnTouchMoved = HandleTouchesMoved;
         }
 
+        /// <summary>
+        /// Construct the static, consistently present sprites in field
+        /// </summary>
         public void MakeStaticSprites()
         {
             sentenceFrame = spriteModelFactory.MakeSentenceFrame();
@@ -161,6 +167,10 @@ namespace SGDWithCocos.Shared.Layers
                 AddChild(deleteFrame, 0, SpriteTypes.RemoveTag);
         }
 
+        /// <summary>
+        /// Load sprites from the saved JSON object
+        /// </summary>
+        /// <param name="json">Saved object</param>
         public void LoadSprites(IconStorageObject json)
         {
             iconList2 = new List<IconReference>();
@@ -172,6 +182,8 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     if (icon.Tag == SpriteTypes.IconTag)
                     {
+                        // if IconTag matches, add to field at saved location
+
                         var newIcon = spriteModelFactory.MakeIconBase64(icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
 
                         iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
@@ -183,6 +195,8 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     if (icon.Tag == SpriteTypes.FolderTag)
                     {
+                        // if IconTag matches, add to field at saved location
+
                         var newIcon = spriteModelFactory.MakeFolder(icon.AssetName, icon.Text, icon.X, icon.Y, icon.Scale);
                         newIcon.Tag = SpriteTypes.FolderTag;
                         iconList2.Add(new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible));
@@ -192,12 +206,16 @@ namespace SGDWithCocos.Shared.Layers
 
                 foreach (StoredIconModel icon in json.StoredIcons)
                 {
+                    // add stored icons to the saved/cached field icons
+
                     var newIcon = spriteModelFactory.MakeIconBase64(icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                     var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
 
                     storedList.Add(storedIconRef);
                 }
                 
+                // Set the display mode
+
                 SetSingleMode(json.SingleMode);
             }
 
@@ -205,12 +223,18 @@ namespace SGDWithCocos.Shared.Layers
 
             foreach (IconReference icon in iconList2)
             {
+                // Add all designated sprites to the field as saved/stored
+
                 AddChild(icon.Sprite, counter, icon.Sprite.Tag);
                 counter++;
             }
 
         }
 
+        /// <summary>
+        /// Sets the stage of the field, namely the selection logic and hotspot location
+        /// </summary>
+        /// <param name="status">true if single-mode</param>
         public void SetSingleMode(bool status)
         {
             inSingleMode = status;
@@ -225,10 +249,16 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        /// <summary>
+        /// Sets the stage as either "Edit" or active mode, can modify icons in edit mode
+        /// </summary>
+        /// <param name="edit">is in edit mode?</param>
         public void SetEditMode(bool edit)
         {
             if (edit)
             {
+                // Orange background = edit mode
+
                 this.Color = CCColor3B.Orange;
                 addFrame.Visible = true;
                 takePhotoFrame.Visible = true;
@@ -241,6 +271,8 @@ namespace SGDWithCocos.Shared.Layers
             }
             else
             {
+                // Gray background = active mode
+
                 this.Color = CCColor3B.Gray;
                 addFrame.Visible = false;
                 takePhotoFrame.Visible = false;
@@ -253,6 +285,9 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        /// <summary>
+        /// Draw the field as a single mode
+        /// </summary>
         public void DrawSingleField()
         {
             sentenceFrame.Visible = false;
@@ -261,6 +296,9 @@ namespace SGDWithCocos.Shared.Layers
             multiFrame.Color = White;
         }
 
+        /// <summary>
+        /// Draw the field as a framed mode
+        /// </summary>
         public void DrawFramedField()
         {
             sentenceFrame.Visible = true;
@@ -269,11 +307,21 @@ namespace SGDWithCocos.Shared.Layers
             multiFrame.Color = Green;
         }
 
+        /// <summary>
+        /// Method called back from main UI thread
+        /// </summary>
+        /// <param name="base64">base64 image string</param>
+        /// <param name="text">image text/speech text</param>
+        /// <param name="extension">file extension</param>
         public void CallBackIcon(string base64, string text, string extension)
         {
             ScheduleOnce((dt) => {
+                // Loop into main game thread
+
                 if (base64 != "" && text != "")
                 {
+                    // Introduce some jitter into the positioning of the icon
+
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
@@ -281,44 +329,68 @@ namespace SGDWithCocos.Shared.Layers
                     var mIconRef = new IconReference(newIcons, base64, 1f, true);
                     iconList2.Add(mIconRef);
 
+                    // Assign listener event and tag
                     AddEventListener(mListener.Copy(), mIconRef.Sprite);
+
+                    // Add child to field properly
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
                 }
             }, 0);
         }
 
+        /// <summary>
+        /// Method call back from main UI thread for folders
+        /// </summary>
+        /// <param name="assetName">Refers to the colored sprite</param>
+        /// <param name="folderName">The name of the actual folder</param>
         public void MakeIconFolder(string assetName, string folderName)
         {
             ScheduleOnce((dt) => {
 
-                var parentSprite = spriteModelFactory.MakeFolder(assetName, folderName, 400, 400, 1f);
+                // Introduce some jitter into the positioning of the icon
+
+                var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
+                var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
+
+                var parentSprite = spriteModelFactory.MakeFolder(assetName, folderName, xLocation, yLocation, 1f);
 
                 var mIconRef = new IconReference(parentSprite, assetName, 1f, true);
                 iconList2.Add(mIconRef);
 
+                // Assign listener event and tag
                 AddEventListener(mListener.Copy(), mIconRef.Sprite);
+
+                // Add child to field properly
                 AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.FolderTag);
 
             }, 0);
         }
-        
-        #endregion
 
-        #region Update Methods
-
+        /// <summary>
+        /// Update an icon's text
+        /// </summary>
+        /// <param name="index">Location in the master list of references</param>
+        /// <param name="text">The text to be modified</param>
         public void UpdateSpriteText(int index, string text)
         {
             ScheduleOnce((dt) => {
                 if (index != -1 && text != "")
                 {
+                    // The referenced icon, as retrieved from the list
                     var mIconRef = iconList2[index];
+
+                    // The sprite from the reference
                     var mSprite = mIconRef.Sprite;
+
+                    // The text sprite, from mSprite, cast to CCLabel
                     var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                     if (mContent != null)
                     {
                         if (mSprite.Tag == SpriteTypes.FolderTag)
                         {
+                            // If the icon being renamed is a folder, change the storage references too
+
                             for (var i = storedList.Count - 1; i >= 0; i--)
                             {
                                 if (storedList[i].FolderName == mContent.Text)
@@ -337,34 +409,53 @@ namespace SGDWithCocos.Shared.Layers
                             }
                         }
 
+                        // Apply new text 
+
                         mContent.Text = text;
                     }
                 }
             }, 0);
         }
 
-        // TODO
+        /// <summary>
+        /// Toggle image (NOT IMPLEMENTED YET), TODO
+        /// </summary>
+        /// <param name="index">index in icon reference list</param>
         public void ToggleSpriteImage(int index)
         {
             ScheduleOnce((dt) => {
                 if (index != -1)
                 {
+                    // The referenced icon, as retrieved from the list
                     var mIconRef = iconList2[index];
+
+                    // The sprite from the reference
                     var mSprite = mIconRef.Sprite;
-                    var mContent = mSprite.GetChildByTag(SpriteTypes.ImageTag) as CCSprite;
+
+                    // The text sprite, from mSprite, cast to CCLabel
+                    var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                     mContent.Visible = !mSprite.Visible;
                 }
             }, 0);
         }
 
+        /// <summary>
+        /// Toggle the display of the icon text
+        /// </summary>
+        /// <param name="index">index in icon reference list</param>
         public void ToggleSpriteText(int index)
         {
             ScheduleOnce((dt) => {
                 if (index != -1)
                 {
+                    // The referenced icon, as retrieved from the list
                     var mIconRef = iconList2[index];
+
+                    // The sprite from the reference
                     var mSprite = mIconRef.Sprite;
+
+                    // The text sprite, from mSprite, cast to CCLabel
                     var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                     if (mContent != null)
@@ -375,13 +466,23 @@ namespace SGDWithCocos.Shared.Layers
             }, 0);
         }
 
+        /// <summary>
+        /// Updates the size of the sprite's text, in either direction
+        /// </summary>
+        /// <param name="index">index in icon reference list</param>
+        /// <param name="action">Enum related to size change</param>
         public void UpdateSpriteTextSize(int index, int action)
         {
             ScheduleOnce((dt) => {
                 if (index != -1 && action != EditTypes.None)
                 {
+                    // The referenced icon, as retrieved from the list
                     var mIconRef = iconList2[index];
+
+                    // The sprite from the reference
                     var mSprite = mIconRef.Sprite;
+
+                    // The text sprite, from mSprite, cast to CCLabel
                     var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                     if (mContent != null)
@@ -389,14 +490,20 @@ namespace SGDWithCocos.Shared.Layers
                         switch(action)
                         {
                             case EditTypes.UpdateLabelSizeUp:
+                                // Relative scale 110%
+
                                 mContent.AddAction(new CCScaleBy(0.2f, 1.1f));
                                 break;
 
                             case EditTypes.UpdateLabelSizeDefault:
+                                // Absolute scale to 100%
+
                                 mContent.AddAction(new CCScaleTo(0.2f, 1f));
                                 break;
 
                             case EditTypes.UpdateLabelSizeDown:
+                                // Relative scale to 90%
+
                                 mContent.AddAction(new CCScaleBy(0.2f, 0.9f));
                                 break;
                         }
@@ -424,6 +531,11 @@ namespace SGDWithCocos.Shared.Layers
             }, 0);
         }
 
+        /// <summary>
+        /// Updates the size of a sprite overall, in either direction
+        /// </summary>
+        /// <param name="index">index in icon reference list</param>
+        /// <param name="edit">Enum related to size change</param>
         public void UpdateSpriteSize(int index, int edit)
         {
             ScheduleOnce((dt) => {
@@ -431,9 +543,13 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     if (edit == EditTypes.UpdateSizeUp)
                     {
+                        // The referenced icon, as retrieved from the list
                         var mIconRef = iconList2[index];
+
+                        // The sprite from the reference
                         var mSprite = mIconRef.Sprite;
 
+                        // Relative scale 110%
                         var action = new CCScaleBy(0.5f, 1.1f);
 
                         mSprite.AddAction(action);
@@ -444,15 +560,20 @@ namespace SGDWithCocos.Shared.Layers
                         var mIconRef = iconList2[index];
                         var mSprite = mIconRef.Sprite;
 
+                        // Relative scale 90%
                         var action = new CCScaleBy(0.5f, 0.9f);
 
                         mSprite.AddAction(action);
                     }
                     else if (edit == EditTypes.UpdateSizeDefault)
                     {
+                        // The referenced icon, as retrieved from the list
                         var mIconRef = iconList2[index];
+
+                        // The sprite from the reference
                         var mSprite = mIconRef.Sprite;
 
+                        // Absolute scale 100%
                         var action = new CCScaleTo(0.5f, 1f);
 
                         mSprite.AddAction(action);
@@ -461,11 +582,17 @@ namespace SGDWithCocos.Shared.Layers
             }, 0);
         }
 
+        /// <summary>
+        /// Remove current icon
+        /// </summary>
         public void RemoveCurrentIcon()
         {
             RemoveChild(CurrentSpriteTouched);
         }
 
+        /// <summary>
+        /// Clear the modal window
+        /// </summary>
         public void ClearWindow()
         {
             iconList2.Remove(tempWindow);
@@ -478,6 +605,9 @@ namespace SGDWithCocos.Shared.Layers
             tempWindow = null;
         }
 
+        /// <summary>
+        /// Deselect all icons in field (cast to white)
+        /// </summary>
         public void DeSelectIcons()
         {
             foreach (IconReference iconRef in iconList2)
@@ -489,8 +619,14 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        /// <summary>
+        /// Show folder contents window
+        /// </summary>
+        /// <param name="currentSprite">Current sprite (folder) touched</param>
+        /// <param name="folderName">Name of the folder</param>
         public void ShowWindow(CCSprite currentSprite, string folderName)
         {
+            // If already modal mode, just return
             if (isModal) return;
 
             windowFrame = new CCSprite("BlankFrame")
@@ -500,32 +636,40 @@ namespace SGDWithCocos.Shared.Layers
                 Tag = SpriteTypes.WindowTag
             };
 
+            // Scale up to near-field size
             var scaling = (spriteModelFactory.DynamicWidth * 0.1f) / windowFrame.ContentSize.Width;
             windowFrame.ContentSize = new CCSize(windowFrame.ContentSize.Width * scaling, windowFrame.ContentSize.Height * scaling);
 
+            // Button to close window
             closeButton = new CCSprite("IconClose");
             closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
             closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2 - 3;
             closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2 - 3;
             closeButton.Tag = SpriteTypes.CloseWindowTag;
 
-
+            // Add listener to close button
             AddEventListener(mListener.Copy(), closeButton);
 
             ScheduleOnce((dt) => {
 
+                // Add close window
                 windowFrame.AddChild(closeButton, 1001, SpriteTypes.CloseWindowTag);
 
+                // !important: lock for concurrency issues
                 lock (storedList)
                 {
+                    // Pull items where folder reference holds
                     var mEqualList = storedList.Where(l => l.FolderName == folderName).ToList();
 
                     for (var i = 0; i < mEqualList.Count; i++)
                     {
-                        // Pull respective icon
+                        // The referenced icon, as retrieved from the list
                         var mStoredIconRef = mEqualList[i];
 
+                        // The sprite from the reference
                         var mSprite = mStoredIconRef.Sprite;
+
+                        // The text sprite, from mSprite, cast to CCLabel
                         var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                         if (mContent != null)
@@ -589,14 +733,43 @@ namespace SGDWithCocos.Shared.Layers
                 var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
 
                 var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
-                var scale = (dimension / windowFrame.ContentSize.Width) * 0.9f;
+                var scale = (dimension / windowFrame.ContentSize.Width) * 1f;
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
-                windowFrame.AddActions(false, moveAction, scaleAction);
+                var drawBorders = new CCCallFunc(AddBorders);
+
+                windowFrame.AddActions(false, moveAction, scaleAction, drawBorders);
+
                 isModal = true;
             }, 0);
         }
 
+        /// <summary>
+        /// Draw borders w/ high priority, since CCS really isn't good with clipping
+        /// </summary>
+        public void AddBorders()
+        {
+            var borderBottom = new CCSprite("BlankFrame");
+            borderBottom.Color = CCColor3B.Black;
+            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
+            borderBottom.PositionX = windowFrame.ContentSize.Width / 2f;
+            borderBottom.PositionY = 0;
+
+            var borderTop = new CCSprite("BlankFrame");
+            borderTop.Color = CCColor3B.Black;
+            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
+            borderTop.PositionX = windowFrame.ContentSize.Width / 2f;
+            borderTop.PositionY = windowFrame.ContentSize.Height;
+
+            windowFrame.AddChild(borderBottom, 10000, SpriteTypes.BorderTag);
+            windowFrame.AddChild(borderTop, 10000, SpriteTypes.BorderTag);
+        }
+
+        /// <summary>
+        /// Static call, extract label
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <returns></returns>
         public static string SpriteHasLabel(CCSprite sprite)
         {
             var contentTag = sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
@@ -610,11 +783,13 @@ namespace SGDWithCocos.Shared.Layers
                 return "";
             }
         }
-
-        #endregion
         
-        #region ListenerDelegates
-
+        /// <summary>
+        /// Touch begin listener
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
+        /// <returns></returns>
         bool OnTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
             CCSprite caller = touchEvent.CurrentTarget as CCSprite;
@@ -631,7 +806,14 @@ namespace SGDWithCocos.Shared.Layers
 
             if (windowFrame != null)
             {
-                if (windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                if (caller.Tag == SpriteTypes.WindowTag && windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                {
+                    CurrentSpriteTouched = windowFrame;
+                    touchType = Tags.Tag.Window;
+
+                    return true;
+                }
+                else if (windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                 {
                     if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                     {
@@ -706,8 +888,6 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
-
-            #region ButtonSpecific Listeners
 
             if (caller.GetHashCode() == speakerFrame.GetHashCode())
             {
@@ -855,8 +1035,6 @@ namespace SGDWithCocos.Shared.Layers
                 }
             }
 
-            #endregion
-
             foreach (IconReference iconRef in iconList2)
             {
                 if (iconRef.Sprite.Tag == SpriteTypes.IconTag)
@@ -932,6 +1110,11 @@ namespace SGDWithCocos.Shared.Layers
 
         }
 
+        /// <summary>
+        /// Touch end listener
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
         void OnTouchesEnded(CCTouch touch, CCEvent touchEvent)
         {
             endTime = DateTime.Now;
@@ -956,7 +1139,8 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             List<StoredIconReference> mInFolder = storedList.Where(t => t.FolderName == mContentTag).ToList();
 
-                            if (mInFolder.Count < 9)
+                            //if (mInFolder.Count < 9)
+                            if (true)
                             {
                                 var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
 
@@ -1142,6 +1326,11 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        /// <summary>
+        /// Active move listener
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
         void HandleTouchesMoved(CCTouch touch, CCEvent touchEvent)
         {
             if (CurrentSpriteTouched != null)
@@ -1175,11 +1364,58 @@ namespace SGDWithCocos.Shared.Layers
                     CurrentSpriteTouched.Position = pos;
 
                 }
+                else if (touchType == Tags.Tag.Window)
+                {
+                    var deltaPos = touch.Delta.Y;
+
+                    var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag).ToList();
+
+                    var highestHeight = mIcons
+                        .Aggregate((agg, next) =>
+                            next.PositionY > agg.PositionY ? next : agg);
+
+                    var lowestHeight = mIcons
+                        .Aggregate((agg, next) =>
+                            next.PositionY < agg.PositionY ? next : agg);
+
+                    var padding = highestHeight.ContentSize.Width * 0.15f;
+
+                    var clampHigh = windowFrame.ContentSize.Height - highestHeight.ContentSize.Height / 2f - padding;
+
+                    var clampLow = highestHeight.ContentSize.Height / 2f + padding;
+
+                    if (mIcons.Count < 9)
+                    {
+                        return;
+                    }
+                    else if (lowestHeight.PositionY + deltaPos >= clampLow)
+                    {
+                        return;
+                    }
+                    else if (highestHeight.PositionY + deltaPos <= clampHigh)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        for (var i = 0; i < mIcons.Count; i++)
+                        {
+                            if (mIcons[i].Tag == SpriteTypes.IconTag)
+                            {
+                                mIcons[i].PositionY = mIcons[i].PositionY + deltaPos;
+
+                                Console.WriteLine("Pos Y: " + (mIcons[i].PositionY) + " clamp: " + clampHigh);
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        #endregion
-
+        /// <summary>
+        /// In game logic
+        /// </summary>
+        /// <param name="frameTimeInSeconds"></param>
         void RunGameLogic(float frameTimeInSeconds)
         {
             totalDuration += frameTimeInSeconds;
@@ -1240,6 +1476,15 @@ namespace SGDWithCocos.Shared.Layers
             }            
         }
 
+        /// <summary>
+        /// Loading call
+        /// </summary>
+        /// <param name="mainWindow"></param>
+        /// <param name="_dynamicWidth"></param>
+        /// <param name="_dynamicHeight"></param>
+        /// <param name="json"></param>
+        /// <param name="gamePage"></param>
+        /// <returns></returns>
         public static CCScene GameStartLayerScene(CCGameView mainWindow, float _dynamicWidth, float _dynamicHeight, string json, GamePage gamePage)
         {
             var scene = new CCScene(mainWindow);

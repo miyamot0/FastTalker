@@ -12,15 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlButton.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlColourPicker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlHuePicker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlPotentiometer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlSaturationPicker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlSlider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlStepper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlSwitch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCInvocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9Sprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9SpriteFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9SpriteFrame.cs" />

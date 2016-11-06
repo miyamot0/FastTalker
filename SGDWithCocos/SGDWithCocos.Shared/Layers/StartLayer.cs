@@ -29,6 +29,9 @@ using CocosSharp;
 
 namespace SGDWithCocos.Layers
 {
+    /// <summary>
+    /// Base layer, with default color
+    /// </summary>
     public class StartLayer : CCLayerColor
     {
         public StartLayer() :base(new CCColor4B(211, 211, 211))

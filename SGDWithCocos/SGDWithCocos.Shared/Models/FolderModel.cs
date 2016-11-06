@@ -29,6 +29,9 @@ using System;
 
 namespace SGDWithCocos.Models
 {
+    /// <summary>
+    /// Serialization model for icons
+    /// </summary>
     [Serializable()]
     public class FolderModel
     {
@@ -41,6 +44,15 @@ namespace SGDWithCocos.Models
         public float TextScale { get; set; }
         public bool TextVisible { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="assetName"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="tag"></param>
+        /// <param name="scale"></param>
         public FolderModel(string text, string assetName, float x, float y, int tag, float scale)
         {
             Text = text;
