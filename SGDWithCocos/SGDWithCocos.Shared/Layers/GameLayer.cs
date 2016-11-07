@@ -198,7 +198,7 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         // if IconTag matches, add to field at saved location
 
-                        var newIcon = spriteModelFactory.MakeFolder(icon.AssetName, icon.Text, icon.X, icon.Y, icon.Scale);
+                        var newIcon = spriteModelFactory.MakeFolder(icon.AssetName, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                         newIcon.Tag = SpriteTypes.FolderTag;
                         iconList2.Add(new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible));
                         AddEventListener(mListener.Copy(), newIcon);
@@ -353,7 +353,7 @@ namespace SGDWithCocos.Shared.Layers
                 var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
                 var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
 
-                var parentSprite = spriteModelFactory.MakeFolder(assetName, folderName, xLocation, yLocation, 1f);
+                var parentSprite = spriteModelFactory.MakeFolder(assetName, folderName, xLocation, yLocation, 1f, 1f, true);
 
                 var mIconRef = new IconReference(parentSprite, assetName, 1f, true);
                 iconList2.Add(mIconRef);
