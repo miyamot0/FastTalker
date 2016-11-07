@@ -44,4 +44,4 @@ This is currently under active development and evaluation.
 
 ### License
 ----
-Fast Talker - Copyright November 11, 2016 Shawn Gilroy, Shawn P. Gilroy. GPL-Version 3
+Fast Talker - Copyright November 7, 2016 Shawn Gilroy, Shawn P. Gilroy. GPL-Version 3
