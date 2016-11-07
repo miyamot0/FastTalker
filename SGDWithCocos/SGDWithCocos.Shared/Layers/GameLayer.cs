@@ -780,6 +780,9 @@ namespace SGDWithCocos.Shared.Layers
             borderBackGray.ContentSize = new CCSize(spriteModelFactory.DynamicWidth, spriteModelFactory.DynamicHeight);
             borderBackGray.PositionX = spriteModelFactory.DynamicWidth / 2f;
             borderBackGray.PositionY = spriteModelFactory.DynamicHeight / 2f;
+            borderBackGray.Tag = SpriteTypes.ColorLayerTag;
+
+            AddEventListener(mListener.Copy(), borderBackGray);
 
             AddChild(borderBackGray, 999, SpriteTypes.ColorLayerTag);
         }
@@ -892,12 +895,7 @@ namespace SGDWithCocos.Shared.Layers
 
             if (windowFrame != null)
             {
-                if (caller.Tag == SpriteTypes.ColorLayerTag)
-                {
-                    touchEvent.StopPropogation();
-                    return true;
-                }
-                else if (caller.Tag == SpriteTypes.WindowTag && windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                if (caller.Tag == SpriteTypes.WindowTag && windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                 {
                     CurrentSpriteTouched = windowFrame;
                     touchType = Tags.Tag.Window;
@@ -970,6 +968,13 @@ namespace SGDWithCocos.Shared.Layers
                     }
 
                     return false;
+                }
+                else
+                {
+                    CurrentSpriteTouched = null;
+                    touchType = Tags.Tag.ColorLayer;
+
+                    return true;
                 }
             }
 

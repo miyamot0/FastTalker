@@ -47,6 +47,7 @@ namespace SGDWithCocos.Tags
         FolderIcon,
         Window,
         CloseWindow,
-        TransitionIcon
+        TransitionIcon,
+        ColorLayer
     }
 }
