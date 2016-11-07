@@ -678,8 +678,8 @@ namespace SGDWithCocos.Shared.Layers
             // Button to close window
             closeButton = new CCSprite("IconClose");
             closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
-            closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2 - 10;
-            closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2 - 10;
+            closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width/2f - windowFrame.ContentSize.Width * 0.05f;
+            closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height/2f - windowFrame.ContentSize.Height * 0.05f;
             closeButton.Tag = SpriteTypes.CloseWindowTag;
 
             // Add listener to close button
