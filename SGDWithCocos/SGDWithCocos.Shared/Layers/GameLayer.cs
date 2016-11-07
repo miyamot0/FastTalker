@@ -598,10 +598,19 @@ namespace SGDWithCocos.Shared.Layers
         {
             iconList2.Remove(tempWindow);
 
-            windowFrame.RemoveChild(closeButton);
+            CCCallFunc hideIcons = new CCCallFunc(ClearIconsInModal);
+            CCCallFuncN removeClose = new CCCallFuncN(node => node.RemoveChild(closeButton));
+            CCCallFuncN removeWindow = new CCCallFuncN(node => node.RemoveFromParent());
+            CCCallFunc cleanUpWindow = new CCCallFunc(CleanUpWindow);
 
-            RemoveChild(windowFrame);
+            windowFrame.RunActions(hideIcons, removeClose, removeWindow, cleanUpWindow);
+        }
 
+        /// <summary>
+        /// Deferred cleanup
+        /// </summary>
+        public void CleanUpWindow()
+        {
             RemoveChildByTag(SpriteTypes.ColorLayerTag);
 
             windowFrame = closeButton = null;
@@ -735,15 +744,25 @@ namespace SGDWithCocos.Shared.Layers
                 iconList2.Add(tempWindow);
                 AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
 
+                // Moves window to center
                 var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
 
                 var dimension = Math.Min(spriteModelFactory.DynamicHeight - 10, spriteModelFactory.DynamicWidth);
                 var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
+
+                // Scale to center, 90% of screen or so
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
+                // Blur background, to focus the listener
                 var maskBackground = new CCCallFunc(MaskBackground);
+
+                // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
+
+                // Hacky workaround to give firm borders to window
                 var drawBorders = new CCCallFunc(AddBorders);
+
+                // Execute actions
                 windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, drawBorders, revealIcons);
 
                 isModal = true;
@@ -774,9 +793,24 @@ namespace SGDWithCocos.Shared.Layers
 
             for (var i=0; i<mIcons.Count; i++)
             {
-                var delay = new CCDelayTime(i / 20f);
+                var opacity = new CCCallFuncN(node => node.Opacity = 0);
                 var show = new CCCallFuncN(node => node.Visible = true);
-                mIcons[i].AddActions(false, delay, show);
+                var fade = new CCFadeIn(i / 20f);
+                mIcons[i].AddActions(false, opacity, show, fade);
+            }
+        }
+
+        /// <summary>
+        /// Hide icons in transition
+        /// </summary>
+        public void ClearIconsInModal()
+        {
+            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag).ToList();
+
+            for (var i = 0; i < mIcons.Count; i++)
+            {
+                var fade = new CCFadeOut((mIcons.Count / 20f) - i / 20f);
+                mIcons[i].AddActions(false, fade);
             }
         }
 
