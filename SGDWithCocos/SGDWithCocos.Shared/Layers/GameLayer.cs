@@ -269,6 +269,20 @@ namespace SGDWithCocos.Shared.Layers
                 multiFrame.Visible = true;
 
                 inEditMode = !inEditMode;
+
+                foreach (var t in iconList2)
+                {
+                    if (t.Sprite.Tag == SpriteTypes.IconTag || t.Sprite.Tag == SpriteTypes.FolderTag)
+                    {
+                        var rotateRight = new CCRotateTo(0.3f, 8f);
+                        var rotateLeft = new CCRotateTo(0.4f, -8f);
+                        var rotateTDC = new CCRotateTo(0.3f, 0f);
+
+                        var sequence = new CCSequence(rotateRight, rotateLeft, rotateTDC);
+
+                        t.Sprite.RepeatForever(sequence);
+                    }
+                }
             }
             else
             {
@@ -283,6 +297,15 @@ namespace SGDWithCocos.Shared.Layers
                 multiFrame.Visible = false;
 
                 inEditMode = !inEditMode;
+
+                foreach (var t in iconList2)
+                {
+                    if (t.Sprite.Tag == SpriteTypes.IconTag || t.Sprite.Tag == SpriteTypes.FolderTag)
+                    {
+                        t.Sprite.StopAllActions();
+                        t.Sprite.Rotation = 0f;
+                    }
+                }
             }
         }
 
