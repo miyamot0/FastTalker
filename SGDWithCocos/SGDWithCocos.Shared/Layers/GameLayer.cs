@@ -847,7 +847,7 @@ namespace SGDWithCocos.Shared.Layers
         {
             var borderBottom = new CCSprite("BlankFrame");
             borderBottom.Color = CCColor3B.Black;
-            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 10);
+            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 7.5f);
             borderBottom.PositionX = windowFrame.ContentSize.Width / 2f;
             borderBottom.PositionY = 0;
 
@@ -859,7 +859,7 @@ namespace SGDWithCocos.Shared.Layers
 
             var borderTop = new CCSprite("BlankFrame");
             borderTop.Color = CCColor3B.Black;
-            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 10);
+            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 7.5f);
             borderTop.PositionX = windowFrame.ContentSize.Width / 2f;
             borderTop.PositionY = windowFrame.ContentSize.Height;
 
@@ -873,8 +873,6 @@ namespace SGDWithCocos.Shared.Layers
             windowFrame.AddChild(borderBottomGray, 10001, SpriteTypes.BorderTag);
             windowFrame.AddChild(borderTop, 10000, SpriteTypes.BorderTag);
             windowFrame.AddChild(borderTopGray, 10001, SpriteTypes.BorderTag);
-
-            //windowFrame.AddChild(borderBackGray, 999, SpriteTypes.BorderTag);
         }
 
         /// <summary>
