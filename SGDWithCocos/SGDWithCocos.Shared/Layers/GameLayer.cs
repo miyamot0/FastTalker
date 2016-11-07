@@ -892,7 +892,12 @@ namespace SGDWithCocos.Shared.Layers
 
             if (windowFrame != null)
             {
-                if (caller.Tag == SpriteTypes.WindowTag && windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                if (caller.Tag == SpriteTypes.ColorLayerTag)
+                {
+                    touchEvent.StopPropogation();
+                    return true;
+                }
+                else if (caller.Tag == SpriteTypes.WindowTag && windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                 {
                     CurrentSpriteTouched = windowFrame;
                     touchType = Tags.Tag.Window;
@@ -958,14 +963,7 @@ namespace SGDWithCocos.Shared.Layers
 
                             isModal = false;
 
-                            iconList2.Remove(tempWindow);
-
-                            windowFrame.RemoveChild(closeButton);
-
-                            RemoveChild(windowFrame);
-
-                            windowFrame = closeButton = null;
-                            tempWindow = null;
+                            ClearWindow();
 
                             return true;
                         }
@@ -1489,8 +1487,6 @@ namespace SGDWithCocos.Shared.Layers
                             if (mIcons[i].Tag == SpriteTypes.IconTag)
                             {
                                 mIcons[i].PositionY = mIcons[i].PositionY + deltaPos;
-
-                                Console.WriteLine("Pos Y: " + (mIcons[i].PositionY) + " clamp: " + clampHigh);
                             }
                         }
                     }
