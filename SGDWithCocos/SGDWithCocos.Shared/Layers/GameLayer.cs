@@ -103,6 +103,7 @@ namespace SGDWithCocos.Shared.Layers
             this.mRandom = new Random(DateTime.Now.Millisecond);
             
             spriteModelFactory = new SpriteMaker(_dynamicWidth, _dynamicHeight);
+            spriteModelFactory.padding = 10;
 
             MakeListener();
 
@@ -601,6 +602,8 @@ namespace SGDWithCocos.Shared.Layers
 
             RemoveChild(windowFrame);
 
+            RemoveChildByTag(SpriteTypes.ColorLayerTag);
+
             windowFrame = closeButton = null;
             tempWindow = null;
         }
@@ -643,8 +646,8 @@ namespace SGDWithCocos.Shared.Layers
             // Button to close window
             closeButton = new CCSprite("IconClose");
             closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
-            closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2 - 3;
-            closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2 - 3;
+            closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2 - 10;
+            closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2 - 10;
             closeButton.Tag = SpriteTypes.CloseWindowTag;
 
             // Add listener to close button
@@ -719,6 +722,8 @@ namespace SGDWithCocos.Shared.Layers
                             parentSprite.AddChild(subIconFrame);
                             AddEventListener(mListener.Copy(), parentSprite);
 
+                            parentSprite.Visible = false;
+
                             windowFrame.AddChild(parentSprite, 1001, SpriteTypes.IconTag);
                             parentSprite.AddChild(label);
                         }
@@ -732,16 +737,47 @@ namespace SGDWithCocos.Shared.Layers
 
                 var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
 
-                var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
-                var scale = (dimension / windowFrame.ContentSize.Width) * 1f;
+                var dimension = Math.Min(spriteModelFactory.DynamicHeight - 10, spriteModelFactory.DynamicWidth);
+                var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
+                var maskBackground = new CCCallFunc(MaskBackground);
+                var revealIcons = new CCCallFunc(ShowIconsInModal);
                 var drawBorders = new CCCallFunc(AddBorders);
-
-                windowFrame.AddActions(false, moveAction, scaleAction, drawBorders);
+                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, drawBorders, revealIcons);
 
                 isModal = true;
             }, 0);
+        }
+
+        /// <summary>
+        /// Mask background for modal window
+        /// </summary>
+        public void MaskBackground()
+        {
+            var borderBackGray = new CCSprite("frameWhite");
+            borderBackGray.Color = CCColor3B.Gray;
+            borderBackGray.Opacity = 200;
+            borderBackGray.ContentSize = new CCSize(spriteModelFactory.DynamicWidth, spriteModelFactory.DynamicHeight);
+            borderBackGray.PositionX = spriteModelFactory.DynamicWidth / 2f;
+            borderBackGray.PositionY = spriteModelFactory.DynamicHeight / 2f;
+
+            AddChild(borderBackGray, 999, SpriteTypes.ColorLayerTag);
+        }
+
+        /// <summary>
+        /// Defer visibility until model is popped up
+        /// </summary>
+        public void ShowIconsInModal()
+        {
+            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag).ToList();
+
+            for (var i=0; i<mIcons.Count; i++)
+            {
+                var delay = new CCDelayTime(i / 20f);
+                var show = new CCCallFuncN(node => node.Visible = true);
+                mIcons[i].AddActions(false, delay, show);
+            }
         }
 
         /// <summary>
@@ -751,18 +787,34 @@ namespace SGDWithCocos.Shared.Layers
         {
             var borderBottom = new CCSprite("BlankFrame");
             borderBottom.Color = CCColor3B.Black;
-            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
+            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 10);
             borderBottom.PositionX = windowFrame.ContentSize.Width / 2f;
             borderBottom.PositionY = 0;
 
+            var borderBottomGray = new CCSprite("frameWhite");
+            borderBottomGray.Color = CCColor3B.Gray;
+            borderBottomGray.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
+            borderBottomGray.PositionX = windowFrame.ContentSize.Width / 2f;
+            borderBottomGray.PositionY = 0;
+
             var borderTop = new CCSprite("BlankFrame");
             borderTop.Color = CCColor3B.Black;
-            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
+            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 10);
             borderTop.PositionX = windowFrame.ContentSize.Width / 2f;
             borderTop.PositionY = windowFrame.ContentSize.Height;
 
+            var borderTopGray = new CCSprite("frameWhite");
+            borderTopGray.Color = CCColor3B.Gray;
+            borderTopGray.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
+            borderTopGray.PositionX = windowFrame.ContentSize.Width / 2f;
+            borderTopGray.PositionY = windowFrame.ContentSize.Height;
+
             windowFrame.AddChild(borderBottom, 10000, SpriteTypes.BorderTag);
+            windowFrame.AddChild(borderBottomGray, 10001, SpriteTypes.BorderTag);
             windowFrame.AddChild(borderTop, 10000, SpriteTypes.BorderTag);
+            windowFrame.AddChild(borderTopGray, 10001, SpriteTypes.BorderTag);
+
+            //windowFrame.AddChild(borderBackGray, 999, SpriteTypes.BorderTag);
         }
 
         /// <summary>

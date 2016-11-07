@@ -49,5 +49,6 @@ namespace SGDWithCocos.Tags
         public const int CloseWindowTag = 15;
         public const int FolderTag = 16;
         public const int BorderTag = 17;
+        public const int ColorLayerTag = 18;
     }
 }
