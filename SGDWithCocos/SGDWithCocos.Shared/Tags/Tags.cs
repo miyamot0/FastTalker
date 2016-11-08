@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------------------------------------------------------
-// <copyright file="Tag.cs" 
-// Copyright August 18, 2016 Shawn Gilroy
+// <copyright file="Tags.cs" 
+// Copyright November 6, 2016 Shawn Gilroy
 //
 // This file is part of Cross Platform Communication App
 //
