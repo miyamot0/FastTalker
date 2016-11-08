@@ -664,12 +664,16 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            windowFrame = new CCSprite("BlankFrame")
+            var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
+            texture.BeginWithClear(CCColor4B.White);
+            texture.End();
+            windowFrame = new CCSprite(texture.Texture)
             {
                 PositionX = currentSprite.Position.X,
                 PositionY = currentSprite.Position.Y,
                 Tag = SpriteTypes.WindowTag
             };
+            texture.Dispose();
 
             // Scale up to near-field size
             var scaling = (spriteModelFactory.DynamicWidth * 0.1f) / windowFrame.ContentSize.Width;
@@ -770,7 +774,7 @@ namespace SGDWithCocos.Shared.Layers
                 // Moves window to center
                 var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
 
-                var dimension = Math.Min(spriteModelFactory.DynamicHeight - 10, spriteModelFactory.DynamicWidth);
+                var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
                 var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
 
                 // Scale to center, 90% of screen or so
@@ -845,34 +849,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void AddBorders()
         {
-            var borderBottom = new CCSprite("BlankFrame");
-            borderBottom.Color = CCColor3B.Black;
-            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 7.5f);
-            borderBottom.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderBottom.PositionY = 0;
 
-            var borderBottomGray = new CCSprite("frameWhite");
-            borderBottomGray.Color = CCColor3B.Gray;
-            borderBottomGray.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
-            borderBottomGray.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderBottomGray.PositionY = 0;
-
-            var borderTop = new CCSprite("BlankFrame");
-            borderTop.Color = CCColor3B.Black;
-            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 7.5f);
-            borderTop.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderTop.PositionY = windowFrame.ContentSize.Height;
-
-            var borderTopGray = new CCSprite("frameWhite");
-            borderTopGray.Color = CCColor3B.Gray;
-            borderTopGray.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
-            borderTopGray.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderTopGray.PositionY = windowFrame.ContentSize.Height;
-
-            windowFrame.AddChild(borderBottom, 10000, SpriteTypes.BorderTag);
-            windowFrame.AddChild(borderBottomGray, 10001, SpriteTypes.BorderTag);
-            windowFrame.AddChild(borderTop, 10000, SpriteTypes.BorderTag);
-            windowFrame.AddChild(borderTopGray, 10001, SpriteTypes.BorderTag);
         }
 
         /// <summary>
