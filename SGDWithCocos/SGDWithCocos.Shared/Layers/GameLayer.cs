@@ -358,6 +358,14 @@ namespace SGDWithCocos.Shared.Layers
 
                     // Add child to field properly
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
+
+                    var rotateRight = new CCRotateTo(0.3f, 8f);
+                    var rotateLeft = new CCRotateTo(0.4f, -8f);
+                    var rotateTDC = new CCRotateTo(0.3f, 0f);
+
+                    var sequence = new CCSequence(rotateRight, rotateLeft, rotateTDC);
+
+                    mIconRef.Sprite.RepeatForever(sequence);
                 }
             }, 0);
         }
