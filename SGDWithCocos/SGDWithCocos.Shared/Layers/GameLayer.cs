@@ -1,24 +1,24 @@
 ﻿//----------------------------------------------------------------------------------------------
 // <copyright file="GameLayer.cs" 
-// Copyright August 18, 2016 Shawn Gilroy
+// Copyright November 6, 2016 Shawn Gilroy
 //
-// This file is part of Cross Platform Communication App
+// This file is part of Fast Talker
 //
-// Cross Platform Communication App is free software: you can redistribute it and/or modify
+// Fast Talker is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, version 3.
 //
-// Cross Platform Communication App is distributed in the hope that it will be useful,
+// Fast Talker is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Cross Platform Communication App.  If not, see http://www.gnu.org/licenses/. 
+// along with Fast Talker.  If not, see http://www.gnu.org/licenses/. 
 // </copyright>
 //
 // <summary>
-// The Cross Platform Communication App is a tool to assist clinicans and researchers in the treatment of communication disorders.
+// The Fast Talker is a tool to assist clinicans and researchers in the treatment of communication disorders.
 // 
 // Email: shawn(dot)gilroy(at)temple.edu
 //
@@ -358,6 +358,14 @@ namespace SGDWithCocos.Shared.Layers
 
                     // Add child to field properly
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
+
+                    var rotateRight = new CCRotateTo(0.3f, 8f);
+                    var rotateLeft = new CCRotateTo(0.4f, -8f);
+                    var rotateTDC = new CCRotateTo(0.3f, 0f);
+
+                    var sequence = new CCSequence(rotateRight, rotateLeft, rotateTDC);
+
+                    mIconRef.Sprite.RepeatForever(sequence);
                 }
             }, 0);
         }
@@ -664,12 +672,16 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            windowFrame = new CCSprite("BlankFrame")
+            var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
+            texture.BeginWithClear(CCColor4B.White);
+            texture.End();
+            windowFrame = new CCSprite(texture.Texture)
             {
                 PositionX = currentSprite.Position.X,
                 PositionY = currentSprite.Position.Y,
                 Tag = SpriteTypes.WindowTag
             };
+            texture.Dispose();
 
             // Scale up to near-field size
             var scaling = (spriteModelFactory.DynamicWidth * 0.1f) / windowFrame.ContentSize.Width;
@@ -678,8 +690,8 @@ namespace SGDWithCocos.Shared.Layers
             // Button to close window
             closeButton = new CCSprite("IconClose");
             closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
-            closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2 - 10;
-            closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2 - 10;
+            closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width/2f - windowFrame.ContentSize.Width * 0.05f;
+            closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height/2f - windowFrame.ContentSize.Height * 0.05f;
             closeButton.Tag = SpriteTypes.CloseWindowTag;
 
             // Add listener to close button
@@ -770,7 +782,7 @@ namespace SGDWithCocos.Shared.Layers
                 // Moves window to center
                 var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
 
-                var dimension = Math.Min(spriteModelFactory.DynamicHeight - 10, spriteModelFactory.DynamicWidth);
+                var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
                 var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
 
                 // Scale to center, 90% of screen or so
@@ -845,36 +857,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void AddBorders()
         {
-            var borderBottom = new CCSprite("BlankFrame");
-            borderBottom.Color = CCColor3B.Black;
-            borderBottom.ContentSize = new CCSize(windowFrame.ContentSize.Width, 10);
-            borderBottom.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderBottom.PositionY = 0;
 
-            var borderBottomGray = new CCSprite("frameWhite");
-            borderBottomGray.Color = CCColor3B.Gray;
-            borderBottomGray.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
-            borderBottomGray.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderBottomGray.PositionY = 0;
-
-            var borderTop = new CCSprite("BlankFrame");
-            borderTop.Color = CCColor3B.Black;
-            borderTop.ContentSize = new CCSize(windowFrame.ContentSize.Width, 10);
-            borderTop.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderTop.PositionY = windowFrame.ContentSize.Height;
-
-            var borderTopGray = new CCSprite("frameWhite");
-            borderTopGray.Color = CCColor3B.Gray;
-            borderTopGray.ContentSize = new CCSize(windowFrame.ContentSize.Width, 5);
-            borderTopGray.PositionX = windowFrame.ContentSize.Width / 2f;
-            borderTopGray.PositionY = windowFrame.ContentSize.Height;
-
-            windowFrame.AddChild(borderBottom, 10000, SpriteTypes.BorderTag);
-            windowFrame.AddChild(borderBottomGray, 10001, SpriteTypes.BorderTag);
-            windowFrame.AddChild(borderTop, 10000, SpriteTypes.BorderTag);
-            windowFrame.AddChild(borderTopGray, 10001, SpriteTypes.BorderTag);
-
-            //windowFrame.AddChild(borderBackGray, 999, SpriteTypes.BorderTag);
         }
 
         /// <summary>
