@@ -192,7 +192,7 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(nuiSprite);
 
-            var label = new CCLabel("\"Straight Sheet\" icons by Paxtoncrafts Charitable Trust, licensed CC-BY-SA 3.0 ", "Arial", 72, CCLabelFormat.SystemFont)
+            var label = new CCLabel("\"Straight Sheet\" icons by Paxtoncrafts Charitable Trust, licensed CC-BY-SA 2.0 ", "Arial", 72, CCLabelFormat.SystemFont)
             {
                 Color = CCColor3B.White,
                 AnchorPoint = CCPoint.AnchorMiddle,
@@ -210,11 +210,22 @@ namespace SGDWithCocos.Scenes
             mainLayer.AddChild(label);
         }
 
+        /// <summary>
+        /// Touch begin event, just to return true anyway
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
+        /// <returns></returns>
         bool OnTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
             return true;
         }
 
+        /// <summary>
+        /// Touch event, trigger license link for Straight-Sheet icons
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
         void OnTouchesEnded(CCTouch touch, CCEvent touchEvent)
         {
             if (touchEvent.CurrentTarget.Tag == SpriteTypes.LicenseTag)
