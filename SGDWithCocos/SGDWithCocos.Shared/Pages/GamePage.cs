@@ -42,6 +42,7 @@ using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using SGDWithCocos.Scenes;
 using SGDWithCocos.Shared.Layers;
+using System.Linq;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -80,6 +81,8 @@ namespace SGDWithCocos.Shared.Pages
             Content = gameView;
         }
 
+        #region Life Cycle
+
         /// <summary>
         /// Base methods
         /// </summary>
@@ -116,6 +119,10 @@ namespace SGDWithCocos.Shared.Pages
             return true;
         }
 
+        #endregion
+
+        #region Image Modification decision-making
+
         /// <summary>
         /// Call action sheet with possible modifications to icon
         /// </summary>
@@ -123,7 +130,7 @@ namespace SGDWithCocos.Shared.Pages
         public async void CallActionSheet(int counter)
         {
             string buttonSelect = await GetActionSheet();
-            
+
             /*
             
             TODO toggle hiding of image
@@ -170,6 +177,10 @@ namespace SGDWithCocos.Shared.Pages
             }
         }
 
+        #endregion
+
+        #region Image Selection Decision-making
+
         /// <summary>
         /// Async-able task related to a scrollable, action sheet
         /// </summary>
@@ -201,23 +212,58 @@ namespace SGDWithCocos.Shared.Pages
         }
 
         /// <summary>
-        /// Async-able task related to the color for a folder
+        /// Branching logic for pictures
+        /// </summary>
+        public async void CallActionSheetChoice()
+        {
+            string buttonSelect = await GetActionSheetChoice();
+
+            if (buttonSelect == StringTypes.LocalImage)
+            {
+                CallCategoryPicker();
+            }
+            else if (buttonSelect == StringTypes.DownloadedImage)
+            {
+                CallImagePicker();
+            }
+        }
+
+        /// <summary>
+        /// Call an action sheet related to image location
         /// </summary>
         /// <returns></returns>
-        public Task<string> GetFolderColor()
+        public Task<string> GetActionSheetChoice()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 
             Device.BeginInvokeOnMainThread(async () =>
             {
-                var mAction = await DisplayActionSheet("Color for Folder? ",
+                var mAction = await DisplayActionSheet("Select Image Source ", "Cancel", "OK",
+                    StringTypes.LocalImage,
+                    StringTypes.DownloadedImage);
+                tcs.SetResult(mAction);
+            });
+
+            return tcs.Task;
+        }
+
+        #endregion
+        
+        #region Selection of Embedded Icons
+
+        /// <summary>
+        /// Action list for icon selection
+        /// </summary>
+        /// <returns></returns>
+        public Task<string> SelectCategory()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var mAction = await DisplayActionSheet("What type of icon? ",
                     "Cancel", "OK",
-                    "Red", 
-                    "Blue", 
-                    "Green", 
-                    "Pink", 
-                    "Light Blue", 
-                    "Purple");
+                    mLayer.GetCategories());
                 tcs.SetResult(mAction);
             });
 
@@ -225,26 +271,82 @@ namespace SGDWithCocos.Shared.Pages
         }
 
         /// <summary>
-        /// Async-able task related to naming an icon
+        /// Select Category for icons
         /// </summary>
-        /// <param name="mQuestion">Query text for user</param>
-        /// <returns></returns>
-        public Task<string> GetNamingWindow(string mQuestion)
+        public async void CallCategoryPicker()
         {
-            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            try
+            {
+                var result = await SelectCategory();
+                var matches = await GetMatchingTasks(result);
+                mLayer.ShowStoredWindow(matches);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Linq-based query for icon category action-sheet 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public Task<List<Storage>> GetMatchingTasks(string result)
+        {
+            TaskCompletionSource<List<Storage>> tcs = new TaskCompletionSource<List<Storage>>();
+
+            List<string> listTag = new List<string>() { result };
 
             Device.BeginInvokeOnMainThread(() =>
             {
-                var popup = new PopUpWindow(mQuestion, string.Empty, "OK", "Cancel");
+                StorageContainer copiedList = mLayer.GetStoredIcons();
+
+                List<Storage> mMatchingIcons = copiedList
+                .StoredIcons
+                .Where(l => l.Tags.Intersect(listTag).Any())
+                .ToList();
+
+                tcs.SetResult(mMatchingIcons);
+            });
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Async naming call with callback to layer
+        /// </summary>
+        /// <param name="node"></param>
+        public async void NameEmbeddedIcon(CCNode node)
+        {
+            var results = await NameWindow(node);
+            mLayer.CallBackIcon(results[0], results[1], results[2]);
+        }
+
+        /// <summary>
+        /// Await-able window for assigning icon label
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public Task<string[]> NameWindow(CCNode node)
+        {
+            TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
                 popup.PopupClosed += (o, closedArgs) =>
                 {
-                    if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
+                    var sprite = node as CCSprite;
+                    var mContent = sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+                    if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0 && mContent != null)
                     {
-                        tcs.SetResult(closedArgs.Text);
+                        tcs.SetResult(new string[] { mContent.Text, closedArgs.Text.Trim(), "Embedded" });
                     }
                     else
                     {
-                        tcs.SetResult("");
+                        tcs.SetResult(new string[] { "", "", "" });
                     }
                 };
 
@@ -254,6 +356,10 @@ namespace SGDWithCocos.Shared.Pages
             return tcs.Task;
         }
 
+        #endregion
+
+        #region Selection of Local Icons
+        
         /// <summary>
         /// Cross-platform call to gallery for Android and iOS
         /// </summary>
@@ -357,6 +463,90 @@ namespace SGDWithCocos.Shared.Pages
 
             return tcs.Task;
         }
+
+        /// <summary>
+        /// Async-able task related to the color for a folder
+        /// </summary>
+        /// <returns></returns>
+        public Task<string> GetFolderColor()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var mAction = await DisplayActionSheet("Color for Folder? ",
+                    "Cancel", "OK",
+                    "Red",
+                    "Blue",
+                    "Green",
+                    "Pink",
+                    "Light Blue",
+                    "Purple");
+                tcs.SetResult(mAction);
+            });
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Construct and name/specify Folder sprite
+        /// </summary>
+        /// <param name="mList">List of existing folder names</param>
+        public async void GetFolderSetup(List<string> mList)
+        {
+            var folderName = await GetNamingWindow("Please name the folder");
+
+            if (mList.Contains(folderName.Trim().ToLower()))
+            {
+                // return if the existing name already exists
+
+                return;
+            }
+            else if (folderName.Trim().Length > 0)
+            {
+                // Query user related to folder color
+
+                var folderColor = await GetFolderColor();
+
+                var assetName = "";
+
+                if (folderColor == "Red")
+                {
+                    assetName = "FolderOpenRed";
+                }
+                else if (folderColor == "Blue")
+                {
+                    assetName = "FolderOpenDarkBlue";
+                }
+                else if (folderColor == "Green")
+                {
+                    assetName = "FolderOpenGreen";
+                }
+                else if (folderColor == "Pink")
+                {
+                    assetName = "FolderOpenDarkPink";
+                }
+                else if (folderColor == "Light Blue")
+                {
+                    assetName = "FolderOpenLightBlue";
+                }
+                else if (folderColor == "Purple")
+                {
+                    assetName = "FolderOpenDarkPurple";
+                }
+
+                if (folderColor.Trim().Length > 0)
+                {
+                    // if a color was supplied, create the necessary folder in the field
+
+                    mLayer.MakeIconFolder(assetName, folderName);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Capture Pictures from Camera
 
         /// <summary>
         /// Cross-platform call to camera for Android and iOS
@@ -472,62 +662,10 @@ namespace SGDWithCocos.Shared.Pages
             return tcs.Task;
         }
 
-        /// <summary>
-        /// Construct and name/specify Folder sprite
-        /// </summary>
-        /// <param name="mList">List of existing folder names</param>
-        public async void GetFolderSetup(List<string> mList)
-        {
-            var folderName = await GetNamingWindow("Please name the folder");
+        #endregion
 
-            if (mList.Contains(folderName.Trim().ToLower()))
-            {
-                // return if the existing name already exists
+        #region File IO
 
-                return;
-            }
-            else if (folderName.Trim().Length > 0)
-            {
-                // Query user related to folder color
-
-                var folderColor = await GetFolderColor();
-
-                var assetName = "";
-
-                if (folderColor == "Red")
-                {
-                    assetName = "FolderOpenRed";
-                }
-                else if (folderColor == "Blue")
-                {
-                    assetName = "FolderOpenDarkBlue";
-                }
-                else if (folderColor == "Green")
-                {
-                    assetName = "FolderOpenGreen";
-                }
-                else if (folderColor == "Pink")
-                {
-                    assetName = "FolderOpenDarkPink";
-                }
-                else if (folderColor == "Light Blue")
-                {
-                    assetName = "FolderOpenLightBlue";
-                }
-                else if (folderColor == "Purple")
-                {
-                    assetName = "FolderOpenDarkPurple";
-                }
-
-                if (folderColor.Trim().Length > 0)
-                {
-                    // if a color was supplied, create the necessary folder in the field
-
-                    mLayer.MakeIconFolder(assetName, folderName);
-                }
-            }
-        }
-        
         /// <summary>
         /// Cross-platform call to get JSON-saved boards from local storage
         /// </summary>
@@ -615,8 +753,8 @@ namespace SGDWithCocos.Shared.Pages
 
                     mModel.Base64 = mStoredRef.Base64;
                     mModel.Folder = mStoredRef.FolderName;
-                    mModel.X = (int) mStoredRef.Sprite.PositionX;
-                    mModel.Y = (int) mStoredRef.Sprite.PositionY;
+                    mModel.X = (int)mStoredRef.Sprite.PositionX;
+                    mModel.Y = (int)mStoredRef.Sprite.PositionY;
                     mModel.Tag = mStoredRef.Sprite.Tag;
                     mModel.TextScale = spriteLabel.ScaleX;
                     mModel.TextVisible = spriteLabel.Visible;
@@ -639,6 +777,38 @@ namespace SGDWithCocos.Shared.Pages
             });
         }
 
+        #endregion
+
+        /// <summary>
+        /// Async-able task related to naming an icon
+        /// </summary>
+        /// <param name="mQuestion">Query text for user</param>
+        /// <returns></returns>
+        public Task<string> GetNamingWindow(string mQuestion)
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var popup = new PopUpWindow(mQuestion, string.Empty, "OK", "Cancel");
+                popup.PopupClosed += (o, closedArgs) =>
+                {
+                    if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
+                    {
+                        tcs.SetResult(closedArgs.Text);
+                    }
+                    else
+                    {
+                        tcs.SetResult("");
+                    }
+                };
+
+                popup.Show();
+            });
+
+            return tcs.Task;
+        }
+        
         /// <summary>
         /// Loading event
         /// </summary>
@@ -650,7 +820,7 @@ namespace SGDWithCocos.Shared.Pages
 
             if (nativeGameView != null)
             {
-                var contentSearchPaths = new List<string>() { "Fonts" };
+                var contentSearchPaths = new List<string>() { "Fonts", "Stored" };
 
                 int width = nativeGameView.DesignResolution.Width;
                 int height = nativeGameView.DesignResolution.Height;
@@ -692,6 +862,9 @@ namespace SGDWithCocos.Shared.Pages
 
             // Create layer for icon board scene
             mLayer = new GameLayer(width, height, jsonObject, this);
+
+            // Do JSON parsing AOT
+            mLayer.LoadJsonContent();
 
             // Add layer to icon board scene
             gameScene.AddLayer(mLayer);

@@ -32,15 +32,27 @@ namespace SGDWithCocos.Shared
 {
     public class App : Application
 	{
+        /// <summary>
+        /// XF cross platform controls
+        /// </summary>
 		public App ()
 		{
             MainPage = new GamePage();
 		}
 
+        /// <summary>
+        /// Lifecycle overrides
+        /// </summary>
 		protected override void OnStart () {}
 
-		protected override void OnSleep () {}
+        /// <summary>
+        /// Lifecycle overrides
+        /// </summary>
+        protected override void OnSleep () {}
 
-		protected override void OnResume () {}
+        /// <summary>
+        /// Lifecycle overrides
+        /// </summary>
+        protected override void OnResume () {}
 	}
 }
