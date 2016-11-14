@@ -19,15 +19,15 @@ Features include:
 
 ### Derivative Works (Media)
 Fast Talker uses licensed visual images in order to operate:
-* Straight Street Symbols - CC-BY-SA 2.0. Copyright Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust 
+* [Straight Street Symbols](http://straight-street.com/) - CC-BY-SA 2.0. Copyright Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust 
 
 ### Referenced Works (Packages)
 Fast Talker uses a number of open source projects to work properly:
-* Newtonsoft.Json - MIT Licensed. Copyright (c) 2007 James Newton-King 
-* Xamarin.Plugin.Permissions - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
-* Xamarin.Plugin.Media - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
-* Xamarin Forms - MIT Licensed. Copyright (c) 2016 Microsoft
-* CocosSharp2d Forms - MIT Licensed. Copyright (c) 2016 Microsoft
+* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - MIT Licensed. Copyright (c) 2007 James Newton-King 
+* [Xamarin.Plugin.Permissions](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
+* [Xamarin.Plugin.Media](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
+* [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms) - MIT Licensed. Copyright (c) 2016 Microsoft
+* [CocosSharp2d Forms](https://github.com/mono/CocosSharp) - MIT Licensed. Copyright (c) 2016 Microsoft
 
 ### Acknowledgements and Credits
 * Joseph McCleery, Childrens Hospital of Philadelphia, University of Pennsylvania
