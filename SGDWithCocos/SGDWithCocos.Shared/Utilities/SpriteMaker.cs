@@ -446,9 +446,9 @@ namespace SGDWithCocos.Utilities
         /// <param name="positionY">y pos</param>
         /// <param name="scale">scaled size</param>
         /// <returns></returns>
-        public CCSprite MakeFolder(string assetName, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        public CCSprite MakeFolder(CCSpriteFrame frame, CCSpriteFrame backing, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
-            var parentSprite = new CCSprite("BlankFrame");
+            var parentSprite = new CCSprite(backing);
             parentSprite.PositionX = positionX;
             parentSprite.PositionY = positionY;
 
@@ -458,7 +458,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.Scale = scale;
             parentSprite.Tag = SpriteTypes.FolderTag;
 
-            var subIconFrame = new CCSprite(assetName)
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.9f, parentSprite.ContentSize.Height * 0.9f),

@@ -15,7 +15,7 @@
                 <key>spriteSourceSize</key>
                 <string>{400,400}</string>
                 <key>textureRect</key>
-                <string>{{464,515},{400,400}}</string>
+                <string>{{1468,1005},{400,400}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -30,7 +30,7 @@
                 <key>spriteSourceSize</key>
                 <string>{200,200}</string>
                 <key>textureRect</key>
-                <string>{{1670,600},{200,200}}</string>
+                <string>{{600,1531},{200,200}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -60,7 +60,112 @@
                 <key>spriteSourceSize</key>
                 <string>{500,500}</string>
                 <key>textureRect</key>
-                <string>{{1029,1},{500,500}}</string>
+                <string>{{515,1},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpen.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{1,1029},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpenDarkBlue.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{515,503},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpenDarkPink.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{1017,1},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpenDarkPurple.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{1017,503},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpenGreen.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{1519,1},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpenLightBlue.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{1519,503},{500,500}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>FolderOpenRed.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{500,500}</string>
+                <key>spriteSourceSize</key>
+                <string>{500,500}</string>
+                <key>textureRect</key>
+                <string>{{503,1029},{500,500}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -75,7 +180,7 @@
                 <key>spriteSourceSize</key>
                 <string>{400,400}</string>
                 <key>textureRect</key>
-                <string>{{866,515},{400,400}}</string>
+                <string>{{1005,1367},{400,400}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -90,7 +195,7 @@
                 <key>spriteSourceSize</key>
                 <string>{128,128}</string>
                 <key>textureRect</key>
-                <string>{{1531,1},{128,128}}</string>
+                <string>{{1870,1005},{128,128}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -105,7 +210,7 @@
                 <key>spriteSourceSize</key>
                 <string>{400,400}</string>
                 <key>textureRect</key>
-                <string>{{1268,503},{400,400}}</string>
+                <string>{{1407,1407},{400,400}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -120,7 +225,7 @@
                 <key>spriteSourceSize</key>
                 <string>{461,360}</string>
                 <key>textureRect</key>
-                <string>{{1,515},{461,360}}</string>
+                <string>{{1005,1005},{461,360}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -135,7 +240,7 @@
                 <key>spriteSourceSize</key>
                 <string>{512,512}</string>
                 <key>textureRect</key>
-                <string>{{515,1},{512,512}}</string>
+                <string>{{1,515},{512,512}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -150,9 +255,9 @@
                 <key>spriteSourceSize</key>
                 <string>{597,202}</string>
                 <key>textureRect</key>
-                <string>{{1670,1},{597,202}}</string>
+                <string>{{1,1531},{597,202}}</string>
                 <key>textureRotated</key>
-                <true/>
+                <false/>
             </dict>
         </dict>
         <key>metadata</key>
@@ -166,9 +271,9 @@
             <key>realTextureFileName</key>
             <string>static.png</string>
             <key>size</key>
-            <string>{1873,916}</string>
+            <string>{2020,1808}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:9e84e05422c2ac8c2f9700ae854bb92a:c3f12893b36aa200ccb9d36dd4e69619:740e8b278989ded0e6d093e12868dbf3$</string>
+            <string>$TexturePacker:SmartUpdate:9aa8785eaaeec588b7fde8e7b57dfb41:f3e608d66edaa68e706811d8adbd5ab4:740e8b278989ded0e6d093e12868dbf3$</string>
             <key>textureFileName</key>
             <string>static.png</string>
         </dict>

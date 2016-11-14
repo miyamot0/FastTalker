@@ -191,9 +191,6 @@ namespace SGDWithCocos.Shared.Layers
             deleteFrame = spriteModelFactory.MakeRemoveButton(removeSpriteFrame, backingSpriteFrame);
             deleteFrame.Visible = false;
                 AddChild(deleteFrame, 0, SpriteTypes.RemoveTag);
-
-            staticSpriteSheet.Frames.Clear();
-            staticSpriteSheet = null;
         }
 
         /// <summary>
@@ -226,7 +223,8 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         // if IconTag matches, add to field at saved location
 
-                        var newIcon = spriteModelFactory.MakeFolder(icon.AssetName, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        var newIcon = spriteModelFactory.MakeFolder(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName)),
+                            backingSpriteFrame, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                         newIcon.Tag = SpriteTypes.FolderTag;
                         iconList2.Add(new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible));
                         AddEventListener(mListener.Copy(), newIcon);
@@ -257,7 +255,6 @@ namespace SGDWithCocos.Shared.Layers
                 AddChild(icon.Sprite, counter, icon.Sprite.Tag);
                 counter++;
             }
-
         }
 
         /// <summary>
@@ -363,6 +360,8 @@ namespace SGDWithCocos.Shared.Layers
             multiFrame.Color = Green;
         }
 
+        // TODO precache
+
         /// <summary>
         /// Method called back from main UI thread
         /// </summary>
@@ -440,13 +439,13 @@ namespace SGDWithCocos.Shared.Layers
         public void MakeIconFolder(string assetName, string folderName)
         {
             ScheduleOnce((dt) => {
-
                 // Introduce some jitter into the positioning of the icon
 
                 var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
                 var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
 
-                var parentSprite = spriteModelFactory.MakeFolder(assetName, folderName, xLocation, yLocation, 1f, 1f, true);
+                var parentSprite = spriteModelFactory.MakeFolder(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(assetName)),
+                            backingSpriteFrame, folderName, xLocation, yLocation, 1f, 1f, true);
 
                 var mIconRef = new IconReference(parentSprite, assetName, 1f, true);
                 iconList2.Add(mIconRef);
@@ -456,7 +455,6 @@ namespace SGDWithCocos.Shared.Layers
 
                 // Add child to field properly
                 AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.FolderTag);
-
             }, 0);
         }
 
@@ -742,23 +740,24 @@ namespace SGDWithCocos.Shared.Layers
 
             ScheduleOnce((dt) => {
 
-                var texture2 = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
-                texture2.BeginWithClear(CCColor4B.White);
-                texture2.End();
-                windowFrame = new CCSprite(texture2.Texture)
+                //var texture2 = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
+                //texture2.BeginWithClear(CCColor4B.White);
+                //texture2.End();
+                //windowFrame = new CCSprite(texture2.Texture)
+                windowFrame = new CCSprite(backingSpriteFrame)
                 {
                     PositionX = addFolderFrame.Position.X,
                     PositionY = addFolderFrame.Position.Y,
                     Tag = SpriteTypes.WindowTag
                 };
-                texture2.Dispose();
+                //texture2.Dispose();
 
                 // Scale up to near-field size
                 var scaling = (spriteModelFactory.DynamicWidth * 0.1f) / windowFrame.ContentSize.Width;
                 windowFrame.ContentSize = new CCSize(windowFrame.ContentSize.Width * scaling, windowFrame.ContentSize.Height * scaling);
 
                 // Button to close window
-                closeButton = new CCSprite("IconClose");
+                closeButton = new CCSprite(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("IconClose")));
                 closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
                 closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2f - windowFrame.ContentSize.Width * 0.05f;
                 closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2f - windowFrame.ContentSize.Height * 0.05f;
@@ -781,7 +780,7 @@ namespace SGDWithCocos.Shared.Layers
                         // The sprite from the reference
                         var mSprite = new CCSprite("Stored/" + mStoredIconRef.Name);
 
-                        var parentSprite = new CCSprite("BlankFrame");
+                        var parentSprite = new CCSprite(backingSpriteFrame);
 
                         parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
 
@@ -867,23 +866,24 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
-            texture.BeginWithClear(CCColor4B.White);
-            texture.End();
-            windowFrame = new CCSprite(texture.Texture)
+            //var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
+            //texture.BeginWithClear(CCColor4B.White);
+            //texture.End();
+            //windowFrame = new CCSprite(texture.Texture)
+            windowFrame = new CCSprite(backingSpriteFrame)
             {
                 PositionX = currentSprite.Position.X,
                 PositionY = currentSprite.Position.Y,
                 Tag = SpriteTypes.WindowTag
             };
-            texture.Dispose();
+            //texture.Dispose();
 
             // Scale up to near-field size
             var scaling = (spriteModelFactory.DynamicWidth * 0.1f) / windowFrame.ContentSize.Width;
             windowFrame.ContentSize = new CCSize(windowFrame.ContentSize.Width * scaling, windowFrame.ContentSize.Height * scaling);
 
             // Button to close window
-            closeButton = new CCSprite("IconClose");
+            closeButton = new CCSprite(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("IconClose")));
             closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
             closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width/2f - windowFrame.ContentSize.Width * 0.05f;
             closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height/2f - windowFrame.ContentSize.Height * 0.05f;
@@ -916,7 +916,7 @@ namespace SGDWithCocos.Shared.Layers
 
                         if (mContent != null)
                         {
-                            var parentSprite = new CCSprite("BlankFrame");
+                            var parentSprite = new CCSprite(backingSpriteFrame);
 
                             parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
 
@@ -1004,7 +1004,8 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void MaskBackground()
         {
-            var borderBackGray = new CCSprite("frameWhite");
+            //var borderBackGray = new CCSprite("frameWhite");
+            var borderBackGray = new CCSprite(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("frameWhite")));
             borderBackGray.Color = CCColor3B.Gray;
             borderBackGray.Opacity = 200;
             borderBackGray.ContentSize = new CCSize(spriteModelFactory.DynamicWidth, spriteModelFactory.DynamicHeight);
@@ -1443,7 +1444,6 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             List<StoredIconReference> mInFolder = storedList.Where(t => t.FolderName == mContentTag).ToList();
 
-                            //if (mInFolder.Count < 9)
                             if (true)
                             {
                                 var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
@@ -1481,9 +1481,7 @@ namespace SGDWithCocos.Shared.Layers
                                 }, 0);
 
                                 iconList2.Remove(mCloneCopy);
-                                //newItem.Item1.Scale = savedScale;
                                 storedList.Add(newItem);
-                                //storedList.Add(trueClone);
 
                                 return;
                             }
