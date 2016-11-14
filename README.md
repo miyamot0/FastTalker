@@ -19,7 +19,7 @@ Features include:
 
 ### Derivative Works (Media)
 Fast Talker uses licensed visual images in order to operate:
-* Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust 
+* Straight Street Symbols - CC-BY-SA 2.0. Copyright Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust 
 
 ### Referenced Works (Packages)
 Fast Talker uses a number of open source projects to work properly:
