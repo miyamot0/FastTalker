@@ -824,7 +824,7 @@ namespace SGDWithCocos.Shared.Pages
 
                 int width = nativeGameView.DesignResolution.Width;
                 int height = nativeGameView.DesignResolution.Height;
-
+                nativeGameView.Stats.Enabled = true;
                 // Show the start screen
                 nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
                 nativeGameView.RunWithScene(new GameStartScene(nativeGameView, width, height, this));

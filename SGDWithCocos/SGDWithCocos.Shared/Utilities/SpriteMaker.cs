@@ -379,6 +379,25 @@ namespace SGDWithCocos.Utilities
         }
 
         /// <summary>
+        /// Construct and return templated letter sprite
+        /// </summary>
+        /// <param name="letter">Sprite Tag reference</param>
+        /// <param name="positionX">x pos</param>
+        /// <param name="positionY">y pos</param>
+        /// <returns></returns>
+        public CCSprite MakeTitleIcon(CCSpriteFrame letter, float positionX, float positionY)
+        {
+            var parentSprite = new CCSprite(letter)
+            {
+                PositionX = positionX,
+                PositionY = positionY,
+                ContentSize = new CCSize(dimension, dimension)
+            };
+
+            return parentSprite;
+        }
+
+        /// <summary>
         /// Construct and return icon sprite with image from base64 string
         /// </summary>
         /// <param name="base64string">base64 string</param>

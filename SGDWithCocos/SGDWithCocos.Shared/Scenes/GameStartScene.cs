@@ -46,6 +46,8 @@ namespace SGDWithCocos.Scenes
         private CCLayer mainLayer;
         private CCControlButton buttonControl;
         private CCEventListenerTouchOneByOne mListener;
+        private CCLabel label;
+        private CCSpriteSheet spriteSheet;
 
         /// <summary>
         /// Scene constructor for game start
@@ -59,6 +61,8 @@ namespace SGDWithCocos.Scenes
             mGamePage = gamePage;
             mWidth = width;
             mHeight = height;
+
+            spriteSheet = new CCSpriteSheet("title.plist");
 
             CreateLayers();
 
@@ -74,7 +78,9 @@ namespace SGDWithCocos.Scenes
         {
             mainLayer = new StartLayer();
 
-            var blueBackground = new CCScale9Sprite("blueButton");
+            var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("blueButton"));
+            var blueBackground = new CCScale9Sprite(ccSpriteFrame);
+            
             blueBackground.AnchorPoint = CCPoint.AnchorMiddle;
             blueBackground.CapInsets = new CCRect(20, 20, 42, 42);
             blueBackground.ContentSize = new CCSize(mWidth, mHeight);
@@ -105,8 +111,9 @@ namespace SGDWithCocos.Scenes
         {
             var bounds = mainLayer.VisibleBoundsWorldspace;
             var center = bounds.Center;
-
-            var startGameButton = new CCScale9Sprite("redButton");
+            
+            var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("redButton"));
+            var startGameButton = new CCScale9Sprite(ccSpriteFrame);
             startGameButton.AnchorPoint = CCPoint.AnchorMiddle;
             startGameButton.CapInsets = new CCRect(20, 20, 42, 42);
             startGameButton.ContentSize = new CCSize((mWidth * 0.4f), (mHeight * 0.2f));
@@ -151,7 +158,8 @@ namespace SGDWithCocos.Scenes
 
                 var move = new CCMoveTo(1f, new CCPoint(mX, mY));
 
-                var mIcon = spriteMaker.MakeTitleIcon(mLetter, mWidth / 2f, mHeight / 2f);
+                var mSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains(mLetter));
+                var mIcon = spriteMaker.MakeTitleIcon(mSpriteFrame, mWidth / 2f, mHeight / 2f);
 
                 mIcon.Rotation = mRotation;
 
@@ -175,7 +183,8 @@ namespace SGDWithCocos.Scenes
 
             var widthClamp = (mWidth * 0.3f > 250f) ? 250 : mWidth * 0.3f;
 
-            var respectSprite = new CCSprite("respect_logo");
+            var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("respect_logo"));
+            var respectSprite = new CCSprite(ccSpriteFrame);
             var respectScale = widthClamp / respectSprite.ContentSize.Width;
             respectSprite.Scale = respectScale;
             respectSprite.PositionX = respectSprite.ScaledContentSize.Width / 2f + (mWidth * 0.02f);
@@ -183,7 +192,8 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(respectSprite);
 
-            var nuiSprite = new CCSprite("nuig_logo");
+            ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("nuig_logo"));
+            var nuiSprite = new CCSprite(ccSpriteFrame);
             var nuiScale = widthClamp / nuiSprite.ContentSize.Width;
             nuiSprite.Scale = nuiScale;
             nuiSprite.PositionX = mWidth - nuiSprite.ScaledContentSize.Width / 2f - (mWidth * 0.01f);
@@ -191,7 +201,7 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(nuiSprite);
 
-            var label = new CCLabel("\"Straight Street\" icons by Paxtoncrafts Charitable Trust, licensed CC-BY-SA 2.0 ", "Arial", 72, CCLabelFormat.SystemFont)
+            label = new CCLabel("Visual symbols from \"Mulberry Symbol Set\" Copyright 2008-2012 Garry Paxton (CC-BY-SA 2.0). http://straight-street.com", "Arial", 72, CCLabelFormat.SystemFont)
             {
                 Color = CCColor3B.White,
                 AnchorPoint = CCPoint.AnchorMiddle,
@@ -217,7 +227,14 @@ namespace SGDWithCocos.Scenes
         /// <returns></returns>
         bool OnTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
-            return true;
+            if (label.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -231,7 +248,7 @@ namespace SGDWithCocos.Scenes
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    Device.OpenUri(new Uri("http://straight-street.com/lic.php"));
+                    Device.OpenUri(new Uri("http://straight-street.com/"));
                 });
             }
         }
@@ -243,6 +260,8 @@ namespace SGDWithCocos.Scenes
         /// <param name="e"></param>
         private void PressedButton(object sender, EventArgs e)
         {
+            spriteSheet.Frames.Clear();
+
             GameView.Director.ReplaceScene(mGamePage.gameScene);
         }
     }
