@@ -1,24 +1,24 @@
 ﻿//----------------------------------------------------------------------------------------------
 // <copyright file="GameStartScene.cs" 
-// Copyright November 6, 2016 Shawn Gilroy
+// Copyright November 11, 2016 Shawn Gilroy
 //
-// This file is part of Cross Platform Communication App
+// This file is part of Fast Talker
 //
-// Cross Platform Communication App is free software: you can redistribute it and/or modify
+// Fast Talker is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, version 3.
 //
-// Cross Platform Communication App is distributed in the hope that it will be useful,
+// Fast Talker is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Cross Platform Communication App.  If not, see http://www.gnu.org/licenses/. 
+// along with Fast Talker.  If not, see http://www.gnu.org/licenses/. 
 // </copyright>
 //
 // <summary>
-// The Cross Platform Communication App is a tool to assist clinicans and researchers in the treatment of communication disorders.
+// The Fast Talker is a tool to assist clinicans and researchers in the treatment of communication disorders.
 // 
 // Email: shawn(dot)gilroy(at)temple.edu
 //
@@ -84,7 +84,6 @@ namespace SGDWithCocos.Scenes
             mainLayer.AddChild(blueBackground, 0);
 
             AddLayer(mainLayer);
-
         }
 
         /// <summary>
@@ -192,7 +191,7 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(nuiSprite);
 
-            var label = new CCLabel("\"Straight Sheet\" icons by Paxtoncrafts Charitable Trust, licensed CC-BY-SA 3.0 ", "Arial", 72, CCLabelFormat.SystemFont)
+            var label = new CCLabel("\"Straight Street\" icons by Paxtoncrafts Charitable Trust, licensed CC-BY-SA 2.0 ", "Arial", 72, CCLabelFormat.SystemFont)
             {
                 Color = CCColor3B.White,
                 AnchorPoint = CCPoint.AnchorMiddle,
@@ -210,11 +209,22 @@ namespace SGDWithCocos.Scenes
             mainLayer.AddChild(label);
         }
 
+        /// <summary>
+        /// Touch begin event, just to return true anyway
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
+        /// <returns></returns>
         bool OnTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
             return true;
         }
 
+        /// <summary>
+        /// Touch event, trigger license link for Straight-Sheet icons
+        /// </summary>
+        /// <param name="touch"></param>
+        /// <param name="touchEvent"></param>
         void OnTouchesEnded(CCTouch touch, CCEvent touchEvent)
         {
             if (touchEvent.CurrentTarget.Tag == SpriteTypes.LicenseTag)
