@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Interface for native file management w/ image resizing operations
+    /// </summary>
     public interface IResizer
     {
         void ResizeBitmaps(string photoPath, string newPhotoPath);

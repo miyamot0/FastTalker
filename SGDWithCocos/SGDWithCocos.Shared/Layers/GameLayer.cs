@@ -37,6 +37,8 @@ using SGDWithCocos.Tags;
 using SGDWithCocos.Utilities;
 using Newtonsoft.Json;
 using SGDWithCocos.Shared.Pages;
+using SGDWithCocos.Data;
+using System.IO;
 
 namespace SGDWithCocos.Shared.Layers
 {
@@ -69,6 +71,12 @@ namespace SGDWithCocos.Shared.Layers
 
         List<IconReference> iconList2;
         List<StoredIconReference> storedList;
+
+        // Information loaded from static JSON
+        StorageContainer storageInformation;
+
+        // Categories
+        List<string> mCategories;
 
         Random mRandom;
 
@@ -270,6 +278,7 @@ namespace SGDWithCocos.Shared.Layers
 
                 inEditMode = !inEditMode;
 
+                /*
                 foreach (var t in iconList2)
                 {
                     if (t.Sprite.Tag == SpriteTypes.IconTag || t.Sprite.Tag == SpriteTypes.FolderTag)
@@ -283,6 +292,7 @@ namespace SGDWithCocos.Shared.Layers
                         t.Sprite.RepeatForever(sequence);
                     }
                 }
+                */
             }
             else
             {
@@ -298,6 +308,7 @@ namespace SGDWithCocos.Shared.Layers
 
                 inEditMode = !inEditMode;
 
+                /*
                 foreach (var t in iconList2)
                 {
                     if (t.Sprite.Tag == SpriteTypes.IconTag || t.Sprite.Tag == SpriteTypes.FolderTag)
@@ -306,6 +317,7 @@ namespace SGDWithCocos.Shared.Layers
                         t.Sprite.Rotation = 0f;
                     }
                 }
+                */
             }
         }
 
@@ -342,7 +354,35 @@ namespace SGDWithCocos.Shared.Layers
             ScheduleOnce((dt) => {
                 // Loop into main game thread
 
-                if (base64 != "" && text != "")
+                if (extension == "Embedded")
+                {
+                    string assetName = base64;
+                    string contentName = "Stored/" + assetName;
+                    var sprite = new CCSprite(contentName);
+
+                    string location = DependencyService.Get<ISaveAndLoad>().GetDirectory(assetName);
+
+                    FileStream mFile = new FileStream(@location,
+                       FileMode.OpenOrCreate,
+                       FileAccess.ReadWrite,
+                       FileShare.None);
+
+                    sprite.Texture.SaveAsPng(mFile, (int)sprite.ContentSize.Width, (int)sprite.ContentSize.Height);
+                    mFile.Flush();
+                    mFile.Close();
+                    mFile.Dispose();
+
+                    byte[] imageArray = File.ReadAllBytes(location);
+                    string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+
+                    sprite.RemoveAllChildren();
+                    sprite.Cleanup();
+                    sprite.Dispose();
+
+                    // Loop back in
+                    CallBackIcon(base64ImageRepresentation, text, "png");
+                }
+                else if (base64 != "" && text != "")
                 {
                     // Introduce some jitter into the positioning of the icon
 
@@ -359,6 +399,7 @@ namespace SGDWithCocos.Shared.Layers
                     // Add child to field properly
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
 
+                    /*
                     var rotateRight = new CCRotateTo(0.3f, 8f);
                     var rotateLeft = new CCRotateTo(0.4f, -8f);
                     var rotateTDC = new CCRotateTo(0.3f, 0f);
@@ -366,6 +407,7 @@ namespace SGDWithCocos.Shared.Layers
                     var sequence = new CCSequence(rotateRight, rotateLeft, rotateTDC);
 
                     mIconRef.Sprite.RepeatForever(sequence);
+                    */
                 }
             }, 0);
         }
@@ -644,7 +686,14 @@ namespace SGDWithCocos.Shared.Layers
         {
             RemoveChildByTag(SpriteTypes.ColorLayerTag);
 
-            windowFrame = closeButton = null;
+            windowFrame.Cleanup();
+            windowFrame.Dispose();
+                windowFrame = null;
+
+            closeButton.Cleanup();
+            closeButton.Dispose();
+                closeButton = null;
+
             tempWindow = null;
         }
 
@@ -660,6 +709,132 @@ namespace SGDWithCocos.Shared.Layers
                     iconRef.Sprite.Color = White;
                 }
             }
+        }
+
+        /// <summary>
+        /// Show window with icons matching query
+        /// </summary>
+        /// <param name="mMatchingIcons"></param>
+        public void ShowStoredWindow(List<Storage> mMatchingIcons)
+        {
+            // If already modal mode, just return
+            if (isModal) return;
+
+            ScheduleOnce((dt) => {
+
+                var texture2 = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
+                texture2.BeginWithClear(CCColor4B.White);
+                texture2.End();
+                windowFrame = new CCSprite(texture2.Texture)
+                {
+                    PositionX = addFolderFrame.Position.X,
+                    PositionY = addFolderFrame.Position.Y,
+                    Tag = SpriteTypes.WindowTag
+                };
+                texture2.Dispose();
+
+                // Scale up to near-field size
+                var scaling = (spriteModelFactory.DynamicWidth * 0.1f) / windowFrame.ContentSize.Width;
+                windowFrame.ContentSize = new CCSize(windowFrame.ContentSize.Width * scaling, windowFrame.ContentSize.Height * scaling);
+
+                // Button to close window
+                closeButton = new CCSprite("IconClose");
+                closeButton.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.075f, windowFrame.ContentSize.Width * 0.075f);
+                closeButton.PositionX = windowFrame.ContentSize.Width - closeButton.ContentSize.Width / 2f - windowFrame.ContentSize.Width * 0.05f;
+                closeButton.PositionY = windowFrame.ContentSize.Height - closeButton.ContentSize.Height / 2f - windowFrame.ContentSize.Height * 0.05f;
+                closeButton.Tag = SpriteTypes.CloseWindowTag;
+
+                // Add listener to close button
+                AddEventListener(mListener.Copy(), closeButton);
+
+                // Add close window
+                windowFrame.AddChild(closeButton, 1001, SpriteTypes.CloseWindowTag);
+
+                // !important: lock for concurrency issues
+                lock (mMatchingIcons)
+                {
+                    for (var i = 0; i < mMatchingIcons.Count; i++)
+                    {
+                        // The referenced icon, as retrieved from the list
+                        var mStoredIconRef = mMatchingIcons[i];
+
+                        // The sprite from the reference
+                        var mSprite = new CCSprite("Stored/" + mStoredIconRef.Name);
+
+                        var parentSprite = new CCSprite("BlankFrame");
+
+                        parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
+
+                        var pSpacing = parentSprite.ContentSize.Width * 0.15f;
+                        var xSpacing = parentSprite.ContentSize.Width * ((i % 3)) + pSpacing * ((i % 3) + 1);
+                        var ySpacing = parentSprite.ContentSize.Height * ((i / 3)) + pSpacing * ((i / 3) + 1);
+
+                        parentSprite.PositionX = (parentSprite.ContentSize.Width * 0.5f) + xSpacing;
+                        parentSprite.PositionY = windowFrame.ContentSize.Height - (parentSprite.ContentSize.Height * 0.5f) - ySpacing;
+
+                        parentSprite.Tag = SpriteTypes.IconTag;
+
+                        var subIconFrame = new CCSprite("Stored/" + mStoredIconRef.Name)
+                        {
+                            AnchorPoint = CCPoint.AnchorMiddle,
+                            ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.75f, parentSprite.ContentSize.Height * 0.75f),
+                            PositionX = parentSprite.ContentSize.Width * 0.5f,
+                            PositionY = parentSprite.ContentSize.Height * 0.5f + parentSprite.ContentSize.Height * 0.075f,
+                            Tag = SpriteTypes.ImageTag
+                        };
+
+                        var label = new CCLabel(mStoredIconRef.Name, "Arial", 22, CCLabelFormat.SystemFont)
+                        {
+                            Scale = 0.25f * scaling,
+                            AnchorPoint = CCPoint.AnchorMiddle,
+                            HorizontalAlignment = CCTextAlignment.Center,
+                            VerticalAlignment = CCVerticalTextAlignment.Center,
+                            PositionX = parentSprite.ContentSize.Width * 0.5f,
+                            PositionY = parentSprite.ContentSize.Height * 0.075f,
+                            Color = CCColor3B.Black,
+                            Visible = true,
+                            Tag = SpriteTypes.ContentTag
+                        };
+
+                        parentSprite.AddChild(subIconFrame);
+                        AddEventListener(mListener.Copy(), parentSprite);
+
+                        parentSprite.Visible = false;
+
+                        windowFrame.AddChild(parentSprite, 1001, SpriteTypes.EmbeddedIconTag);
+                        parentSprite.AddChild(label);
+
+                    }
+                }
+
+                AddEventListener(mListener.Copy(), windowFrame);
+                tempWindow = new IconReference(windowFrame, "Window", 1f, true);
+                iconList2.Add(tempWindow);
+                AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
+
+                // Moves window to center
+                var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
+
+                var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
+                var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
+
+                // Scale to center, 90% of screen or so
+                var scaleAction = new CCScaleTo(0.2f, scale);
+
+                // Blur background, to focus the listener
+                var maskBackground = new CCCallFunc(MaskBackground);
+
+                // Reveal the icons after scaling
+                var revealIcons = new CCCallFunc(ShowIconsInModal);
+
+                // Hacky workaround to give firm borders to window
+                var drawBorders = new CCCallFunc(AddBorders);
+
+                // Execute actions
+                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, drawBorders, revealIcons);
+
+                isModal = true;
+            }, 0);
         }
 
         /// <summary>
@@ -827,7 +1002,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void ShowIconsInModal()
         {
-            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag).ToList();
+            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
 
             for (var i=0; i<mIcons.Count; i++)
             {
@@ -839,16 +1014,20 @@ namespace SGDWithCocos.Shared.Layers
         }
 
         /// <summary>
-        /// Hide icons in transition
+        /// Clean the icons out of modal thoroughly, as there are many
         /// </summary>
         public void ClearIconsInModal()
         {
-            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag).ToList();
+            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
 
             for (var i = 0; i < mIcons.Count; i++)
             {
                 var fade = new CCFadeOut((mIcons.Count / 20f) - i / 20f);
-                mIcons[i].AddActions(false, fade);
+                var clean = new CCCallFuncN(node => node.RemoveFromParent());
+                var unlisten = new CCCallFuncN(node => node.RemoveAllListeners());
+                var cleanup = new CCCallFuncN(node => node.Cleanup());
+                var dispose = new CCCallFuncN(node => node.Dispose());
+                mIcons[i].AddActions(false, fade, unlisten, clean, cleanup, dispose);
             }
         }
 
@@ -964,6 +1143,16 @@ namespace SGDWithCocos.Shared.Layers
                                     storedList.Remove(mStoredRef);
                                 }
                             }
+
+                            isModal = false;
+
+                            ClearWindow();
+
+                            return true;
+                        }
+                        else if (mIcon.Tag == SpriteTypes.EmbeddedIconTag && mIcon.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                        {
+                            GamePageParent.NameEmbeddedIcon(mIcon);
 
                             isModal = false;
 
@@ -1318,7 +1507,7 @@ namespace SGDWithCocos.Shared.Layers
                 }
                 else if (touchType == Tags.Tag.Add && inEditMode)
                 {
-                    GamePageParent.CallImagePicker();
+                    GamePageParent.CallActionSheetChoice();
                 }
                 else if (touchType == Tags.Tag.TakePhoto && inEditMode)
                 {
@@ -1461,9 +1650,14 @@ namespace SGDWithCocos.Shared.Layers
                 }
                 else if (touchType == Tags.Tag.Window)
                 {
-                    var deltaPos = touch.Delta.Y;
+                    var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
 
-                    var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag).ToList();
+                    if (mIcons.Count < 9)
+                    {
+                        return;
+                    }
+
+                    var deltaPos = touch.Delta.Y;
 
                     var highestHeight = mIcons
                         .Aggregate((agg, next) =>
@@ -1479,11 +1673,7 @@ namespace SGDWithCocos.Shared.Layers
 
                     var clampLow = highestHeight.ContentSize.Height / 2f + padding;
 
-                    if (mIcons.Count < 9)
-                    {
-                        return;
-                    }
-                    else if (lowestHeight.PositionY + deltaPos >= clampLow)
+                    if (lowestHeight.PositionY + deltaPos >= clampLow)
                     {
                         return;
                     }
@@ -1495,7 +1685,7 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         for (var i = 0; i < mIcons.Count; i++)
                         {
-                            if (mIcons[i].Tag == SpriteTypes.IconTag)
+                            if (mIcons[i].Tag == SpriteTypes.IconTag || mIcons[i].Tag == SpriteTypes.EmbeddedIconTag)
                             {
                                 mIcons[i].PositionY = mIcons[i].PositionY + deltaPos;
                             }
@@ -1567,6 +1757,38 @@ namespace SGDWithCocos.Shared.Layers
                     }
                 }
             }            
+        }
+
+        /// <summary>
+        /// Load JSON data into memory, for parsing later.  Categories derived at start.
+        /// </summary>
+        public void LoadJsonContent()
+        {
+            string mJson = StoredJson.LoadJson();
+            storageInformation = JsonConvert.DeserializeObject<StorageContainer>(mJson);
+
+            mCategories = storageInformation.StoredIcons
+                .SelectMany(m => m.Tags)
+                .Distinct()
+                .ToList();
+        }
+
+        /// <summary>
+        /// Access categories
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetCategories()
+        {
+            return mCategories.Where(j => j.Trim() != "").OrderBy(j => j).ToArray();
+        }
+
+        /// <summary>
+        /// Access methods for UI thread
+        /// </summary>
+        /// <returns></returns>
+        public StorageContainer GetStoredIcons()
+        {
+            return storageInformation;
         }
 
         /// <summary>

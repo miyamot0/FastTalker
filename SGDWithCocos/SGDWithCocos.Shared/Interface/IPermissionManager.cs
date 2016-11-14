@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Interface for native permissions management
+    /// </summary>
     public interface IPermissionManager
     {
         void CheckPhotoPermission();

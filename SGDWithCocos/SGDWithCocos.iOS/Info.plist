@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDisplayName</key>
-	<string>CPCA</string>
+	<string>FastTalker</string>
 	<key>CFBundleIdentifier</key>
 	<string>SGDWithCocos.iOS</string>
 	<key>CFBundleShortVersionString</key>

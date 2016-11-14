@@ -15,6 +15,9 @@ using SGDWithCocos.Views;
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Interface for native pop-up dialogs
+    /// </summary>
     public interface PopUpWindowInterface
     {
         void ShowPopup(PopUpWindow reference);

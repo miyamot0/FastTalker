@@ -1,4 +1,11 @@
-﻿namespace CocosSharp
+﻿/*
+ * CocosSharp is licensed under the MIT license terms, in a similar spirit to cocos2d for Objective-C and Cocos-2D with C++.
+ * 
+ * https://github.com/mono/CocosSharp
+ *  
+ */
+
+namespace CocosSharp
 {
     public class CCScale9SpriteFile : CCScale9Sprite
     {

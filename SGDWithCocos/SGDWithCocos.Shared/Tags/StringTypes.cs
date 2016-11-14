@@ -42,5 +42,8 @@ namespace SGDWithCocos.Tags
         public static string ChangeTextSizeUp = "Scale Label Up";
         public static string ChangeTextSizeDefault = "Scale Label to Default";
         public static string ChangeTextSizeDown = "Scale Label Down";
+
+        public static string LocalImage = "Local";
+        public static string DownloadedImage = "Downloaded";
     }
 }

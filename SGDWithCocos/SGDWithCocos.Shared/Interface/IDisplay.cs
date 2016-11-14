@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Interface for native display metrics
+    /// </summary>
     public interface IDisplay
     {
         int Height { get; }

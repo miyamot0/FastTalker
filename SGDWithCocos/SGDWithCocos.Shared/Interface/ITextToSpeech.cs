@@ -12,6 +12,9 @@
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Native interace to TTS services on device
+    /// </summary>
     public interface ITextToSpeech
     {
         void Speak(string text);

@@ -13,9 +13,13 @@
  
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Native interface to saving/loading to device
+    /// </summary>
     public interface ISaveAndLoad
     {
         void SaveJSON(string boardName, string text);
         string LoadJSON(string boardName);
+        string GetDirectory(string assetName);
     }
 }

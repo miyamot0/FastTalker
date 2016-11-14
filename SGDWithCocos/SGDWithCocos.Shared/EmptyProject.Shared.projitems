@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\StoredJson.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlUtils.cs" />
@@ -26,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Layers\StartLayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IconReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\FolderModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Storage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StoredIconModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IconModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IconStorageObject.cs" />
