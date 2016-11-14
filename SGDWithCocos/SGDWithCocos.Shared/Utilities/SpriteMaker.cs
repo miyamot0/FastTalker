@@ -77,9 +77,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return sentence frame sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeSentenceFrame()
+        public CCSprite MakeSentenceFrame(CCSpriteFrame frame)
         {
-            var sentenceFrame = new CCSprite("frameWhite");
+            var sentenceFrame = new CCSprite(frame);
             sentenceFrame.ContentSize = new CCSize(DynamicWidth * sentenceFrameWidth - padding, DynamicHeight * sentenceFrameHeight);
             sentenceFrame.PositionX = 0 + (sentenceFrame.ContentSize.Width / 2) + padding;
             sentenceFrame.PositionY = DynamicHeight - (sentenceFrame.ContentSize.Height / 2) - padding;
@@ -91,9 +91,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return speaker icon sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeSpeakerFrame()
+        public CCSprite MakeSpeakerFrame(CCSpriteFrame frame)
         {
-            var speakerFrame = new CCSprite("Speaker_Icon");
+            var speakerFrame = new CCSprite(frame);
 
             var scaling = (DynamicHeight * sentenceFrameHeight) / speakerFrame.ContentSize.Height;
             var xPos = (DynamicWidth - (DynamicWidth * sentenceFrameWidth - padding)) / 2;
@@ -109,9 +109,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return "Add Icon" sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeAddButton()
+        public CCSprite MakeAddButton(CCSpriteFrame frame, CCSpriteFrame backing)
         {
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 Tag = SpriteTypes.AddTag
             };
@@ -122,7 +122,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.PositionX = DynamicWidth - (parentSprite.ContentSize.Width / 2) - padding;
             parentSprite.PositionY = (parentSprite.ContentSize.Height / 2) + padding;
 
-            var subIconFrame = new CCSprite("AddNew")
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.5f, parentSprite.ContentSize.Height * 0.5f)
@@ -152,9 +152,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return "Add Folder" sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeAddFolderButton()
+        public CCSprite MakeAddFolderButton(CCSpriteFrame frame, CCSpriteFrame backing)
         {
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 Tag = SpriteTypes.FolderTag
             };
@@ -164,7 +164,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.PositionX = DynamicWidth - (parentSprite.ContentSize.Width / 2) - padding;
             parentSprite.PositionY = parentSprite.ContentSize.Height * 2 + (parentSprite.ContentSize.Height / 2) + padding * 2 + margin;
 
-            var subIconFrame = new CCSprite("FolderClosed")
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.5f, parentSprite.ContentSize.Height * 0.5f)
@@ -194,9 +194,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return "Remove Icon" sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeRemoveButton()
+        public CCSprite MakeRemoveButton(CCSpriteFrame frame, CCSpriteFrame backing)
         {
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 Tag = SpriteTypes.RemoveTag
             };
@@ -206,7 +206,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.PositionX = (parentSprite.ContentSize.Width / 2) + padding;
             parentSprite.PositionY = (parentSprite.ContentSize.Height / 2) + padding;
 
-            var subIconFrame = new CCSprite("Trash")
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.5f, parentSprite.ContentSize.Height * 0.5f)
@@ -236,9 +236,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return "Take Photo" sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite TakePhotoButton()
+        public CCSprite TakePhotoButton(CCSpriteFrame frame, CCSpriteFrame backing)
         {
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 Tag = SpriteTypes.AddTag
             };
@@ -249,7 +249,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.PositionX = DynamicWidth - (parentSprite.ContentSize.Width / 2) - padding;
             parentSprite.PositionY = parentSprite.ContentSize.Height + (parentSprite.ContentSize.Height / 2) + padding + margin;
 
-            var subIconFrame = new CCSprite("CameraIcon")
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.5f, parentSprite.ContentSize.Height * 0.5f),
@@ -279,9 +279,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return "Single" frame sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeSingleButton()
+        public CCSprite MakeSingleButton(CCSpriteFrame frame, CCSpriteFrame backing)
         {
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 Tag = SpriteTypes.AddTag
             };
@@ -291,7 +291,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.PositionX = (parentSprite.ContentSize.Width / 2) + padding;
             parentSprite.PositionY = parentSprite.ContentSize.Height * 2 + (parentSprite.ContentSize.Height / 2) + padding * 2 + margin;
 
-            var subIconFrame = new CCSprite("Single")
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.5f, parentSprite.ContentSize.Height * 0.5f)
@@ -321,9 +321,9 @@ namespace SGDWithCocos.Utilities
         /// Construct and return "Multi" frame sprite
         /// </summary>
         /// <returns></returns>
-        public CCSprite MakeMultiButton()
+        public CCSprite MakeMultiButton(CCSpriteFrame frame, CCSpriteFrame backing)
         {
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 Tag = SpriteTypes.AddTag
             };
@@ -333,7 +333,7 @@ namespace SGDWithCocos.Utilities
             parentSprite.PositionX = (parentSprite.ContentSize.Width / 2) + padding;
             parentSprite.PositionY = parentSprite.ContentSize.Height + (parentSprite.ContentSize.Height / 2) + padding + margin;
 
-            var subIconFrame = new CCSprite("Frame")
+            var subIconFrame = new CCSprite(frame)
             {
                 AnchorPoint = CCPoint.AnchorMiddle,
                 ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.5f, parentSprite.ContentSize.Height * 0.5f)
@@ -355,25 +355,6 @@ namespace SGDWithCocos.Utilities
 
             parentSprite.AddChild(subIconFrame);
             parentSprite.AddChild(label);
-
-            return parentSprite;
-        }
-
-        /// <summary>
-        /// Construct and return templated letter sprite
-        /// </summary>
-        /// <param name="letter">Sprite Tag reference</param>
-        /// <param name="positionX">x pos</param>
-        /// <param name="positionY">y pos</param>
-        /// <returns></returns>
-        public CCSprite MakeTitleIcon(string letter, float positionX, float positionY)
-        {
-            var parentSprite = new CCSprite(letter)
-            {
-                PositionX = positionX,
-                PositionY = positionY,
-                ContentSize = new CCSize(dimension, dimension)
-            };
 
             return parentSprite;
         }
@@ -408,11 +389,11 @@ namespace SGDWithCocos.Utilities
         /// <param name="textScale">text set</param>
         /// <param name="textVisible">text visible?</param>
         /// <returns></returns>
-        public CCSprite MakeIconBase64(string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        public CCSprite MakeIconBase64(CCSpriteFrame backing, string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             scale = (scale == -1) ? 1 : scale;
 
-            var parentSprite = new CCSprite("BlankFrame")
+            var parentSprite = new CCSprite(backing)
             {
                 PositionX = positionX,
                 PositionY = positionY,

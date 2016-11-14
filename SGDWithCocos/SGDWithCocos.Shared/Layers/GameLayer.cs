@@ -97,6 +97,10 @@ namespace SGDWithCocos.Shared.Layers
         float totalDuration = 0f,
               saveInterval = 60f;
 
+        CCSpriteFrame backingSpriteFrame = null;
+
+        CCSpriteSheet staticSpriteSheet;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -112,6 +116,8 @@ namespace SGDWithCocos.Shared.Layers
             
             spriteModelFactory = new SpriteMaker(_dynamicWidth, _dynamicHeight);
             spriteModelFactory.padding = 10;
+
+            staticSpriteSheet = new CCSpriteSheet("static.plist");
 
             MakeListener();
 
@@ -139,41 +145,55 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void MakeStaticSprites()
         {
-            sentenceFrame = spriteModelFactory.MakeSentenceFrame();
+            if (backingSpriteFrame == null)
+            {
+                backingSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Blank"));
+            }
+
+            sentenceFrame = spriteModelFactory.MakeSentenceFrame(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("frameWhite")));
                 AddChild(sentenceFrame, 0, SpriteTypes.FrameTag);
 
-            speakerFrame = spriteModelFactory.MakeSpeakerFrame();
+            speakerFrame = spriteModelFactory.MakeSpeakerFrame(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Speaker_Icon")));
                 AddEventListener(mListener, speakerFrame);
                 AddChild(speakerFrame, 0, SpriteTypes.SpeakerTag);
 
-            addFrame = spriteModelFactory.MakeAddButton();
+            var addSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("AddNew"));
+            addFrame = spriteModelFactory.MakeAddButton(addSpriteFrame, backingSpriteFrame);
             addFrame.Visible = false;
                 AddEventListener(mListener.Copy(), addFrame);
                 AddChild(addFrame, 0, SpriteTypes.AddTag);
 
-            takePhotoFrame = spriteModelFactory.TakePhotoButton();
+            var takePhotoSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("CameraIcon"));
+            takePhotoFrame = spriteModelFactory.TakePhotoButton(takePhotoSpriteFrame, backingSpriteFrame);
             takePhotoFrame.Visible = false;
                 AddEventListener(mListener.Copy(), takePhotoFrame);
                 AddChild(takePhotoFrame, 0, SpriteTypes.TakePhotoTag);
 
-            addFolderFrame = spriteModelFactory.MakeAddFolderButton();
+            var addFolderSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("FolderClosed"));
+            addFolderFrame = spriteModelFactory.MakeAddFolderButton(addFolderSpriteFrame, backingSpriteFrame);
             addFolderFrame.Visible = false;
                 AddEventListener(mListener.Copy(), addFolderFrame);
                 AddChild(addFolderFrame, 0, SpriteTypes.FolderTag);
 
-            singleFrame = spriteModelFactory.MakeSingleButton();
+            var singleSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Single"));
+            singleFrame = spriteModelFactory.MakeSingleButton(singleSpriteFrame, backingSpriteFrame);
             singleFrame.Visible = false;
                 AddEventListener(mListener.Copy(), singleFrame);
                 AddChild(singleFrame, 0, SpriteTypes.SingleModeTag);
 
-            multiFrame = spriteModelFactory.MakeMultiButton();
+            var multiSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Frame"));
+            multiFrame = spriteModelFactory.MakeMultiButton(multiSpriteFrame, backingSpriteFrame);
             multiFrame.Visible = false;
                 AddEventListener(mListener.Copy(), multiFrame);
                 AddChild(multiFrame, 0, SpriteTypes.MultiModeTag);
 
-            deleteFrame = spriteModelFactory.MakeRemoveButton();
+            var removeSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Trash"));
+            deleteFrame = spriteModelFactory.MakeRemoveButton(removeSpriteFrame, backingSpriteFrame);
             deleteFrame.Visible = false;
                 AddChild(deleteFrame, 0, SpriteTypes.RemoveTag);
+
+            staticSpriteSheet.Frames.Clear();
+            staticSpriteSheet = null;
         }
 
         /// <summary>
@@ -193,7 +213,7 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         // if IconTag matches, add to field at saved location
 
-                        var newIcon = spriteModelFactory.MakeIconBase64(icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
 
                         iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
                         AddEventListener(mListener.Copy(), newIcon);
@@ -217,7 +237,7 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     // add stored icons to the saved/cached field icons
 
-                    var newIcon = spriteModelFactory.MakeIconBase64(icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                    var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                     var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
 
                     storedList.Add(storedIconRef);
@@ -389,7 +409,7 @@ namespace SGDWithCocos.Shared.Layers
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                    var newIcons = spriteModelFactory.MakeIconBase64(base64, text, xLocation, yLocation, 1f, 1f, true);
+                    var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
                     var mIconRef = new IconReference(newIcons, base64, 1f, true);
                     iconList2.Add(mIconRef);
 
@@ -1124,7 +1144,7 @@ namespace SGDWithCocos.Shared.Layers
                                         var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                                         var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                                        var newIcon = spriteModelFactory.MakeIconBase64(storedRef.Base64, mLoopContent.Text,
+                                        var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, storedRef.Base64, mLoopContent.Text,
                                              xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
 
                                         var mIconRef = new IconReference(newIcon, storedRef.Base64, 1f, true);
