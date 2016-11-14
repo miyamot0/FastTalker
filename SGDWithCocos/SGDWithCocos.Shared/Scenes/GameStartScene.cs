@@ -221,7 +221,7 @@ namespace SGDWithCocos.Scenes
         }
 
         /// <summary>
-        /// Touch event, trigger license link for Straight-Sheet icons
+        /// Touch event, trigger license link for Straight-Street icons
         /// </summary>
         /// <param name="touch"></param>
         /// <param name="touchEvent"></param>
