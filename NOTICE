@@ -5,15 +5,16 @@ This product includes software and content developed by others.
 
 ========================================================================
 
-This project includes derivative works based on licensed content from http://straight-street.com, with modifications.  Straight-Street Symbols is licensed under a Creative Commons Attribution-ShareAlike 2.0 Unported License (http://straight-street.com/lic.php).  You should have received a copy of the license along with this work.  If not, see <https://creativecommons.org/licenses/by/2.0/legalcode>.
+This project includes derivative works based on licensed content from http://straight-street.com, with modifications.  Straight-Street Symbols is licensed under a Creative Commons Attribution-Share Alike License License (http://straight-street.com/lic.php).  You should have received a copy of the license along with this work.  If not, see <http://creativecommons.org/licenses/by-sa/2.0/uk/>.
 
 The included images were resized and encoded into a format necessary for use in the FastTalker program and for Xamarin.Forms Cocossharp (converted to iOS-compatible PNG and resized to 512x512, no visual modifications to images).  All resultant icons are re-distributed under a reciprocated CC-BY-SA 2.0 license.  Modifications and derivative works are permitted so long as the terms of the license persist on derivative works.
 
-Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust
+The Mulberry Symbol set Copyright 2008-2012 Garry Paxton
 
   * LICENSE:
-    * LICENSE-StraightStreet (CC-BY-SA 2.0)
+    * LICENSE-Mulberry-Symbols (CC-BY-SA 2.0)
   * HOMEPAGE:
+    * https://github.com/straight-street/mulberry-symbols
     * http://straight-street.com/
   * DERIVATIVE WORKS:
 	* /SGDWithCocos.iOS/Content/Stored/*
@@ -21,7 +22,7 @@ Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust
 
 --------------------------------------------------------------------------------
 
-This project depends upon Cocossharp, which has been developed by the Cocos2D-XNA Team and Xamarin Inc.
+This project utilizes Cocossharp, which has been developed by the Cocos2D-XNA Team and Xamarin Inc.
 
 Copyright (c) The Cocos2D-XNA Team
 Copyright 2013, 2014 Xamarin Inc.
@@ -33,7 +34,7 @@ Copyright 2013, 2014 Xamarin Inc.
 
 --------------------------------------------------------------------------------
 
-This project depends upon Newtonsoft.Json, which has been developed by James Newton-King.
+This project utilizes Newtonsoft.Json, which has been developed by James Newton-King.
 
 Copyright (c) 2007 James Newton-King.
 
@@ -44,7 +45,7 @@ Copyright (c) 2007 James Newton-King.
 	
 --------------------------------------------------------------------------------
 
-This project depends upon Xamarin Forms, which has been developed by Xamarin Inc and .NET Foundation Contributors.
+This project utilizes Xamarin Forms, which has been developed by Xamarin Inc and .NET Foundation Contributors.
 
 Copyright (c) .NET Foundation Contributors
 
@@ -55,7 +56,7 @@ Copyright (c) .NET Foundation Contributors
 	
 --------------------------------------------------------------------------------
 
-This project depends upon Xamarin Plugins, which has been developed by James Montemagno / Refractored LLC.
+This project utilizes Xamarin Plugins, which has been developed by James Montemagno / Refractored LLC.
 
 Copyright (c) 2016 James Montemagno / Refractored LLC
 
@@ -63,10 +64,3 @@ Copyright (c) 2016 James Montemagno / Refractored LLC
     * /LICENSE-Xamarin.Plugins (MIT)
   * HOMEPAGE:
     * https://github.com/xamarin/plugins
-	
-
-	
-	
-
-
-	
