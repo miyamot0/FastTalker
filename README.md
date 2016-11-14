@@ -43,7 +43,7 @@ All downloads, if/when posted, will be hosted at [Small N Stats](http://www.smal
 This is currently under active development and evaluation.
 
 ### Todos
-* Additional, embedded visuals samples
+* ~~Additional, embedded visuals samples~~
 * Additional within-stimulus modifications
 * Support for embedded data collection
 
