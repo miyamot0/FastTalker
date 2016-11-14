@@ -11,10 +11,15 @@ Features include:
   - Save boards automatically, all locally managed
 
 ### Version
-1.0.0.0
+1.1.0.0
 
 ### Changelog
+ * 1.1.0.0 - Straight-Street images and embedded visual fixes
  * 1.0.0.0 - Initial push
+
+### Derivative Works (Media)
+Fast Talker uses licensed visual images in order to operate:
+* Straight-Street Ltd (c) 2006-2015 by Paxtoncrafts Charitable Trust 
 
 ### Referenced Works (Packages)
 Fast Talker uses a number of open source projects to work properly:
