@@ -38,5 +38,12 @@ namespace SGDWithCocos.Data
         {
             return Data;
         }
+
+        private static string IconTypes = "['AAC','abstract_a_l','abstract_l_w','action','adjective_a_p','adjective_p_z','adverb','aid','alcohol','alphabet_a_o','alphabet_p_z','amount','animal_a_c','animal_c_d','animal_d_h','animal_h_p','animal_p_s','animal_s_z','ask','astronomy','beef','bird','body','breakfast','cake','calendar','celebration_a_c','celebration_c_f','celebration_f_p','celebration_p_s','celebration_s_y','Christian_a_d','Christian_e_y','class_a_g','class_g_n','class_p_w','climate','clinic','clothes_b_f','clothes_f_f_1','clothes_f_m','clothes_n_z','communication','computer','cooking_a_f','cooking_g_s','cooking_s_w','country_a_c','country_c_i','country_i_p','country_p_y','dairy','dessert','diary_a_m','diary_m_z','direction','DIY','drink','Easter','electric','emotion','equipment','expression','face','family','farm','features','feeding','feeling','finance','fish','flag_a_c','flag_c_g','flag_h_m','flag_n_s','flag_s_y','food_a_h','food_m_y','footwear','forecast','fraction','fruit','games','gardening','grooming_a_h','grooming_h_r','grooming_r_w','halloween','hat','health','holiday','home_a_h','home_h_z','hospital','house_a_h','house_h_z','ingredient','insect','instrument','jewellery','job_a_c','job_c_g','job_g_p','job_p_s','job_s_w','juice','kitchen_a_p','kitchen_p_z','lamb','letter_a_o','letter_p_z','mammal','maths','meal','meat','medical','money','music','office','people_a_c','people_c_d','people_e_m','people_m_p','people_q_s','people_s_w','percent','pet','planets','plant','play','playground','pork','position_a_m','position_n_w','profession_a_c','profession_c_i','profession_m_p','profession_p_w','query','question','relationship','relatives','reptile','salad','school_a_h','school_i_p','school_p_w','season','shape','shellfish','size','sleepwear','snack','soccer','sport','stationery','sweet','swimwear','team','time','tools','toys','transport_a_l','transport_m_z','travel_a_m','travel_m_z','underwear','uniform','utensil','vegetable','vehicle','weather','wild_a_l','wild_m_z','woman','workshop','work_a_c','work_c_i','work_i_p','work_p_w','zoo']";
+
+        public static string LoadIconTypes()
+        {
+            return IconTypes;
+        }
     }
 }

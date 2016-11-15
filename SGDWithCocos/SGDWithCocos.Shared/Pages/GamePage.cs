@@ -278,39 +278,13 @@ namespace SGDWithCocos.Shared.Pages
             try
             {
                 var result = await SelectCategory();
-                var matches = await GetMatchingTasks(result);
-                mLayer.ShowStoredWindow(matches);
+                //var matches = await GetMatchingTasks(result);
+                mLayer.ShowStoredWindow(result);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
-        }
-
-        /// <summary>
-        /// Linq-based query for icon category action-sheet 
-        /// </summary>
-        /// <param name="result"></param>
-        /// <returns></returns>
-        public Task<List<Storage>> GetMatchingTasks(string result)
-        {
-            TaskCompletionSource<List<Storage>> tcs = new TaskCompletionSource<List<Storage>>();
-
-            List<string> listTag = new List<string>() { result };
-
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                StorageContainer copiedList = mLayer.GetStoredIcons();
-
-                List<Storage> mMatchingIcons = copiedList
-                .StoredIcons
-                .Where(l => l.Tags.Intersect(listTag).Any())
-                .ToList();
-
-                tcs.SetResult(mMatchingIcons);
-            });
-
-            return tcs.Task;
         }
 
         /// <summary>
@@ -342,6 +316,27 @@ namespace SGDWithCocos.Shared.Pages
 
                     if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0 && mContent != null)
                     {
+                        string location = DependencyService.Get<ISaveAndLoad>().GetDirectory(closedArgs.Text.Trim());
+
+                        FileStream mFile = new FileStream(@location,
+                            FileMode.OpenOrCreate,
+                            FileAccess.ReadWrite,
+                            FileShare.None);
+
+                        sprite.Texture.SaveAsPng(mFile, (int)sprite.ContentSize.Width, (int)sprite.ContentSize.Height);
+                        mFile.Flush();
+                        mFile.Close();
+                        mFile.Dispose();
+
+                        byte[] imageArray = File.ReadAllBytes(location);
+                        string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+
+                        sprite.RemoveAllChildren();
+                        sprite.Cleanup();
+                        sprite.Dispose();
+
+                        File.Delete(@location);
+
                         tcs.SetResult(new string[] { mContent.Text, closedArgs.Text.Trim(), "Embedded" });
                     }
                     else
@@ -820,13 +815,11 @@ namespace SGDWithCocos.Shared.Pages
 
             if (nativeGameView != null)
             {
-                var contentSearchPaths = new List<string>() { "Fonts", "Stored" };
-
                 int width = nativeGameView.DesignResolution.Width;
                 int height = nativeGameView.DesignResolution.Height;
-                nativeGameView.Stats.Enabled = true;
+                nativeGameView.Stats.Enabled = false;
+
                 // Show the start screen
-                nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
                 nativeGameView.RunWithScene(new GameStartScene(nativeGameView, width, height, this));
 
                 // Begin building the icon-based scene
@@ -851,7 +844,6 @@ namespace SGDWithCocos.Shared.Pages
                 try
                 {
                     // Attempt to deserialize icons
-
                     jsonObject = JsonConvert.DeserializeObject<IconStorageObject>(json);
                 }
                 catch
