@@ -337,7 +337,7 @@ namespace SGDWithCocos.Shared.Pages
 
                         File.Delete(@location);
 
-                        tcs.SetResult(new string[] { mContent.Text, closedArgs.Text.Trim(), "Embedded" });
+                        tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text.Trim(), "png" });
                     }
                     else
                     {
