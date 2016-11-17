@@ -787,7 +787,7 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            MaskBackground();
+            //MaskBackground();
 
             ScheduleOnce((dt) => {
 
@@ -889,13 +889,13 @@ namespace SGDWithCocos.Shared.Layers
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
                 // Blur background, to focus the listener
-                var maskBackground = new CCCallFunc(MaskBackground);
+                //var maskBackground = new CCCallFunc(MaskBackground);
 
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, revealIcons);
+                windowFrame.AddActions(false, moveAction, scaleAction, revealIcons);
 
                 isModal = true;
             }, 0);
@@ -910,6 +910,8 @@ namespace SGDWithCocos.Shared.Layers
         {
             // If already modal mode, just return
             if (isModal) return;
+
+            MaskBackground();
 
             var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
             texture.BeginWithClear(CCColor4B.White);
@@ -1028,13 +1030,13 @@ namespace SGDWithCocos.Shared.Layers
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
                 // Blur background, to focus the listener
-                var maskBackground = new CCCallFunc(MaskBackground);
+                //var maskBackground = new CCCallFunc(MaskBackground);
 
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, revealIcons);
+                windowFrame.AddActions(false, moveAction, scaleAction, revealIcons);
 
                 isModal = true;
             }, 0);
