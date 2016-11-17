@@ -1075,20 +1075,27 @@ namespace SGDWithCocos.Shared.Layers
         /// <returns></returns>
         bool OnTouchBegan(CCTouch touch, CCEvent touchEvent)
         {
+            CurrentSpriteTouched = null;
+            touchType = Tags.Tag.None;
+
+            startTime = DateTime.Now;
+
             CCSprite caller = touchEvent.CurrentTarget as CCSprite;
+
+            #region Pull selected sprite to forefront, for clarity
 
             if (caller.Tag == SpriteTypes.IconTag)
             {
                 ReorderChild(caller, 999);
             }
 
-            CurrentSpriteTouched = null;
-            touchType = Tags.Tag.None;
+            #endregion
 
-            startTime = DateTime.Now;
+            #region Modal Condition, for Touch
 
             if (windowFrame != null)
             {
+                // Window tagged for touch
                 if (caller.Tag == SpriteTypes.WindowTag && windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                 {
                     CurrentSpriteTouched = windowFrame;
@@ -1096,35 +1103,36 @@ namespace SGDWithCocos.Shared.Layers
 
                     return true;
                 }
+                // Point is within the window, but hit something else first
                 else if (windowFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                 {
+                    // If it was the close button, tag as such first
                     if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                     {
                         closeButton.Opacity = 100;
 
                         touchType = Tags.Tag.CloseButton;
                         CurrentSpriteTouched = closeButton;
-                        /*
-                        isModal = false;
-
-                        ClearIconsInModal();
-
-                        RemoveAllChildrenByTag(windowFrame.Tag, true);
-
-                        windowFrame = null;
-                        closeButton = null;
-                        */
 
                         return true;
                     }
 
                     var mIcons = windowFrame.Children;
 
+                    // Loop through children, tag as such if in the touch region
                     foreach (var mIcon in mIcons)
                     {
+
+                        // TODO Move to End
+
+                        #region Icon Already in Folder, not embedded
+
                         if (mIcon.Tag == SpriteTypes.IconTag && mIcon.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                         {
                             touchType = Tags.Tag.TransitionIcon;
+                            CurrentSpriteTouched = mIcon as CCSprite;
+
+                            /*
 
                             var mContent = mIcon.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
@@ -1166,16 +1174,24 @@ namespace SGDWithCocos.Shared.Layers
 
                             ClearWindow();
 
+                            */
+
                             return true;
                         }
+
+                        #endregion
+
                         else if (mIcon.Tag == SpriteTypes.EmbeddedIconTag && mIcon.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                         {
+                            touchType = Tags.Tag.FolderedIcon;
+                            CurrentSpriteTouched = mIcon as CCSprite;
+                            /*
                             GamePageParent.NameEmbeddedIcon(mIcon);
 
                             isModal = false;
 
                             ClearWindow();
-
+                            */
                             return true;
                         }
                     }
@@ -1190,6 +1206,10 @@ namespace SGDWithCocos.Shared.Layers
                     return true;
                 }
             }
+
+            #endregion
+
+            #region Speak Frame Contents
 
             if (caller.GetHashCode() == speakerFrame.GetHashCode())
             {
@@ -1216,6 +1236,11 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
+
+            #endregion
+
+            #region Add Icon Button
+
             else if (caller.GetHashCode() == addFrame.GetHashCode())
             {
                 foreach (IconReference iconRef in iconList2)
@@ -1240,6 +1265,11 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
+
+            #endregion
+
+            #region Take Photo Button
+
             else if (caller.GetHashCode() == takePhotoFrame.GetHashCode())
             {
                 foreach (IconReference iconRef in iconList2)
@@ -1264,6 +1294,11 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
+
+            #endregion
+
+            #region Add Folder Button
+
             else if (caller.GetHashCode() == addFolderFrame.GetHashCode())
             {
                 foreach (IconReference iconRef in iconList2)
@@ -1288,6 +1323,11 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
+
+            #endregion
+
+            #region Single Frame Button
+
             else if (caller.GetHashCode() == singleFrame.GetHashCode())
             {
                 foreach (IconReference iconRef in iconList2)
@@ -1312,6 +1352,11 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
+
+            #endregion
+
+            #region Multi Frame Button
+
             else if (caller.GetHashCode() == multiFrame.GetHashCode())
             {
                 foreach (IconReference iconRef in iconList2)
@@ -1336,6 +1381,10 @@ namespace SGDWithCocos.Shared.Layers
                     return false;
                 }
             }
+
+            #endregion
+
+            #region Field Icon Touch
 
             foreach (IconReference iconRef in iconList2)
             {
@@ -1408,6 +1457,8 @@ namespace SGDWithCocos.Shared.Layers
                 }
             }
 
+            #endregion
+
             return false;
 
         }
@@ -1425,9 +1476,12 @@ namespace SGDWithCocos.Shared.Layers
 
             if (CurrentSpriteTouched != null)
             {
+                #region Ended on Active Icon in Field
+
                 if (touchType == Tags.Tag.Icon)
                 {
                     var target = (CCSprite)touchEvent.CurrentTarget;
+                    CurrentSpriteTouched.Opacity = 255;
                     CCRect rect = target.BoundingBoxTransformedToWorld;
 
                     List<IconReference> mFolders = iconList2.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
@@ -1506,16 +1560,29 @@ namespace SGDWithCocos.Shared.Layers
                         GamePageParent.CallActionSheet(mCounter);
                     }
                 }
+
+                #endregion
+
+                #region Ended on Active Folder in Field, in Edit Mode, short touch, open mod window
+
                 else if (touchType == Tags.Tag.FolderIcon && inEditMode && timeDiff.TotalSeconds < 0.25)
                 {
-                    var target = (CCSprite)touchEvent.CurrentTarget;
+                    var target = touchEvent.CurrentTarget;
+                    CurrentSpriteTouched.Opacity = 255;
                     var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
                     var mCounter = iconList2.IndexOf(mSprite);
 
                     GamePageParent.CallActionSheet(mCounter);
                 }
+
+                #endregion
+
+                #region Ended on Active Folder in Field, NOT in Edit Mode
+
                 else if (touchType == Tags.Tag.FolderIcon && !inEditMode)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     string contentTag = SpriteHasLabel(CurrentSpriteTouched);
 
                     if (contentTag != "")
@@ -1523,20 +1590,43 @@ namespace SGDWithCocos.Shared.Layers
                         ShowWindow(CurrentSpriteTouched, contentTag);
                     }
                 }
+
+                #endregion
+
+                #region Ended on Add Icon Button
+
                 else if (touchType == Tags.Tag.Add && inEditMode)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     GamePageParent.CallActionSheetChoice();
                 }
+
+                #endregion
+
+                #region Ended on Take Photo Button
+
                 else if (touchType == Tags.Tag.TakePhoto && inEditMode)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     GamePageParent.CallImageTaker();
                 }
+
+                #endregion
+
+                #region Ended on Add Folder Button
+
                 else if (touchType == Tags.Tag.Folder && inEditMode)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
+                    // Get Active, foldered icons
                     var mList = iconList2.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
 
                     var nameList = new List<string>();
 
+                    // For icons with a Folder value, add to a list, to avoid dupes
                     mList.ForEach(p =>
                     {
                         var returnedString = SpriteHasLabel(p.Sprite);
@@ -1547,14 +1637,22 @@ namespace SGDWithCocos.Shared.Layers
                         }
                     });
 
+                    // Lock list and send up to GamePage for UI and folder naming
                     lock (nameList)
                     {
                         GamePageParent.GetFolderSetup(nameList);
                     }
                 }
+
+                #endregion
+
+                #region Ended on Folder Icon (active), both short and for possible delete
+
                 else if (touchType == Tags.Tag.FolderIcon && inEditMode)
                 {
                     var target = (CCSprite)touchEvent.CurrentTarget;
+                    CurrentSpriteTouched.Opacity = 255;
+
                     CCRect rect = target.BoundingBoxTransformedToWorld;
 
                     if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(rect) && inEditMode)
@@ -1574,8 +1672,15 @@ namespace SGDWithCocos.Shared.Layers
                         GamePageParent.CallActionSheet(mCounter);
                     }
                 }
+
+                #endregion
+
+                #region Ended on Speech Emitter, when held for under 5 seconds
+
                 else if (touchType == Tags.Tag.Speak && timeDiff.TotalSeconds < 5.0f)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     List<IconReference> mList = null;
 
                     if (!inSingleMode)
@@ -1608,20 +1713,49 @@ namespace SGDWithCocos.Shared.Layers
 
                     DependencyService.Get<ITextToSpeech>().Speak(outputString);
                 }
+
+                #endregion
+
+                #region Ended on Speech Emitter, when held for 5 seconds or more
+
+                // Toggles edit mode
                 else if (touchType == Tags.Tag.Speak && timeDiff.TotalSeconds >= 5.0f)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     SetEditMode(!inEditMode);
                 }
+
+                #endregion
+
+                #region Ended on Single Frame Mode 
+
                 else if (touchType == Tags.Tag.SingleMode && inEditMode)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     SetSingleMode(true);
                 }
+
+                #endregion
+
+                #region Ended on Multi Frame Mode 
+
                 else if (touchType == Tags.Tag.MultiMode && inEditMode)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     SetSingleMode(false);
                 }
+
+                #endregion
+
+                #region Ended on Close Modal Window Button
+
                 else if (touchType == Tags.Tag.CloseButton)
                 {
+                    CurrentSpriteTouched.Opacity = 255;
+
                     if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                     {
                         isModal = false;
@@ -1635,10 +1769,87 @@ namespace SGDWithCocos.Shared.Layers
                     }
                 }
 
-                CurrentSpriteTouched = null;
+                #endregion
 
-                CCSprite caller = touchEvent.CurrentTarget as CCSprite;
-                caller.Opacity = 255;
+                #region Ended on Foldered Icon in Window, short touch 
+
+                else if (touchType == Tags.Tag.TransitionIcon)
+                {
+                    bool isAlreadySelected = (CurrentSpriteTouched.Opacity == 55);
+
+                    var mIconsChoice = windowFrame.Children.ToList();
+
+                    foreach (CCSprite loopIcon in mIconsChoice)
+                    {
+                        loopIcon.Opacity = 255;
+                    }
+
+                    if (CurrentSpriteTouched.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location) && timeDiff.TotalSeconds < 0.25)
+                    {
+                        if (!isAlreadySelected)
+                        {
+                            CurrentSpriteTouched.Opacity = 55;
+                        }
+                        else
+                        {
+                            var mContent = CurrentSpriteTouched.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+                            if (mContent != null)
+                            {
+                                StoredIconReference mStoredRef = null;
+
+                                lock (storedList)
+                                {
+                                    foreach (StoredIconReference storedRef in storedList)
+                                    {
+                                        var mLoopSprite = storedRef.Sprite;
+                                        var mLoopContent = mLoopSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+                                        if (mLoopContent != null && mLoopContent.Text == mContent.Text)
+                                        {
+                                            var xMin = (spriteModelFactory.DynamicHeight * 0.1f) / 2;
+                                            var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
+                                            var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
+
+                                            ScheduleOnce((dt) =>
+                                            {
+                                                var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, storedRef.Base64, mLoopContent.Text,
+                                                     xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
+
+                                                var mIconRef = new IconReference(newIcon, storedRef.Base64, 1f, true);
+
+                                                AddEventListener(mListener.Copy(), mIconRef.Sprite);
+                                                iconList2.Add(mIconRef);
+
+                                                AddChild(mIconRef.Sprite);
+
+                                            }, 0.1f);
+
+
+                                            mStoredRef = storedRef;
+                                        }
+                                    }
+
+                                    if (mStoredRef != null)
+                                    {
+                                        storedList.Remove(mStoredRef);
+                                    }
+                                }
+                            }
+
+                            isModal = false;
+                            ClearIconsInModal();
+                            RemoveAllChildrenByTag(windowFrame.Tag, true);
+
+                            windowFrame = null;
+                            closeButton = null;
+                        }
+                    }
+                }
+
+                #endregion
+
+                CurrentSpriteTouched = null;
             }
         }
 
@@ -1651,6 +1862,8 @@ namespace SGDWithCocos.Shared.Layers
         {
             if (CurrentSpriteTouched != null)
             {
+                #region Icon in Active Field
+
                 if (touchType == Tags.Tag.Icon || (touchType == Tags.Tag.FolderIcon && inEditMode))
                 {
                     var pos = touch.Location;
@@ -1665,6 +1878,12 @@ namespace SGDWithCocos.Shared.Layers
 
                     CurrentSpriteTouched.Position = pos;
                 }
+
+                #endregion
+
+                #region Icon in Modal, saved Folder Icon
+
+                /*
                 else if (touchType == Tags.Tag.TransitionIcon)
                 {
                     var pos = touch.Location;
@@ -1678,11 +1897,26 @@ namespace SGDWithCocos.Shared.Layers
                         spriteModelFactory.DynamicHeight - CurrentSpriteTouched.ScaledContentSize.Height / 2 : pos.Y;
 
                     CurrentSpriteTouched.Position = pos;
-
                 }
-                else if (touchType == Tags.Tag.Window)
+                */
+
+                #endregion
+
+                #region Touching window, directly
+
+                else if (touchType == Tags.Tag.Window || touchType == Tags.Tag.TransitionIcon)
                 {
                     var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
+
+                    /*
+                    foreach (CCSprite loopIcon in mIcons)
+                    {
+                        if (loopIcon.Opacity != 255)
+                        {
+                            loopIcon.Opacity = 255;
+                        }
+                    }
+                    */
 
                     if (mIcons.Count < 9)
                     {
@@ -1724,6 +1958,11 @@ namespace SGDWithCocos.Shared.Layers
                         }
                     }
                 }
+
+                #endregion
+
+                #region Touch Close Window Button, directly
+
                 else if (touchType == Tags.Tag.CloseButton)
                 {
                     if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
@@ -1735,6 +1974,8 @@ namespace SGDWithCocos.Shared.Layers
                         closeButton.Opacity = 255;
                     }
                 }
+
+                #endregion
             }
         }
 
