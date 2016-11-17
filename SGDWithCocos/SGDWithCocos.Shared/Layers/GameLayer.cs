@@ -1168,6 +1168,7 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
 
+                    // If Icon is overlapping, prevent fire
                     if (speakerFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
                     {
                         return false;
@@ -1865,6 +1866,21 @@ namespace SGDWithCocos.Shared.Layers
                         spriteModelFactory.DynamicHeight - CurrentSpriteTouched.ScaledContentSize.Height / 2 : pos.Y;
 
                     CurrentSpriteTouched.Position = pos;
+                }
+
+                #endregion
+
+                #region Touching speaker button, at least initially
+
+                else if (touchType == Tags.Tag.Speak)
+                {
+                    // If the touch veers from bounds of speaker, reset 
+                    if (!speakerFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        CurrentSpriteTouched = null;
+                        speakerFrame.Opacity = 255;
+                        return;
+                    }
                 }
 
                 #endregion
