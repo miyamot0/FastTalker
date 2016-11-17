@@ -1179,12 +1179,15 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     touchType = Tags.Tag.Speak;
                     CurrentSpriteTouched = speakerFrame;
-                    caller.Opacity = 155;
+                    speakerFrame.Opacity = 155;
 
                     return true;
                 }
                 else
                 {
+                    CurrentSpriteTouched = null;
+                    speakerFrame.Opacity = 255;
+
                     return false;
                 }
             }
@@ -1195,6 +1198,7 @@ namespace SGDWithCocos.Shared.Layers
 
             else if (caller.GetHashCode() == addFrame.GetHashCode())
             {
+                // Prevent calling add event, if icon overlaps
                 foreach (IconReference iconRef in iconList2)
                 {
                     var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
@@ -1209,11 +1213,15 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     touchType = Tags.Tag.Add;
                     CurrentSpriteTouched = addFrame;
-                    caller.Opacity = 155;
+                    addFrame.Opacity = 155;
+
                     return true;
                 }
                 else
                 {
+                    CurrentSpriteTouched = null;
+                    addFrame.Opacity = 255;
+
                     return false;
                 }
             }
@@ -1238,11 +1246,15 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     touchType = Tags.Tag.TakePhoto;
                     CurrentSpriteTouched = takePhotoFrame;
-                    caller.Opacity = 155;
+                    takePhotoFrame.Opacity = 155;
+
                     return true;
                 }
                 else
                 {
+                    CurrentSpriteTouched = null;
+                    takePhotoFrame.Opacity = 255;
+
                     return false;
                 }
             }
@@ -1267,11 +1279,14 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     touchType = Tags.Tag.Folder;
                     CurrentSpriteTouched = addFolderFrame;
-                    caller.Opacity = 155;
+                    addFolderFrame.Opacity = 155;
                     return true;
                 }
                 else
                 {
+                    CurrentSpriteTouched = null;
+                    addFolderFrame.Opacity = 255;
+
                     return false;
                 }
             }
@@ -1296,11 +1311,15 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     touchType = Tags.Tag.SingleMode;
                     CurrentSpriteTouched = singleFrame;
-                    caller.Opacity = 155;
+                    singleFrame.Opacity = 155;
+
                     return true;
                 }
                 else
                 {
+                    CurrentSpriteTouched = null;
+                    singleFrame.Opacity = 255;
+
                     return false;
                 }
             }
@@ -1325,11 +1344,15 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     touchType = Tags.Tag.MultiMode;
                     CurrentSpriteTouched = multiFrame;
-                    caller.Opacity = 155;
+                    multiFrame.Opacity = 155;
+
                     return true;
                 }
                 else
                 {
+                    CurrentSpriteTouched = null;
+                    multiFrame.Opacity = 255;
+
                     return false;
                 }
             }
@@ -1414,9 +1437,6 @@ namespace SGDWithCocos.Shared.Layers
             return false;
 
         }
-
-        // TODO move all static listeners to end events
-        // Cancel them out if event leaves the zone
 
         /// <summary>
         /// Touch end listener
@@ -1879,6 +1899,81 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         CurrentSpriteTouched = null;
                         speakerFrame.Opacity = 255;
+                        return;
+                    }
+                }
+
+                #endregion
+
+                #region Touching add icon button, at least initially
+
+                else if (touchType == Tags.Tag.Add)
+                {
+                    // If the touch veers from bounds of add frame, reset 
+                    if (!addFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        CurrentSpriteTouched = null;
+                        addFrame.Opacity = 255;
+                        return;
+                    }
+                }
+
+                #endregion
+
+                #region Touching take photo button, at least initially
+
+                else if (touchType == Tags.Tag.TakePhoto)
+                {
+                    // If the touch veers from bounds of take photo, reset 
+                    if (!takePhotoFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        CurrentSpriteTouched = null;
+                        takePhotoFrame.Opacity = 255;
+                        return;
+                    }
+                }
+
+                #endregion
+
+                #region Touching add folder button, at least initially
+
+                else if (touchType == Tags.Tag.Folder)
+                {
+                    // If the touch veers from bounds of add folder frame, reset 
+                    if (!addFolderFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        CurrentSpriteTouched = null;
+                        addFolderFrame.Opacity = 255;
+                        return;
+                    }
+                }
+
+                #endregion
+
+                #region Touching single mode button, at least initially
+
+                else if (touchType == Tags.Tag.SingleMode)
+                {
+                    // If the touch veers from bounds of add folder frame, reset 
+                    if (!singleFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        CurrentSpriteTouched = null;
+                        singleFrame.Opacity = 255;
+                        return;
+                    }
+                }
+
+                #endregion
+
+                #region Touching multi mode button, at least initially
+
+                else if (touchType == Tags.Tag.MultiMode)
+                {
+                    // If the touch veers from bounds of add folder frame, reset 
+                    if (!multiFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        CurrentSpriteTouched = null;
+                        multiFrame.Opacity = 255;
                         return;
                     }
                 }
