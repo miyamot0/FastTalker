@@ -1057,7 +1057,7 @@ namespace SGDWithCocos.Shared.Layers
 
             AddEventListener(mListener.Copy(), borderBackGray);
 
-            //AddChild(borderBackGray, 999, SpriteTypes.ColorLayerTag);
+            AddChild(borderBackGray, 999, SpriteTypes.ColorLayerTag);
         }
 
         /// <summary>
@@ -1763,6 +1763,7 @@ namespace SGDWithCocos.Shared.Layers
                         ClearIconsInModal();
 
                         RemoveAllChildrenByTag(windowFrame.Tag, true);
+                        RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
 
                         windowFrame = null;
                         closeButton = null;
@@ -1796,6 +1797,7 @@ namespace SGDWithCocos.Shared.Layers
                             isModal = false;
                             ClearIconsInModal();
                             RemoveAllChildrenByTag(windowFrame.Tag, true);
+                            RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
 
                             windowFrame = null;
                             closeButton = null;
@@ -1874,6 +1876,7 @@ namespace SGDWithCocos.Shared.Layers
                             isModal = false;
                             ClearIconsInModal();
                             RemoveAllChildrenByTag(windowFrame.Tag, true);
+                            RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
 
                             windowFrame = null;
                             closeButton = null;
