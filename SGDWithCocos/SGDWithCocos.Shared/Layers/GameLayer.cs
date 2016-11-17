@@ -100,7 +100,6 @@ namespace SGDWithCocos.Shared.Layers
         CCSpriteFrame backingSpriteFrame = null;
 
         CCSpriteSheet staticSpriteSheet;
-        CCSpriteSheet ccSpriteSheetDisplay;
 
         /// <summary>
         /// Constructor
@@ -423,7 +422,9 @@ namespace SGDWithCocos.Shared.Layers
                     mIconRef.Sprite.RepeatForever(sequence);
                     */
                 }
+
             }, 0);
+
         }
 
         /// <summary>
@@ -682,14 +683,39 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void ClearWindow()
         {
-            iconList2.Remove(tempWindow);
+            //var find = GetChildByTag(SpriteTypes.ColorLayerTag);
+            //if (find != null)
+            //{
+                //find.RemoveFromParent();
+            //}
+            //find.RemoveAllListeners();
+
+            //iconList2.Remove(tempWindow);
 
             CCCallFunc hideIcons = new CCCallFunc(ClearIconsInModal);
+            CCCallFunc cleanUpWindow = new CCCallFunc(CleanUpWindow);
+            CCCallFuncN removeListeners = new CCCallFuncN(node => node.RemoveAllListeners());
             CCCallFuncN removeClose = new CCCallFuncN(node => node.RemoveChild(closeButton));
             CCCallFuncN removeWindow = new CCCallFuncN(node => node.RemoveFromParent());
-            CCCallFunc cleanUpWindow = new CCCallFunc(CleanUpWindow);
+            windowFrame.RunActions(hideIcons, cleanUpWindow, removeListeners, removeClose, removeWindow);
+        }
 
-            windowFrame.RunActions(hideIcons, removeClose, removeWindow, cleanUpWindow);
+        /// <summary>
+        /// Clean the icons out of modal thoroughly, as there are many
+        /// </summary>
+        public void ClearIconsInModal()
+        {
+            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
+
+            for (var i = 0; i < mIcons.Count; i++)
+            {
+                var fade = new CCFadeOut((mIcons.Count / 20f) - i / 20f);
+                var clean = new CCCallFuncN(node => node.RemoveFromParent());
+                var unlisten = new CCCallFuncN(node => node.RemoveAllListeners());
+                var cleanup = new CCCallFuncN(node => node.Cleanup());
+                var dispose = new CCCallFuncN(node => node.Dispose());
+                mIcons[i].AddActions(false, fade, unlisten, clean, cleanup, dispose);
+            }
         }
 
         /// <summary>
@@ -697,7 +723,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void CleanUpWindow()
         {
-            RemoveChildByTag(SpriteTypes.ColorLayerTag);
+            //windowFrame.RemoveChildByTag(SpriteTypes.ColorLayerTag);
 
             windowFrame.Cleanup();
             windowFrame.Dispose();
@@ -763,7 +789,7 @@ namespace SGDWithCocos.Shared.Layers
                 AddEventListener(mListener.Copy(), closeButton);
 
                 // Add close window
-                windowFrame.AddChild(closeButton, 1001, SpriteTypes.CloseWindowTag);
+                windowFrame.AddChild(closeButton, 9999, SpriteTypes.CloseWindowTag);
 
                 // !important: lock for concurrency issues
                 lock (mMatchingIcons)
@@ -837,16 +863,13 @@ namespace SGDWithCocos.Shared.Layers
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
                 // Blur background, to focus the listener
-                //var maskBackground = new CCCallFunc(MaskBackground);
+                var maskBackground = new CCCallFunc(MaskBackground);
 
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
-                // Hacky workaround to give firm borders to window
-                var drawBorders = new CCCallFunc(AddBorders);
-
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, scaleAction, drawBorders, revealIcons);
+                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, revealIcons);
 
                 isModal = true;
             }, 0);
@@ -984,11 +1007,8 @@ namespace SGDWithCocos.Shared.Layers
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
-                // Hacky workaround to give firm borders to window
-                var drawBorders = new CCCallFunc(AddBorders);
-
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, drawBorders, revealIcons);
+                windowFrame.AddActions(false, moveAction, maskBackground, scaleAction, revealIcons);
 
                 isModal = true;
             }, 0);
@@ -1009,7 +1029,7 @@ namespace SGDWithCocos.Shared.Layers
 
             AddEventListener(mListener.Copy(), borderBackGray);
 
-            AddChild(borderBackGray, 999, SpriteTypes.ColorLayerTag);
+            //AddChild(borderBackGray, 999, SpriteTypes.ColorLayerTag);
         }
 
         /// <summary>
@@ -1027,33 +1047,7 @@ namespace SGDWithCocos.Shared.Layers
                 mIcons[i].AddActions(false, opacity, show, fade);
             }
         }
-
-        /// <summary>
-        /// Clean the icons out of modal thoroughly, as there are many
-        /// </summary>
-        public void ClearIconsInModal()
-        {
-            var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
-
-            for (var i = 0; i < mIcons.Count; i++)
-            {
-                var fade = new CCFadeOut((mIcons.Count / 20f) - i / 20f);
-                var clean = new CCCallFuncN(node => node.RemoveFromParent());
-                var unlisten = new CCCallFuncN(node => node.RemoveAllListeners());
-                var cleanup = new CCCallFuncN(node => node.Cleanup());
-                var dispose = new CCCallFuncN(node => node.Dispose());
-                mIcons[i].AddActions(false, fade, unlisten, clean, cleanup, dispose);
-            }
-        }
-
-        /// <summary>
-        /// Draw borders w/ high priority, since CCS really isn't good with clipping
-        /// </summary>
-        public void AddBorders()
-        {
-
-        }
-
+        
         /// <summary>
         /// Static call, extract label
         /// </summary>
@@ -1106,11 +1100,20 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                     {
+                        closeButton.Opacity = 100;
+
+                        touchType = Tags.Tag.CloseButton;
+                        CurrentSpriteTouched = closeButton;
+                        /*
                         isModal = false;
 
-                        var scaleAction = new CCScaleTo(0.2f, 0.05f);
-                        var functionAction = new CCCallFunc(ClearWindow);
-                        windowFrame.AddActions(false, scaleAction, functionAction);
+                        ClearIconsInModal();
+
+                        RemoveAllChildrenByTag(windowFrame.Tag, true);
+
+                        windowFrame = null;
+                        closeButton = null;
+                        */
 
                         return true;
                     }
@@ -1617,6 +1620,20 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     SetSingleMode(false);
                 }
+                else if (touchType == Tags.Tag.CloseButton)
+                {
+                    if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        isModal = false;
+
+                        ClearIconsInModal();
+
+                        RemoveAllChildrenByTag(windowFrame.Tag, true);
+
+                        windowFrame = null;
+                        closeButton = null;
+                    }
+                }
 
                 CurrentSpriteTouched = null;
 
@@ -1705,6 +1722,17 @@ namespace SGDWithCocos.Shared.Layers
                                 mIcons[i].PositionY = mIcons[i].PositionY + deltaPos;
                             }
                         }
+                    }
+                }
+                else if (touchType == Tags.Tag.CloseButton)
+                {
+                    if (closeButton.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+                    {
+                        closeButton.Opacity = 100;
+                    }
+                    else
+                    {
+                        closeButton.Opacity = 255;
                     }
                 }
             }
