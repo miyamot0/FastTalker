@@ -828,8 +828,6 @@ namespace SGDWithCocos.Shared.Layers
                         var mStoredIconRef = mMatchingIcons[i];
 
                         // The sprite from the reference
-                        var mSprite = new CCSprite("Stored/" + mStoredIconRef.Name);
-
                         var parentSprite = new CCSprite(backingSpriteFrame);
 
                         parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
