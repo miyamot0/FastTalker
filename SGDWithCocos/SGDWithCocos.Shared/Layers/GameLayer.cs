@@ -102,6 +102,28 @@ namespace SGDWithCocos.Shared.Layers
         CCSpriteSheet staticSpriteSheet;
 
         /// <summary>
+        /// Pull specific tags from categories
+        /// </summary>
+        public string[] Categories
+        {
+            get
+            {
+                return mCategories.Where(j => j.Trim() != "").OrderBy(j => j).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Stored Icons
+        /// </summary>
+        public StorageContainer StoredIcons
+        {
+            get
+            {
+                return storageInformation;
+            }
+        }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="_dynamicWidth">Device width</param>
@@ -678,6 +700,7 @@ namespace SGDWithCocos.Shared.Layers
             RemoveChild(CurrentSpriteTouched);
         }
 
+        /*
         /// <summary>
         /// Clear the modal window
         /// </summary>
@@ -699,6 +722,7 @@ namespace SGDWithCocos.Shared.Layers
             CCCallFuncN removeWindow = new CCCallFuncN(node => node.RemoveFromParent());
             windowFrame.RunActions(hideIcons, cleanUpWindow, removeListeners, removeClose, removeWindow);
         }
+        */
 
         /// <summary>
         /// Clean the icons out of modal thoroughly, as there are many
@@ -718,6 +742,8 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        /*
+
         /// <summary>
         /// Deferred cleanup
         /// </summary>
@@ -735,6 +761,8 @@ namespace SGDWithCocos.Shared.Layers
 
             tempWindow = null;
         }
+
+        */
 
         /// <summary>
         /// Deselect all icons in field (cast to white)
@@ -1053,7 +1081,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         /// <param name="sprite"></param>
         /// <returns></returns>
-        public static string SpriteHasLabel(CCSprite sprite)
+        public string SpriteHasLabel(CCSprite sprite)
         {
             var contentTag = sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
@@ -1508,9 +1536,7 @@ namespace SGDWithCocos.Shared.Layers
                                 }, 0);
 
                                 iconList2.Remove(mCloneCopy);
-                                //newItem.Item1.Scale = savedScale;
                                 storedList.Add(newItem);
-                                //storedList.Add(trueClone);
 
                                 return;
                             }
@@ -1557,7 +1583,6 @@ namespace SGDWithCocos.Shared.Layers
                 else if (touchType == Tags.Tag.FolderIcon && !inEditMode)
                 {
                     CurrentSpriteTouched.Opacity = 255;
-
                     string contentTag = SpriteHasLabel(CurrentSpriteTouched);
 
                     if (contentTag != "")
@@ -1766,7 +1791,7 @@ namespace SGDWithCocos.Shared.Layers
                         }
                         else
                         {
-                            GamePageParent.NameEmbeddedIcon(touchEvent.CurrentTarget);
+                            GamePageParent.NameEmbeddedIcon(CurrentSpriteTouched);
                             
                             isModal = false;
                             ClearIconsInModal();
@@ -2123,24 +2148,6 @@ namespace SGDWithCocos.Shared.Layers
                 .SelectMany(m => m.Tags)
                 .Distinct()
                 .ToList();
-        }
-
-        /// <summary>
-        /// Access methods for UI thread
-        /// </summary>
-        /// <returns></returns>
-        public StorageContainer GetStoredIcons()
-        {
-            return storageInformation;
-        }
-
-        /// <summary>
-        /// Access categories
-        /// </summary>
-        /// <returns></returns>
-        public string[] GetCategories()
-        {
-            return mCategories.Where(j => j.Trim() != "").OrderBy(j => j).ToArray();
         }
 
     }

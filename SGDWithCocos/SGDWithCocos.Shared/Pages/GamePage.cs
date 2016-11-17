@@ -263,7 +263,7 @@ namespace SGDWithCocos.Shared.Pages
             {
                 var mAction = await DisplayActionSheet("What type of icon? ",
                     "Cancel", "OK",
-                    mLayer.GetCategories());
+                    mLayer.Categories);
                 tcs.SetResult(mAction);
             });
 
@@ -300,7 +300,7 @@ namespace SGDWithCocos.Shared.Pages
 
             Device.BeginInvokeOnMainThread(() =>
             {
-                StorageContainer copiedList = mLayer.GetStoredIcons();
+                StorageContainer copiedList = mLayer.StoredIcons;
 
                 List<Storage> mMatchingIcons = copiedList
                 .StoredIcons
