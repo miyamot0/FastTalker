@@ -1122,9 +1122,6 @@ namespace SGDWithCocos.Shared.Layers
                     // Loop through children, tag as such if in the touch region
                     foreach (var mIcon in mIcons)
                     {
-
-                        // TODO Move to End
-
                         #region Icon Already in Folder, not embedded
 
                         if (mIcon.Tag == SpriteTypes.IconTag && mIcon.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
@@ -1132,68 +1129,22 @@ namespace SGDWithCocos.Shared.Layers
                             touchType = Tags.Tag.TransitionIcon;
                             CurrentSpriteTouched = mIcon as CCSprite;
 
-                            /*
-
-                            var mContent = mIcon.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
-
-                            if (mContent != null)
-                            {
-                                StoredIconReference mStoredRef = null;
-                                foreach (StoredIconReference storedRef in storedList)
-                                {
-                                    var mLoopSprite = storedRef.Sprite;
-                                    var mLoopContent = mLoopSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
-
-                                    if (mLoopContent != null && mLoopContent.Text == mContent.Text)
-                                    {
-                                        var xMin = (spriteModelFactory.DynamicHeight * 0.1f) / 2;
-                                        var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
-                                        var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
-
-                                        var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, storedRef.Base64, mLoopContent.Text,
-                                             xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
-
-                                        var mIconRef = new IconReference(newIcon, storedRef.Base64, 1f, true);
-
-                                        AddEventListener(mListener.Copy(), mIconRef.Sprite);
-                                        iconList2.Add(mIconRef);
-
-                                        AddChild(mIconRef.Sprite);
-
-                                        mStoredRef = storedRef;
-                                    }
-                                }
-
-                                if (mStoredRef != null)
-                                {
-                                    storedList.Remove(mStoredRef);
-                                }
-                            }
-
-                            isModal = false;
-
-                            ClearWindow();
-
-                            */
-
                             return true;
                         }
 
                         #endregion
 
+                        #region Icon Embedded in Memory
+
                         else if (mIcon.Tag == SpriteTypes.EmbeddedIconTag && mIcon.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                         {
                             touchType = Tags.Tag.FolderedIcon;
                             CurrentSpriteTouched = mIcon as CCSprite;
-                            /*
-                            GamePageParent.NameEmbeddedIcon(mIcon);
 
-                            isModal = false;
-
-                            ClearWindow();
-                            */
                             return true;
                         }
+
+                        #endregion
                     }
 
                     return false;
@@ -1771,6 +1722,40 @@ namespace SGDWithCocos.Shared.Layers
 
                 #endregion
 
+                #region Ended on Embedded Icon in Window, short touch 
+
+                else if (touchType == Tags.Tag.FolderedIcon)
+                {
+                    bool isAlreadySelected = (CurrentSpriteTouched.Opacity == 55);
+
+                    var mIconsChoice = windowFrame.Children.ToList();
+
+                    foreach (CCSprite loopIcon in mIconsChoice)
+                    {
+                        loopIcon.Opacity = 255;
+                    }
+                    if (CurrentSpriteTouched.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location) && timeDiff.TotalSeconds < 0.25)
+                    {
+                        if (!isAlreadySelected)
+                        {
+                            CurrentSpriteTouched.Opacity = 55;
+                        }
+                        else
+                        {
+                            GamePageParent.NameEmbeddedIcon(touchEvent.CurrentTarget);
+                            
+                            isModal = false;
+                            ClearIconsInModal();
+                            RemoveAllChildrenByTag(windowFrame.Tag, true);
+
+                            windowFrame = null;
+                            closeButton = null;
+                        }
+                    }
+                }
+
+                #endregion
+
                 #region Ended on Foldered Icon in Window, short touch 
 
                 else if (touchType == Tags.Tag.TransitionIcon)
@@ -1881,42 +1866,11 @@ namespace SGDWithCocos.Shared.Layers
 
                 #endregion
 
-                #region Icon in Modal, saved Folder Icon
-
-                /*
-                else if (touchType == Tags.Tag.TransitionIcon)
-                {
-                    var pos = touch.Location;
-
-                    pos.X = (pos.X < 0 + CurrentSpriteTouched.ScaledContentSize.Width / 2) ? 0 + CurrentSpriteTouched.ScaledContentSize.Width / 2 : pos.X;
-                    pos.Y = (pos.Y < 0 + CurrentSpriteTouched.ScaledContentSize.Height / 2) ? 0 + CurrentSpriteTouched.ScaledContentSize.Height / 2 : pos.Y;
-
-                    pos.X = (pos.X > spriteModelFactory.DynamicWidth - CurrentSpriteTouched.ScaledContentSize.Width / 2) ?
-                        spriteModelFactory.DynamicWidth - CurrentSpriteTouched.ScaledContentSize.Width / 2 : pos.X;
-                    pos.Y = (pos.Y > spriteModelFactory.DynamicHeight - CurrentSpriteTouched.ScaledContentSize.Height / 2) ?
-                        spriteModelFactory.DynamicHeight - CurrentSpriteTouched.ScaledContentSize.Height / 2 : pos.Y;
-
-                    CurrentSpriteTouched.Position = pos;
-                }
-                */
-
-                #endregion
-
                 #region Touching window, directly
 
                 else if (touchType == Tags.Tag.Window || touchType == Tags.Tag.TransitionIcon)
                 {
                     var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
-
-                    /*
-                    foreach (CCSprite loopIcon in mIcons)
-                    {
-                        if (loopIcon.Opacity != 255)
-                        {
-                            loopIcon.Opacity = 255;
-                        }
-                    }
-                    */
 
                     if (mIcons.Count < 9)
                     {
