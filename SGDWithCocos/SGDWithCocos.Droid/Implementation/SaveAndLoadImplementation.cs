@@ -15,7 +15,6 @@ using SGDWithCocos.Droid.Implementation;
 using SGDWithCocos.Interface;
 using System.IO;
 using Xamarin.Forms;
-using System;
 
 [assembly: Dependency(typeof(SaveAndLoadImplementation))]
 namespace SGDWithCocos.Droid.Implementation

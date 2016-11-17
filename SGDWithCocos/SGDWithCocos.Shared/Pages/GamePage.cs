@@ -278,13 +278,39 @@ namespace SGDWithCocos.Shared.Pages
             try
             {
                 var result = await SelectCategory();
-                //var matches = await GetMatchingTasks(result);
-                mLayer.ShowStoredWindow(result);
+                var matches = await GetMatchingTasks(result);
+                mLayer.ShowStoredWindow(matches);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        /// <summary>
+        /// Linq-based query for icon category action-sheet 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public Task<List<Storage>> GetMatchingTasks(string result)
+        {
+            TaskCompletionSource<List<Storage>> tcs = new TaskCompletionSource<List<Storage>>();
+
+            List<string> listTag = new List<string>() { result };
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                StorageContainer copiedList = mLayer.GetStoredIcons();
+
+                List<Storage> mMatchingIcons = copiedList
+                .StoredIcons
+                .Where(l => l.Tags.Intersect(listTag).Any())
+                .ToList();
+
+                tcs.SetResult(mMatchingIcons);
+            });
+
+            return tcs.Task;
         }
 
         /// <summary>
@@ -314,30 +340,9 @@ namespace SGDWithCocos.Shared.Pages
                     var sprite = node as CCSprite;
                     var mContent = sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                    if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0 && mContent != null)
+                    if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
                     {
-                        string location = DependencyService.Get<ISaveAndLoad>().GetDirectory(closedArgs.Text.Trim());
-
-                        FileStream mFile = new FileStream(@location,
-                            FileMode.OpenOrCreate,
-                            FileAccess.ReadWrite,
-                            FileShare.None);
-
-                        sprite.Texture.SaveAsPng(mFile, (int)sprite.ContentSize.Width, (int)sprite.ContentSize.Height);
-                        mFile.Flush();
-                        mFile.Close();
-                        mFile.Dispose();
-
-                        byte[] imageArray = File.ReadAllBytes(location);
-                        string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-
-                        sprite.RemoveAllChildren();
-                        sprite.Cleanup();
-                        sprite.Dispose();
-
-                        File.Delete(@location);
-
-                        tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text.Trim(), "png" });
+                        tcs.SetResult(new string[] { mContent.Text, closedArgs.Text.Trim(), "Embedded" });
                     }
                     else
                     {
@@ -803,7 +808,7 @@ namespace SGDWithCocos.Shared.Pages
 
             return tcs.Task;
         }
-        
+
         /// <summary>
         /// Loading event
         /// </summary>
@@ -815,6 +820,10 @@ namespace SGDWithCocos.Shared.Pages
 
             if (nativeGameView != null)
             {
+
+                var contentSearchPaths = new List<string>() { "Stored" };
+                nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
+
                 int width = nativeGameView.DesignResolution.Width;
                 int height = nativeGameView.DesignResolution.Height;
                 nativeGameView.Stats.Enabled = false;
