@@ -38,14 +38,5 @@ namespace SGDWithCocos.iOS.Implementation
 
             return (File.Exists(filePath)) ? File.ReadAllText(filePath) : "";
         }
-
-        public string GetDirectory(string assetName)
-        {
-            var filename = assetName + ".png";
-            var externalPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = Path.Combine(externalPath, filename);
-
-            return filePath;
-        }
     }
 }

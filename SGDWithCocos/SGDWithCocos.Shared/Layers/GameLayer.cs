@@ -361,8 +361,6 @@ namespace SGDWithCocos.Shared.Layers
             multiFrame.Color = Green;
         }
 
-        // TODO precache
-        
         /// <summary>
         /// Method called back from main UI thread
         /// </summary>
@@ -379,8 +377,6 @@ namespace SGDWithCocos.Shared.Layers
                     string assetName = base64;
                     string contentName = "Stored/" + assetName;
                     var sprite = new CCSprite(contentName);
-
-                    string location = DependencyService.Get<ISaveAndLoad>().GetDirectory(assetName);
 
                     string base64ImageRepresentation = "";
 

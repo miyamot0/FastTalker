@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\IconStorageObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StoredIconReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\GamePage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameSGDScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameStartScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\EditTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\SpriteTypes.cs" />

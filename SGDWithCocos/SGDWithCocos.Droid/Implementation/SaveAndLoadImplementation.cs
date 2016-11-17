@@ -37,14 +37,5 @@ namespace SGDWithCocos.Droid.Implementation
 
             return (File.Exists(filePath)) ? File.ReadAllText(filePath) : "";
         }
-
-        public string GetDirectory(string assetName)
-        {
-            var filename = assetName + ".png";
-            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            var filePath = Path.Combine(documentsPath, filename);
-
-            return filePath;
-        }
     }
 }

@@ -842,7 +842,7 @@ namespace SGDWithCocos.Shared.Pages
         /// <param name="nativeGameView"></param>
         public void ConstructGameScene(CCGameView nativeGameView)
         {
-            gameScene = new CCScene(nativeGameView);
+            gameScene = new GameSGDScene(nativeGameView);
 
             string json = GetBoards("IconBoard");
 
