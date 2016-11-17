@@ -27,6 +27,7 @@ namespace SGDWithCocos.Droid.Implementation
         {
             var alert = new AlertDialog.Builder(Forms.Context);
             var edit = new EditText(Forms.Context) { Text = popup.Text };
+            edit.InputType = Android.Text.InputTypes.TextFlagCapWords;
             alert.SetView(edit);
             alert.SetTitle(popup.Title);
             alert.SetPositiveButton("OK", (senderAlert, args) =>
