@@ -1414,6 +1414,9 @@ namespace SGDWithCocos.Shared.Layers
 
         }
 
+        // TODO move all static listeners to end events
+        // Cancel them out if event leaves the zone
+
         /// <summary>
         /// Touch end listener
         /// </summary>
