@@ -2143,38 +2143,5 @@ namespace SGDWithCocos.Shared.Layers
             return mCategories.Where(j => j.Trim() != "").OrderBy(j => j).ToArray();
         }
 
-        /// <summary>
-        /// Loading call
-        /// </summary>
-        /// <param name="mainWindow"></param>
-        /// <param name="_dynamicWidth"></param>
-        /// <param name="_dynamicHeight"></param>
-        /// <param name="json"></param>
-        /// <param name="gamePage"></param>
-        /// <returns></returns>
-        public static CCScene GameStartLayerScene(CCGameView mainWindow, float _dynamicWidth, float _dynamicHeight, string json, GamePage gamePage)
-        {
-            var scene = new CCScene(mainWindow);
-
-            IconStorageObject jsonObject = null;
-
-            if (json != "")
-            {
-                try
-                {
-                    jsonObject = JsonConvert.DeserializeObject<IconStorageObject>(json);
-                }
-                catch
-                {
-                    jsonObject = null;
-                }
-            }
-
-            var layer = new GameLayer(_dynamicWidth, _dynamicHeight, jsonObject, gamePage);
-
-            scene.AddLayer(layer);
-
-            return scene;
-        }
     }
 }
