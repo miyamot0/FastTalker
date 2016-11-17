@@ -30,8 +30,12 @@ namespace SGDWithCocos.iOS.Implementation
             {
                 Title = popup.Title,
                 Message = popup.Text,
-                AlertViewStyle = UIAlertViewStyle.PlainTextInput
+                AlertViewStyle = UIAlertViewStyle.PlainTextInput,
             };
+
+            alert.GetTextField(0).AutocorrectionType = UITextAutocorrectionType.Default;
+            alert.GetTextField(0).AutocapitalizationType = UITextAutocapitalizationType.Words;
+
             foreach (var b in popup.Buttons)
                 alert.AddButton(b);
 
