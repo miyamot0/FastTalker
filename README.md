@@ -12,6 +12,7 @@ Features include:
 
 ### Images
 ![Alt text](FT-Drag.gif?raw=true "Drag Icons")
+![Alt text](FT-Folders.gif?raw=true "Open Folders")
 
 ### Version
 1.1.0.0
