@@ -11458,6 +11458,24 @@
   <ItemGroup>
     <BundleResource Include="Content\Stored\zoom_,_to.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\Stored\Smell.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\Stored\Taste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\Stored\Want.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\Stored\Dont_Want.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\Stored\Have.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\Stored\See.png" />
+  </ItemGroup>
   <Import Project="..\SGDWithCocos.Shared\EmptyProject.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.2.3.2.127\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.3.2.127\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />
