@@ -700,30 +700,6 @@ namespace SGDWithCocos.Shared.Layers
             RemoveChild(CurrentSpriteTouched);
         }
 
-        /*
-        /// <summary>
-        /// Clear the modal window
-        /// </summary>
-        public void ClearWindow()
-        {
-            //var find = GetChildByTag(SpriteTypes.ColorLayerTag);
-            //if (find != null)
-            //{
-                //find.RemoveFromParent();
-            //}
-            //find.RemoveAllListeners();
-
-            //iconList2.Remove(tempWindow);
-
-            CCCallFunc hideIcons = new CCCallFunc(ClearIconsInModal);
-            CCCallFunc cleanUpWindow = new CCCallFunc(CleanUpWindow);
-            CCCallFuncN removeListeners = new CCCallFuncN(node => node.RemoveAllListeners());
-            CCCallFuncN removeClose = new CCCallFuncN(node => node.RemoveChild(closeButton));
-            CCCallFuncN removeWindow = new CCCallFuncN(node => node.RemoveFromParent());
-            windowFrame.RunActions(hideIcons, cleanUpWindow, removeListeners, removeClose, removeWindow);
-        }
-        */
-
         /// <summary>
         /// Clean the icons out of modal thoroughly, as there are many
         /// </summary>
@@ -741,28 +717,6 @@ namespace SGDWithCocos.Shared.Layers
                 mIcons[i].AddActions(false, fade, unlisten, clean, cleanup, dispose);
             }
         }
-
-        /*
-
-        /// <summary>
-        /// Deferred cleanup
-        /// </summary>
-        public void CleanUpWindow()
-        {
-            //windowFrame.RemoveChildByTag(SpriteTypes.ColorLayerTag);
-
-            windowFrame.Cleanup();
-            windowFrame.Dispose();
-                windowFrame = null;
-
-            closeButton.Cleanup();
-            closeButton.Dispose();
-                closeButton = null;
-
-            tempWindow = null;
-        }
-
-        */
 
         /// <summary>
         /// Deselect all icons in field (cast to white)
@@ -888,9 +842,6 @@ namespace SGDWithCocos.Shared.Layers
                 // Scale to center, 90% of screen or so
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
-                // Blur background, to focus the listener
-                //var maskBackground = new CCCallFunc(MaskBackground);
-
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
@@ -911,7 +862,7 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            //MaskBackground();
+            MaskBackground();
 
             var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
             texture.BeginWithClear(CCColor4B.White);
@@ -1570,6 +1521,19 @@ namespace SGDWithCocos.Shared.Layers
                             storedList.Add(newItem);
 
                             return;
+                        }
+                    }
+
+                    if (!inEditMode)
+                    {
+                        var mIntersectingIcons = iconList2
+                            .Where(i => i.Sprite.BoundingBoxTransformedToWorld.IntersectsRect(rect) && i.Sprite.GetHashCode() != target.GetHashCode() && i.Sprite.Tag == SpriteTypes.IconTag)
+                            .ToList();
+
+                        if (mIntersectingIcons.Count > 0)
+                        {
+                            // Stub, handle re-calibration later
+                            //var mReferenceIcon = mIntersectingIcons.FirstOrDefault();
                         }
                     }
 
