@@ -10,6 +10,11 @@ Features include:
   - Incorporate images from anywhere, including your own camera and local pictures
   - Save boards automatically, all locally managed
 
+### Images
+![Alt text](FT-Drag.gif?raw=true "Drag Icons")
+![Alt text](FT-Modify.gif?raw=true "Modify Icons")
+![Alt text](FT-Folders.gif?raw=true "Open Folders")
+
 ### Version
 1.1.0.0
 
