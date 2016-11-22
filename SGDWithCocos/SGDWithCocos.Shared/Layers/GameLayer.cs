@@ -1022,7 +1022,7 @@ namespace SGDWithCocos.Shared.Layers
             {
                 var opacity = new CCCallFuncN(node => node.Opacity = 0);
                 var show = new CCCallFuncN(node => node.Visible = true);
-                var fade = new CCFadeIn(i / 20f);
+                var fade = new CCFadeIn(i / 10f);
                 mIcons[i].AddActions(false, opacity, show, fade);
             }
         }
