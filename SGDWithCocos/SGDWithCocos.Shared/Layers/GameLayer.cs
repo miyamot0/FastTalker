@@ -1474,12 +1474,12 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="touchEvent"></param>
         void OnTouchesEnded(CCTouch touch, CCEvent touchEvent)
         {
-            endTime = DateTime.Now;
-
-            var timeDiff = endTime - startTime;
-
             if (CurrentSpriteTouched != null)
             {
+                endTime = DateTime.Now;
+
+                var timeDiff = endTime - startTime;
+
                 #region Ended on Active Icon in Field
 
                 if (touchType == Tags.Tag.Icon)
@@ -1497,50 +1497,44 @@ namespace SGDWithCocos.Shared.Layers
 
                         if (mContentTag != "")
                         {
-                            List<StoredIconReference> mInFolder = storedList.Where(t => t.FolderName == mContentTag).ToList();
+                            var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
 
-                            //if (mInFolder.Count < 9)
-                            if (true)
+                            var spriteLabel = mCloneCopy.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+                            if (spriteLabel == null)
                             {
-                                var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
-
-                                var spriteLabel = mCloneCopy.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
-
-                                if (spriteLabel == null)
-                                {
-                                    return;
-                                }
-
-                                var newItem = new StoredIconReference(mCloneCopy.Sprite, mCloneCopy.Base64, mContentTag, mCloneCopy.Sprite.ScaleX, spriteLabel.ScaleX, spriteLabel.Visible);
-
-                                var savedScale = (float)mCloneCopy.Sprite.ScaleX;
-
-                                CurrentSpriteTouched = null;
-
-                                ScheduleOnce((dt) =>
-                                {
-                                    var moveAction = new CCMoveTo(0.2f, mIntersect[0].Sprite.Position);
-                                    var scaleAction = new CCScaleTo(0.2f, 0.1f);
-                                    var clearColor = new CCCallFuncN(node => node.Color = White);
-                                    var setInvisible = new CCCallFuncN(node => node.Visible = false);
-                                    var scaleAction2 = new CCScaleTo(0.01f, savedScale);
-                                    var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
-
-                                    target.AddActions(false,
-                                        moveAction,
-                                        scaleAction,
-                                        clearColor,
-                                        setInvisible,
-                                        scaleAction2,
-                                        endAction);
-
-                                }, 0);
-
-                                iconList2.Remove(mCloneCopy);
-                                storedList.Add(newItem);
-
                                 return;
                             }
+
+                            var newItem = new StoredIconReference(mCloneCopy.Sprite, mCloneCopy.Base64, mContentTag, mCloneCopy.Sprite.ScaleX, spriteLabel.ScaleX, spriteLabel.Visible);
+
+                            var savedScale = (float)mCloneCopy.Sprite.ScaleX;
+
+                            CurrentSpriteTouched = null;
+
+                            ScheduleOnce((dt) =>
+                            {
+                                var moveAction = new CCMoveTo(0.2f, mIntersect[0].Sprite.Position);
+                                var scaleAction = new CCScaleTo(0.2f, 0.1f);
+                                var clearColor = new CCCallFuncN(node => node.Color = White);
+                                var setInvisible = new CCCallFuncN(node => node.Visible = false);
+                                var scaleAction2 = new CCScaleTo(0.01f, savedScale);
+                                var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
+
+                                target.AddActions(false,
+                                    moveAction,
+                                    scaleAction,
+                                    clearColor,
+                                    setInvisible,
+                                    scaleAction2,
+                                    endAction);
+
+                            }, 0);
+
+                            iconList2.Remove(mCloneCopy);
+                            storedList.Add(newItem);
+
+                            return;
                         }
                     }
 
