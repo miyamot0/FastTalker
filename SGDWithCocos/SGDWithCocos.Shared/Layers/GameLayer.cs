@@ -787,7 +787,7 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            //MaskBackground();
+            MaskBackground();
 
             ScheduleOnce((dt) => {
 
@@ -911,7 +911,7 @@ namespace SGDWithCocos.Shared.Layers
             // If already modal mode, just return
             if (isModal) return;
 
-            MaskBackground();
+            //MaskBackground();
 
             var texture = new CCRenderTexture(new CCSize(200, 200), new CCSize(200, 200), CCSurfaceFormat.Color);
             texture.BeginWithClear(CCColor4B.White);
@@ -1192,6 +1192,7 @@ namespace SGDWithCocos.Shared.Layers
 
             if (caller.GetHashCode() == speakerFrame.GetHashCode())
             {
+
                 foreach (IconReference iconRef in iconList2)
                 {
                     var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
@@ -1765,6 +1766,9 @@ namespace SGDWithCocos.Shared.Layers
                         RemoveAllChildrenByTag(windowFrame.Tag, true);
                         RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
 
+                        var windowRef = iconList2.Where(t => t.Sprite.Tag == windowFrame.Tag).FirstOrDefault();
+                        iconList2.Remove(windowRef);
+
                         windowFrame = null;
                         closeButton = null;
                     }
@@ -1798,6 +1802,9 @@ namespace SGDWithCocos.Shared.Layers
                             ClearIconsInModal();
                             RemoveAllChildrenByTag(windowFrame.Tag, true);
                             RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
+
+                            var windowRef = iconList2.Where(t => t.Sprite.Tag == windowFrame.Tag).FirstOrDefault();
+                            iconList2.Remove(windowRef);
 
                             windowFrame = null;
                             closeButton = null;
@@ -1877,6 +1884,9 @@ namespace SGDWithCocos.Shared.Layers
                             ClearIconsInModal();
                             RemoveAllChildrenByTag(windowFrame.Tag, true);
                             RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
+
+                            var windowRef = iconList2.Where(t => t.Sprite.Tag == windowFrame.Tag).FirstOrDefault();
+                            iconList2.Remove(windowRef);
 
                             windowFrame = null;
                             closeButton = null;
