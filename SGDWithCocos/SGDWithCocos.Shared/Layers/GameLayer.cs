@@ -1400,14 +1400,31 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             if (iconRef.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                             {
-                                touchType = Tags.Tag.Icon;
+                                var iconsTouched = iconList2.Where(i => i.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location)).OrderByDescending(i => i.Sprite.ZOrder);
 
-                                CurrentSpriteTouched = iconRef.Sprite;
-                                caller.Opacity = 155;
+                                if (iconsTouched != null && iconsTouched.Count() > 1)
+                                {
+                                    var highestIcon = iconsTouched.Last();
 
-                                DeSelectIcons();
+                                    touchType = Tags.Tag.Icon;
+                                    CurrentSpriteTouched = highestIcon.Sprite;
+                                    highestIcon.Sprite.Opacity = 155;
 
-                                caller.Color = Green;
+                                    DeSelectIcons();
+
+                                    highestIcon.Sprite.Color = Green;
+                                }
+                                else
+                                {
+                                    touchType = Tags.Tag.Icon;
+
+                                    CurrentSpriteTouched = iconRef.Sprite;
+                                    caller.Opacity = 155;
+
+                                    DeSelectIcons();
+
+                                    caller.Color = Green;
+                                }
 
                                 return true;
                             }
@@ -1423,13 +1440,31 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             if (iconRef.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                             {
-                                touchType = Tags.Tag.Icon;
-                                CurrentSpriteTouched = iconRef.Sprite;
-                                caller.Opacity = 155;
+                                var iconsTouched = iconList2.Where(i => i.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location)).OrderByDescending(i => i.Sprite.ZOrder);
 
-                                if (!sentenceFrame.Visible)
+                                if (iconsTouched != null && iconsTouched.Count() > 1)
                                 {
-                                    caller.Color = Green;
+                                    var highestIcon = iconsTouched.Last();
+
+                                    touchType = Tags.Tag.Icon;
+                                    CurrentSpriteTouched = highestIcon.Sprite;
+                                    highestIcon.Sprite.Opacity = 155;
+
+                                    if (!inEditMode)
+                                    {
+                                        highestIcon.Sprite.Color = Green;
+                                    }
+                                }
+                                else
+                                {
+                                    touchType = Tags.Tag.Icon;
+                                    CurrentSpriteTouched = iconRef.Sprite;
+                                    iconRef.Sprite.Opacity = 155;
+
+                                    if (!inEditMode)
+                                    {
+                                        iconRef.Sprite.Color = Green;
+                                    }
                                 }
 
                                 return true;
