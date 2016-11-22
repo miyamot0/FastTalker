@@ -750,8 +750,8 @@ namespace SGDWithCocos.Shared.Layers
                 texture2.End();
                 windowFrame = new CCSprite(texture2.Texture)
                 {
-                    PositionX = addFolderFrame.Position.X,
-                    PositionY = addFolderFrame.Position.Y,
+                    PositionX = addFrame.Position.X,
+                    PositionY = addFrame.Position.Y,
                     Tag = SpriteTypes.WindowTag
                 };
                 texture2.Dispose();
