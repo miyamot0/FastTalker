@@ -75,7 +75,7 @@ namespace SGDWithCocos.Shared.Layers
         // Information loaded from static JSON
         StorageContainer storageInformation;
 
-        CCSequence iconAnimation = new CCSequence(new CCRotateTo(0.1f, 5f),
+        CCSequence iconAnimationRotate = new CCSequence(new CCRotateTo(0.1f, 5f),
             new CCRotateTo(0.2f, -10f), new CCRotateTo(0.2f, 10f),
             new CCRotateTo(0.2f, -10f), new CCRotateTo(0.2f, 10f),
             new CCRotateTo(0.1f, 0f));
@@ -413,7 +413,7 @@ namespace SGDWithCocos.Shared.Layers
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
 
                     // Add salient animation to icons added back to field
-                    mIconRef.Sprite.AddAction(iconAnimation);
+                    mIconRef.Sprite.AddAction(iconAnimationRotate);
                 }
 
             }, 0);
@@ -446,7 +446,7 @@ namespace SGDWithCocos.Shared.Layers
                 AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.FolderTag);
 
                 // Add salient animation to icons added back to field
-                mIconRef.Sprite.AddAction(iconAnimation);
+                mIconRef.Sprite.AddAction(iconAnimationRotate);
             }, 0);
         }
 
@@ -1483,7 +1483,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                 // Animation to make identified folder target salient
                                 var danceAction = new CCCallFunc(() => {
-                                    mIntersect[0].Sprite.AddAction(iconAnimation);
+                                    mIntersect[0].Sprite.AddAction(iconAnimationRotate);
                                 });
 
                                 var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
@@ -1506,6 +1506,20 @@ namespace SGDWithCocos.Shared.Layers
                         }
                     }
 
+                    if (!inEditMode && sentenceFrame.BoundingBoxTransformedToWorld.IntersectsRect(target.BoundingBoxTransformedToWorld))
+                    {
+                        float xScale = target.ScaleX,
+                              yScale = target.ScaleX;
+
+                        CCSequence iconAnimationFocus = new CCSequence(
+                            new CCDelayTime(0.1f), 
+                            new CCScaleTo(0.1f, xScale * 1.1f, yScale * 1.1f),
+                            new CCScaleTo(0.1f, xScale, yScale));
+
+                        target.AddAction(iconAnimationFocus);
+                    }
+
+                    /*
                     if (!inEditMode)
                     {
                         var mIntersectingIcons = iconList2
@@ -1518,6 +1532,7 @@ namespace SGDWithCocos.Shared.Layers
                             //var mReferenceIcon = mIntersectingIcons.FirstOrDefault();
                         }
                     }
+                    */
 
                     if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(rect) && inEditMode)
                     {
@@ -1842,7 +1857,7 @@ namespace SGDWithCocos.Shared.Layers
                                                 AddChild(mIconRef.Sprite);
 
                                                 // Add salient animation to icons added back to field
-                                                mIconRef.Sprite.AddAction(iconAnimation);
+                                                mIconRef.Sprite.AddAction(iconAnimationRotate);
 
                                             }, 0.01f);
 
