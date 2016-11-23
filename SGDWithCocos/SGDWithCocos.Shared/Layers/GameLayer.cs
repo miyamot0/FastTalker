@@ -75,6 +75,11 @@ namespace SGDWithCocos.Shared.Layers
         // Information loaded from static JSON
         StorageContainer storageInformation;
 
+        CCSequence iconAnimation = new CCSequence(new CCRotateTo(0.1f, 5f),
+            new CCRotateTo(0.2f, -10f), new CCRotateTo(0.2f, 10f),
+            new CCRotateTo(0.2f, -10f), new CCRotateTo(0.2f, 10f),
+            new CCRotateTo(0.1f, 0f));
+
         // Categories
         List<string> mCategories;
 
@@ -408,17 +413,7 @@ namespace SGDWithCocos.Shared.Layers
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
 
                     // Add salient animation to icons added back to field
-                    var rotateFirstRight = new CCRotateTo(0.1f, 5f);
-                    var rotateLeft = new CCRotateTo(0.2f, -10f);
-                    var rotateRight = new CCRotateTo(0.2f, 10f);
-                    var rotateLastLeft = new CCRotateTo(0.1f, 0f);
-
-                    var seq = new CCSequence(rotateFirstRight,
-                        rotateLeft, rotateRight,
-                        rotateLeft, rotateRight,
-                        rotateLastLeft);
-
-                    mIconRef.Sprite.AddAction(seq);
+                    mIconRef.Sprite.AddAction(iconAnimation);
                 }
 
             }, 0);
@@ -451,17 +446,7 @@ namespace SGDWithCocos.Shared.Layers
                 AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.FolderTag);
 
                 // Add salient animation to icons added back to field
-                var rotateFirstRight = new CCRotateTo(0.1f, 5f);
-                var rotateLeft = new CCRotateTo(0.2f, -10f);
-                var rotateRight = new CCRotateTo(0.2f, 10f);
-                var rotateLastLeft = new CCRotateTo(0.1f, 0f);
-
-                var seq = new CCSequence(rotateFirstRight,
-                    rotateLeft, rotateRight,
-                    rotateLeft, rotateRight,
-                    rotateLastLeft);
-
-                mIconRef.Sprite.AddAction(seq);
+                mIconRef.Sprite.AddAction(iconAnimation);
             }, 0);
         }
 
@@ -1498,17 +1483,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                 // Animation to make identified folder target salient
                                 var danceAction = new CCCallFunc(() => {
-                                    var rotateFirstRight = new CCRotateTo(0.1f, 5f);
-                                    var rotateLeft = new CCRotateTo(0.2f, -10f);
-                                    var rotateRight = new CCRotateTo(0.2f, 10f);
-                                    var rotateLastLeft = new CCRotateTo(0.1f, 0f);
-
-                                    var seq = new CCSequence(rotateFirstRight,
-                                        rotateLeft, rotateRight,
-                                        rotateLeft, rotateRight,
-                                        rotateLastLeft);
-
-                                    mIntersect[0].Sprite.AddAction(seq);
+                                    mIntersect[0].Sprite.AddAction(iconAnimation);
                                 });
 
                                 var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
@@ -1867,17 +1842,7 @@ namespace SGDWithCocos.Shared.Layers
                                                 AddChild(mIconRef.Sprite);
 
                                                 // Add salient animation to icons added back to field
-                                                var rotateFirstRight = new CCRotateTo(0.1f, 5f);
-                                                var rotateLeft = new CCRotateTo(0.2f, -10f);
-                                                var rotateRight = new CCRotateTo(0.2f, 10f);
-                                                var rotateLastLeft = new CCRotateTo(0.1f, 0f);
-
-                                                var seq = new CCSequence(rotateFirstRight,
-                                                    rotateLeft, rotateRight,
-                                                    rotateLeft, rotateRight,
-                                                    rotateLastLeft);
-
-                                                mIconRef.Sprite.AddAction(seq);
+                                                mIconRef.Sprite.AddAction(iconAnimation);
 
                                             }, 0.01f);
 
