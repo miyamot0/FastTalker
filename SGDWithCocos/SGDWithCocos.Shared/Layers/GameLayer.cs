@@ -831,7 +831,6 @@ namespace SGDWithCocos.Shared.Layers
                 AddEventListener(mListener.Copy(), windowFrame);
                 tempWindow = new IconReference(windowFrame, "Window", 1f, true);
                 iconList2.Add(tempWindow);
-                AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
 
                 // Moves window to center
                 var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
@@ -844,6 +843,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
+
+                AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
 
                 // Execute actions
                 windowFrame.AddActions(false, moveAction, scaleAction, revealIcons);
@@ -1466,7 +1467,7 @@ namespace SGDWithCocos.Shared.Layers
 
                 var timeDiff = endTime - startTime;
 
-                #region Ended on Active Icon in Field
+                #region Ended on Active Icon in Field, Icon over folder
 
                 if (touchType == Tags.Tag.Icon)
                 {
@@ -1505,6 +1506,22 @@ namespace SGDWithCocos.Shared.Layers
                                 var clearColor = new CCCallFuncN(node => node.Color = White);
                                 var setInvisible = new CCCallFuncN(node => node.Visible = false);
                                 var scaleAction2 = new CCScaleTo(0.01f, savedScale);
+
+                                // Animation to make identified folder target salient
+                                var danceAction = new CCCallFunc(() => {
+                                    var rotateFirstRight = new CCRotateTo(0.1f, 5f);
+                                    var rotateLeft = new CCRotateTo(0.2f, -10f);
+                                    var rotateRight = new CCRotateTo(0.2f, 10f);
+                                    var rotateLastLeft = new CCRotateTo(0.1f, 0f);
+
+                                    var seq = new CCSequence(rotateFirstRight,
+                                        rotateLeft, rotateRight,
+                                        rotateLeft, rotateRight,
+                                        rotateLastLeft);
+
+                                    mIntersect[0].Sprite.AddAction(seq);
+                                });
+
                                 var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
 
                                 target.AddActions(false,
@@ -1513,6 +1530,7 @@ namespace SGDWithCocos.Shared.Layers
                                     clearColor,
                                     setInvisible,
                                     scaleAction2,
+                                    danceAction,
                                     endAction);
 
                             }, 0);
