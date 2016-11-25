@@ -412,6 +412,9 @@ namespace SGDWithCocos.Shared.Layers
                     // Add child to field properly
                     AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
 
+                    // Pop up to forefront
+                    ReorderChild(mIconRef.Sprite, 999);
+
                     // Add salient animation to icons added back to field
                     mIconRef.Sprite.AddAction(iconAnimationRotate);
                 }
