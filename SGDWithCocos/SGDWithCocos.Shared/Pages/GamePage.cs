@@ -219,7 +219,23 @@ namespace SGDWithCocos.Shared.Pages
         {
             string buttonSelect = await GetActionTypeActionSheet();
 
-            if (buttonSelect == StringTypes.AddIcon)
+            if (buttonSelect == StringTypes.ChangeSettings)
+            {
+                // Change mode logic
+
+                string modeSelect = await GetSGDMode();
+
+                if (modeSelect == StringTypes.SingleMode)
+                {
+                    mLayer.SetSingleMode(true);
+                }
+                else if (modeSelect == StringTypes.FrameMode)
+                {
+                    mLayer.SetSingleMode(false);
+                }
+
+            }
+            else if (buttonSelect == StringTypes.AddIcon)
             {
                 // Add icon logic
 
@@ -258,15 +274,14 @@ namespace SGDWithCocos.Shared.Pages
                     }
                 });
 
-                // Lock list and send up to GamePage for UI and folder naming
-                //lock (nameList)
-                //{
-                    GetFolderSetup(nameList);
-                    //GamePageParent.GetFolderSetup(nameList);
-                //}
+                GetFolderSetup(nameList);
             }
         }
 
+        /// <summary>
+        /// Open action sheet related to tweaks and additions, single button interface
+        /// </summary>
+        /// <returns></returns>
         public Task<string> GetActionTypeActionSheet()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
@@ -274,6 +289,7 @@ namespace SGDWithCocos.Shared.Pages
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var mAction = await DisplayActionSheet("What would you like to add?", "Cancel", "OK",
+                    StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
                     StringTypes.AddFolder);
@@ -302,8 +318,27 @@ namespace SGDWithCocos.Shared.Pages
             return tcs.Task;
         }
 
+        /// <summary>
+        /// Open action sheet related to tweaks and additions, single button interface
+        /// </summary>
+        /// <returns></returns>
+        public Task<string> GetSGDMode()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var mAction = await DisplayActionSheet("Select a response type ", "Cancel", "OK",
+                    StringTypes.SingleMode,
+                    StringTypes.FrameMode);
+                tcs.SetResult(mAction);
+            });
+
+            return tcs.Task;
+        }
+
         #endregion
-        
+
         #region Selection of Embedded Icons
 
         /// <summary>

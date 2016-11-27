@@ -57,8 +57,6 @@ namespace SGDWithCocos.Shared.Layers
                  speakerFrame,
                  deleteFrame,
                  addFrame,
-                 singleFrame,
-                 multiFrame,
                  closeButton = null,
                  windowFrame = null,
                  CurrentSpriteTouched = null;
@@ -188,18 +186,6 @@ namespace SGDWithCocos.Shared.Layers
                 AddEventListener(mListener.Copy(), addFrame);
                 AddChild(addFrame, 0, SpriteTypes.AddTag);
 
-            var singleSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Single"));
-            singleFrame = spriteModelFactory.MakeSingleButton(singleSpriteFrame, backingSpriteFrame);
-            singleFrame.Visible = false;
-                AddEventListener(mListener.Copy(), singleFrame);
-                AddChild(singleFrame, 0, SpriteTypes.SingleModeTag);
-
-            var multiSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Frame"));
-            multiFrame = spriteModelFactory.MakeMultiButton(multiSpriteFrame, backingSpriteFrame);
-            multiFrame.Visible = false;
-                AddEventListener(mListener.Copy(), multiFrame);
-                AddChild(multiFrame, 0, SpriteTypes.MultiModeTag);
-
             var removeSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Trash"));
             deleteFrame = spriteModelFactory.MakeRemoveButton(removeSpriteFrame, backingSpriteFrame);
             deleteFrame.Visible = false;
@@ -300,11 +286,7 @@ namespace SGDWithCocos.Shared.Layers
 
                 this.Color = CCColor3B.Orange;
                 addFrame.Visible = true;
-                //takePhotoFrame.Visible = true;
-                //addFolderFrame.Visible = true;
                 deleteFrame.Visible = true;
-                singleFrame.Visible = true;
-                multiFrame.Visible = true;
 
                 inEditMode = !inEditMode;
             }
@@ -314,11 +296,7 @@ namespace SGDWithCocos.Shared.Layers
 
                 this.Color = CCColor3B.Gray;
                 addFrame.Visible = false;
-                //takePhotoFrame.Visible = false;
-                //addFolderFrame.Visible = false;
                 deleteFrame.Visible = false;
-                singleFrame.Visible = false;
-                multiFrame.Visible = false;
 
                 inEditMode = !inEditMode;
             }
@@ -330,9 +308,6 @@ namespace SGDWithCocos.Shared.Layers
         public void DrawSingleField()
         {
             sentenceFrame.Visible = false;
-
-            singleFrame.Color = Green;
-            multiFrame.Color = White;
         }
 
         /// <summary>
@@ -341,9 +316,6 @@ namespace SGDWithCocos.Shared.Layers
         public void DrawFramedField()
         {
             sentenceFrame.Visible = true;
-
-            singleFrame.Color = White;
-            multiFrame.Color = Green;
         }
 
         /// <summary>
@@ -462,7 +434,6 @@ namespace SGDWithCocos.Shared.Layers
                         if (mSprite.Tag == SpriteTypes.FolderTag)
                         {
                             // If the icon being renamed is a folder, change the storage references too
-
                             for (var i = storedList.Count - 1; i >= 0; i--)
                             {
                                 if (storedList[i].FolderName == mContent.Text)
@@ -482,7 +453,6 @@ namespace SGDWithCocos.Shared.Layers
                         }
 
                         // Apply new text 
-
                         mContent.Text = text;
                     }
                 }
@@ -1152,6 +1122,8 @@ namespace SGDWithCocos.Shared.Layers
 
             #endregion
 
+            /*
+
             #region Single Frame Button
 
             else if (caller.GetHashCode() == singleFrame.GetHashCode())
@@ -1217,6 +1189,8 @@ namespace SGDWithCocos.Shared.Layers
             }
 
             #endregion
+
+            */
 
             #region Field Icon Touch
 
@@ -1484,6 +1458,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 #endregion
 
+                /*
+
                 #region Ended on Take Photo Button
 
                 else if (touchType == Tags.Tag.TakePhoto && inEditMode)
@@ -1525,6 +1501,8 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 #endregion
+
+                */
 
                 #region Ended on Folder Icon (active), both short and for possible delete
 
@@ -1608,6 +1586,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 #endregion
 
+                /*
+
                 #region Ended on Single Frame Mode 
 
                 else if (touchType == Tags.Tag.SingleMode && inEditMode)
@@ -1629,6 +1609,8 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 #endregion
+
+                */
 
                 #region Ended on Close Modal Window Button
 
@@ -1840,6 +1822,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 #endregion
 
+                /*
+
                 #region Touching single mode button, at least initially
 
                 else if (touchType == Tags.Tag.SingleMode)
@@ -1869,6 +1853,8 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 #endregion
+
+                */
 
                 #region Touching window, directly
 

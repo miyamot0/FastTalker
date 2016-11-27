@@ -41,9 +41,6 @@ namespace SGDWithCocos.Tags
         public const int RemoveTag = 07;
         public const int IconTag = 08;
         public const int MiscTag = 09;
-        public const int SingleModeTag = 10;
-        public const int MultiModeTag = 11;
-        public const int TakePhotoTag = 12;
         public const int WindowTag = 13;
         public const int StoredIconTag = 14;
         public const int CloseWindowTag = 15;
