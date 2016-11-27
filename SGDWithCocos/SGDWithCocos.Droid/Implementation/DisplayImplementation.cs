@@ -30,6 +30,10 @@ using Android.Views;
 using Android.Content;
 using Android.Runtime;
 using SGDWithCocos.Droid.Implementation;
+using Android.OS;
+using Android.App;
+using Android.Graphics;
+using System;
 
 [assembly: Xamarin.Forms.Dependency(typeof(DisplayImplementation))]
 namespace SGDWithCocos.Droid.Implementation
@@ -40,21 +44,43 @@ namespace SGDWithCocos.Droid.Implementation
 
         public static void Init() { }
 
+        [Obsolete("Message")]
         int IDisplay.Height
         {
             get
             {
-                IWindowManager windowManager = Android.App.Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
-                return windowManager.DefaultDisplay.Height;
+                IWindowManager windowManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+
+                if (Build.VERSION.SdkInt < BuildVersionCodes.HoneycombMr2)
+                {
+                    return windowManager.DefaultDisplay.Height;
+                }
+                else
+                {
+                    Point size = new Point();
+                    windowManager.DefaultDisplay.GetSize(size);
+                    return size.Y;
+                }
             }
         }
 
+        [Obsolete("Message")]
         int IDisplay.Width
         {
             get
             {
-                IWindowManager windowManager = Android.App.Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
-                return windowManager.DefaultDisplay.Width;
+                IWindowManager windowManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+
+                if (Build.VERSION.SdkInt < BuildVersionCodes.HoneycombMr2)
+                {
+                    return windowManager.DefaultDisplay.Width;
+                }
+                else
+                {
+                    Point size = new Point();
+                    windowManager.DefaultDisplay.GetSize(size);
+                    return size.X;
+                }
             }
         }
     }

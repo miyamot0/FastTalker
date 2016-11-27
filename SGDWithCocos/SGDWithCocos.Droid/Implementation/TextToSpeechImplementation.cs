@@ -57,6 +57,7 @@ namespace SGDWithCocos.Droid.Implementation
         /// After init, echo out speech
         /// </summary>
         /// <param name="status"></param>
+        [Obsolete("Message")]
         public void OnInit(OperationResult status)
         {
             if (status.Equals(OperationResult.Success))
@@ -71,6 +72,7 @@ namespace SGDWithCocos.Droid.Implementation
         /// Route speech to suitable Api 
         /// </summary>
         /// <param name="text"></param>
+        [Obsolete("Message")]
         private void SpeakRoute(string text)
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
