@@ -393,7 +393,6 @@ namespace SGDWithCocos.Shared.Layers
 
                     // Loop back in
                     CallBackIcon(base64ImageRepresentation, text, "png");
-
                 }
                 else if (base64 != "" && text != "")
                 {
@@ -2089,6 +2088,8 @@ namespace SGDWithCocos.Shared.Layers
         {
             totalDuration += frameTimeInSeconds;
 
+            #region Save Interval
+
             if (totalDuration > saveInterval)
             {   
                 lock(iconList2)
@@ -2102,7 +2103,11 @@ namespace SGDWithCocos.Shared.Layers
                 totalDuration = 0f;
             }
 
-            foreach(var t in iconList2)
+            #endregion 
+
+            #region Loop through items in field, alter colors if necessary
+
+            foreach (var t in iconList2)
             {
                 if (t.Sprite.Tag == SpriteTypes.IconTag)
                 {
@@ -2142,7 +2147,10 @@ namespace SGDWithCocos.Shared.Layers
                         }
                     }
                 }
-            }            
+            }
+
+            #endregion
+
         }
 
         /// <summary>
