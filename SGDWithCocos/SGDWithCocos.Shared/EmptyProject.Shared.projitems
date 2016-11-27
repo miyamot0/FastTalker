@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Tags\StringTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\Tags.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteMaker.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\PopUpWindow.cs" />
   </ItemGroup>
 </Project>

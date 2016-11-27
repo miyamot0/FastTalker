@@ -57,8 +57,6 @@ namespace SGDWithCocos.Shared.Layers
                  speakerFrame,
                  deleteFrame,
                  addFrame,
-                 addFolderFrame,
-                 takePhotoFrame,
                  singleFrame,
                  multiFrame,
                  closeButton = null,
@@ -190,18 +188,6 @@ namespace SGDWithCocos.Shared.Layers
                 AddEventListener(mListener.Copy(), addFrame);
                 AddChild(addFrame, 0, SpriteTypes.AddTag);
 
-            var takePhotoSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("CameraIcon"));
-            takePhotoFrame = spriteModelFactory.TakePhotoButton(takePhotoSpriteFrame, backingSpriteFrame);
-            takePhotoFrame.Visible = false;
-                AddEventListener(mListener.Copy(), takePhotoFrame);
-                AddChild(takePhotoFrame, 0, SpriteTypes.TakePhotoTag);
-
-            var addFolderSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("FolderClosed"));
-            addFolderFrame = spriteModelFactory.MakeAddFolderButton(addFolderSpriteFrame, backingSpriteFrame);
-            addFolderFrame.Visible = false;
-                AddEventListener(mListener.Copy(), addFolderFrame);
-                AddChild(addFolderFrame, 0, SpriteTypes.FolderTag);
-
             var singleSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Single"));
             singleFrame = spriteModelFactory.MakeSingleButton(singleSpriteFrame, backingSpriteFrame);
             singleFrame.Visible = false;
@@ -314,8 +300,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 this.Color = CCColor3B.Orange;
                 addFrame.Visible = true;
-                takePhotoFrame.Visible = true;
-                addFolderFrame.Visible = true;
+                //takePhotoFrame.Visible = true;
+                //addFolderFrame.Visible = true;
                 deleteFrame.Visible = true;
                 singleFrame.Visible = true;
                 multiFrame.Visible = true;
@@ -328,8 +314,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 this.Color = CCColor3B.Gray;
                 addFrame.Visible = false;
-                takePhotoFrame.Visible = false;
-                addFolderFrame.Visible = false;
+                //takePhotoFrame.Visible = false;
+                //addFolderFrame.Visible = false;
                 deleteFrame.Visible = false;
                 singleFrame.Visible = false;
                 multiFrame.Visible = false;
@@ -1005,25 +991,6 @@ namespace SGDWithCocos.Shared.Layers
         }
         
         /// <summary>
-        /// Static call, extract label
-        /// </summary>
-        /// <param name="sprite"></param>
-        /// <returns></returns>
-        public string SpriteHasLabel(CCSprite sprite)
-        {
-            var contentTag = sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
-
-            if (contentTag != null)
-            {
-                return contentTag.Text;
-            }
-            else
-            {
-                return "";
-            }
-        }
-
-        /// <summary>
         /// Touch begin listener
         /// </summary>
         /// <param name="touch"></param>
@@ -1178,71 +1145,6 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     CurrentSpriteTouched = null;
                     addFrame.Opacity = 255;
-
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region Take Photo Button
-
-            else if (caller.GetHashCode() == takePhotoFrame.GetHashCode())
-            {
-                foreach (IconReference iconRef in iconList2)
-                {
-                    var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
-
-                    if (takePhotoFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
-                    {
-                        return false;
-                    }
-                }
-
-                if (takePhotoFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                {
-                    touchType = Tags.Tag.TakePhoto;
-                    CurrentSpriteTouched = takePhotoFrame;
-                    takePhotoFrame.Opacity = 155;
-
-                    return true;
-                }
-                else
-                {
-                    CurrentSpriteTouched = null;
-                    takePhotoFrame.Opacity = 255;
-
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region Add Folder Button
-
-            else if (caller.GetHashCode() == addFolderFrame.GetHashCode())
-            {
-                foreach (IconReference iconRef in iconList2)
-                {
-                    var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
-
-                    if (addFolderFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
-                    {
-                        return false;
-                    }
-                }
-
-                if (addFolderFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                {
-                    touchType = Tags.Tag.Folder;
-                    CurrentSpriteTouched = addFolderFrame;
-                    addFolderFrame.Opacity = 155;
-                    return true;
-                }
-                else
-                {
-                    CurrentSpriteTouched = null;
-                    addFolderFrame.Opacity = 255;
 
                     return false;
                 }
@@ -1456,7 +1358,7 @@ namespace SGDWithCocos.Shared.Layers
 
                     if (mIntersect.Count == 1)
                     {
-                        string mContentTag = SpriteHasLabel(mIntersect[0].Sprite);
+                        string mContentTag = SpriteTools.SpriteHasLabel(mIntersect[0].Sprite);
 
                         if (mContentTag != "")
                         {
@@ -1521,21 +1423,6 @@ namespace SGDWithCocos.Shared.Layers
                         target.AddAction(iconAnimationFocus);
                     }
 
-                    /*
-                    if (!inEditMode)
-                    {
-                        var mIntersectingIcons = iconList2
-                            .Where(i => i.Sprite.BoundingBoxTransformedToWorld.IntersectsRect(rect) && i.Sprite.GetHashCode() != target.GetHashCode() && i.Sprite.Tag == SpriteTypes.IconTag)
-                            .ToList();
-
-                        if (mIntersectingIcons.Count > 0)
-                        {
-                            // Stub, handle re-calibration later
-                            //var mReferenceIcon = mIntersectingIcons.FirstOrDefault();
-                        }
-                    }
-                    */
-
                     if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(rect) && inEditMode)
                     {
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
@@ -1576,7 +1463,7 @@ namespace SGDWithCocos.Shared.Layers
                 else if (touchType == Tags.Tag.FolderIcon && !inEditMode)
                 {
                     CurrentSpriteTouched.Opacity = 255;
-                    string contentTag = SpriteHasLabel(CurrentSpriteTouched);
+                    string contentTag = SpriteTools.SpriteHasLabel(CurrentSpriteTouched);
 
                     if (contentTag != "")
                     {
@@ -1592,7 +1479,7 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     CurrentSpriteTouched.Opacity = 255;
 
-                    GamePageParent.CallActionSheetChoice();
+                    GamePageParent.CallActionSheetChoice(new List<IconReference>(iconList2));
                 }
 
                 #endregion
@@ -1622,7 +1509,7 @@ namespace SGDWithCocos.Shared.Layers
                     // For icons with a Folder value, add to a list, to avoid dupes
                     mList.ForEach(p =>
                     {
-                        var returnedString = SpriteHasLabel(p.Sprite);
+                        var returnedString = SpriteTools.SpriteHasLabel(p.Sprite);
 
                         if (returnedString != "")
                         {
@@ -1694,7 +1581,7 @@ namespace SGDWithCocos.Shared.Layers
 
                     foreach (IconReference mIcon in mList)
                     {
-                        string contentTag = SpriteHasLabel(mIcon.Sprite);
+                        string contentTag = SpriteTools.SpriteHasLabel(mIcon.Sprite);
 
                         if (contentTag != "")
                         {
@@ -1947,36 +1834,6 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         CurrentSpriteTouched = null;
                         addFrame.Opacity = 255;
-                        return;
-                    }
-                }
-
-                #endregion
-
-                #region Touching take photo button, at least initially
-
-                else if (touchType == Tags.Tag.TakePhoto)
-                {
-                    // If the touch veers from bounds of take photo, reset 
-                    if (!takePhotoFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                    {
-                        CurrentSpriteTouched = null;
-                        takePhotoFrame.Opacity = 255;
-                        return;
-                    }
-                }
-
-                #endregion
-
-                #region Touching add folder button, at least initially
-
-                else if (touchType == Tags.Tag.Folder)
-                {
-                    // If the touch veers from bounds of add folder frame, reset 
-                    if (!addFolderFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                    {
-                        CurrentSpriteTouched = null;
-                        addFolderFrame.Opacity = 255;
                         return;
                     }
                 }

@@ -43,6 +43,7 @@ using Plugin.Permissions.Abstractions;
 using SGDWithCocos.Scenes;
 using SGDWithCocos.Shared.Layers;
 using System.Linq;
+using SGDWithCocos.Utilities;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -214,18 +215,72 @@ namespace SGDWithCocos.Shared.Pages
         /// <summary>
         /// Branching logic for pictures
         /// </summary>
-        public async void CallActionSheetChoice()
+        public async void CallActionSheetChoice(List<IconReference> mIcons)
         {
-            string buttonSelect = await GetActionSheetChoice();
+            string buttonSelect = await GetActionTypeActionSheet();
 
-            if (buttonSelect == StringTypes.LocalImage)
+            if (buttonSelect == StringTypes.AddIcon)
             {
-                CallCategoryPicker();
+                // Add icon logic
+
+                string actionSelect = await GetActionSheetChoice();
+
+                if (actionSelect == StringTypes.LocalImage)
+                {
+                    CallCategoryPicker();
+                }
+                else if (actionSelect == StringTypes.DownloadedImage)
+                {
+                    CallImagePicker();
+                }
             }
-            else if (buttonSelect == StringTypes.DownloadedImage)
+            else if (buttonSelect == StringTypes.TakePhoto)
             {
-                CallImagePicker();
+                // Take picture for icon logic
+
+                CallImageTaker();
             }
+            else if (buttonSelect == StringTypes.AddFolder)
+            {
+                // Get Active, foldered icons
+                var mList = mIcons.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
+
+                var nameList = new List<string>();
+
+                // For icons with a Folder value, add to a list, to avoid dupes
+                mList.ForEach(p =>
+                {
+                    var returnedString = SpriteTools.SpriteHasLabel(p.Sprite);
+
+                    if (returnedString != "")
+                    {
+                        nameList.Add(returnedString.ToLower());
+                    }
+                });
+
+                // Lock list and send up to GamePage for UI and folder naming
+                //lock (nameList)
+                //{
+                    GetFolderSetup(nameList);
+                    //GamePageParent.GetFolderSetup(nameList);
+                //}
+            }
+        }
+
+        public Task<string> GetActionTypeActionSheet()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var mAction = await DisplayActionSheet("What would you like to add?", "Cancel", "OK",
+                    StringTypes.AddIcon,
+                    StringTypes.TakePhoto,
+                    StringTypes.AddFolder);
+                tcs.SetResult(mAction);
+            });
+
+            return tcs.Task;
         }
 
         /// <summary>

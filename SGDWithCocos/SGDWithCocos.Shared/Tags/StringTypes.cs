@@ -45,5 +45,9 @@ namespace SGDWithCocos.Tags
 
         public static string LocalImage = "Local";
         public static string DownloadedImage = "Downloaded";
+
+        public static string AddIcon = "Add Icon";
+        public static string TakePhoto = "Take Photo";
+        public static string AddFolder = "Add Folder";
     }
 }
