@@ -180,13 +180,13 @@ namespace SGDWithCocos.Shared.Layers
                 AddEventListener(mListener, speakerFrame);
                 AddChild(speakerFrame, 0, SpriteTypes.SpeakerTag);
 
-            var addSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("AddNew"));
+            var addSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Settings"));
             addFrame = spriteModelFactory.MakeAddButton(addSpriteFrame, backingSpriteFrame);
             addFrame.Visible = false;
                 AddEventListener(mListener.Copy(), addFrame);
                 AddChild(addFrame, 0, SpriteTypes.AddTag);
 
-            var removeSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("Trash"));
+            var removeSpriteFrame = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("TrashCan"));
             deleteFrame = spriteModelFactory.MakeRemoveButton(removeSpriteFrame, backingSpriteFrame);
             deleteFrame.Visible = false;
                 AddChild(deleteFrame, 0, SpriteTypes.RemoveTag);
@@ -1121,77 +1121,7 @@ namespace SGDWithCocos.Shared.Layers
             }
 
             #endregion
-
-            /*
-
-            #region Single Frame Button
-
-            else if (caller.GetHashCode() == singleFrame.GetHashCode())
-            {
-                foreach (IconReference iconRef in iconList2)
-                {
-                    var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
-
-                    if (singleFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
-                    {
-                        return false;
-                    }
-                }
-
-                if (singleFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                {
-                    touchType = Tags.Tag.SingleMode;
-                    CurrentSpriteTouched = singleFrame;
-                    singleFrame.Opacity = 155;
-
-                    return true;
-                }
-                else
-                {
-                    CurrentSpriteTouched = null;
-                    singleFrame.Opacity = 255;
-
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region Multi Frame Button
-
-            else if (caller.GetHashCode() == multiFrame.GetHashCode())
-            {
-                foreach (IconReference iconRef in iconList2)
-                {
-                    var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
-
-                    if (multiFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
-                    {
-                        return false;
-                    }
-                }
-
-                if (multiFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                {
-                    touchType = Tags.Tag.MultiMode;
-                    CurrentSpriteTouched = multiFrame;
-                    multiFrame.Opacity = 155;
-
-                    return true;
-                }
-                else
-                {
-                    CurrentSpriteTouched = null;
-                    multiFrame.Opacity = 255;
-
-                    return false;
-                }
-            }
-
-            #endregion
-
-            */
-
+            
             #region Field Icon Touch
 
             foreach (IconReference iconRef in iconList2)
@@ -1457,53 +1387,7 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 #endregion
-
-                /*
-
-                #region Ended on Take Photo Button
-
-                else if (touchType == Tags.Tag.TakePhoto && inEditMode)
-                {
-                    CurrentSpriteTouched.Opacity = 255;
-
-                    GamePageParent.CallImageTaker();
-                }
-
-                #endregion
-
-                #region Ended on Add Folder Button
-
-                else if (touchType == Tags.Tag.Folder && inEditMode)
-                {
-                    CurrentSpriteTouched.Opacity = 255;
-
-                    // Get Active, foldered icons
-                    var mList = iconList2.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
-
-                    var nameList = new List<string>();
-
-                    // For icons with a Folder value, add to a list, to avoid dupes
-                    mList.ForEach(p =>
-                    {
-                        var returnedString = SpriteTools.SpriteHasLabel(p.Sprite);
-
-                        if (returnedString != "")
-                        {
-                            nameList.Add(returnedString.ToLower());
-                        }
-                    });
-
-                    // Lock list and send up to GamePage for UI and folder naming
-                    lock (nameList)
-                    {
-                        GamePageParent.GetFolderSetup(nameList);
-                    }
-                }
-
-                #endregion
-
-                */
-
+                
                 #region Ended on Folder Icon (active), both short and for possible delete
 
                 else if (touchType == Tags.Tag.FolderIcon && inEditMode)
@@ -1585,33 +1469,7 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 #endregion
-
-                /*
-
-                #region Ended on Single Frame Mode 
-
-                else if (touchType == Tags.Tag.SingleMode && inEditMode)
-                {
-                    CurrentSpriteTouched.Opacity = 255;
-
-                    SetSingleMode(true);
-                }
-
-                #endregion
-
-                #region Ended on Multi Frame Mode 
-
-                else if (touchType == Tags.Tag.MultiMode && inEditMode)
-                {
-                    CurrentSpriteTouched.Opacity = 255;
-
-                    SetSingleMode(false);
-                }
-
-                #endregion
-
-                */
-
+                
                 #region Ended on Close Modal Window Button
 
                 else if (touchType == Tags.Tag.CloseButton)
@@ -1821,41 +1679,7 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 #endregion
-
-                /*
-
-                #region Touching single mode button, at least initially
-
-                else if (touchType == Tags.Tag.SingleMode)
-                {
-                    // If the touch veers from bounds of add folder frame, reset 
-                    if (!singleFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                    {
-                        CurrentSpriteTouched = null;
-                        singleFrame.Opacity = 255;
-                        return;
-                    }
-                }
-
-                #endregion
-
-                #region Touching multi mode button, at least initially
-
-                else if (touchType == Tags.Tag.MultiMode)
-                {
-                    // If the touch veers from bounds of add folder frame, reset 
-                    if (!multiFrame.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
-                    {
-                        CurrentSpriteTouched = null;
-                        multiFrame.Opacity = 255;
-                        return;
-                    }
-                }
-
-                #endregion
-
-                */
-
+                
                 #region Touching window, directly
 
                 else if (touchType == Tags.Tag.Window || touchType == Tags.Tag.TransitionIcon)

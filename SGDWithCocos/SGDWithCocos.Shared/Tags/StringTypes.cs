@@ -46,7 +46,7 @@ namespace SGDWithCocos.Tags
         public static string LocalImage = "Local";
         public static string DownloadedImage = "Downloaded";
 
-        public static string ChangeSettings = "Change Mode";
+        public static string ChangeSettings = "Change Output Mode";
         public static string AddIcon = "Add an Icon";
         public static string TakePhoto = "Take a Photo";
         public static string AddFolder = "Add a Folder";

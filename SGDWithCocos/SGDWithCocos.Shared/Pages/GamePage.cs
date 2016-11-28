@@ -288,7 +288,7 @@ namespace SGDWithCocos.Shared.Pages
 
             Device.BeginInvokeOnMainThread(async () =>
             {
-                var mAction = await DisplayActionSheet("What would you like to add?", "Cancel", "OK",
+                var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
