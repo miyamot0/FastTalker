@@ -66,6 +66,7 @@ namespace SGDWithCocos.Models
         public string image_id { get; set; }
         public string background_color { get; set; }
         public string border_color { get; set; }
+        public OpenBoardModelBoards load_board { get; set; }
     }
 
     /// <summary>
@@ -135,5 +136,16 @@ namespace SGDWithCocos.Models
         public string source_url { get; set; }
         public string author_name { get; set; }
         public string author_url { get; set; }
+    }
+
+    /// <summary>
+    /// Deserialize links to other boards
+    /// </summary>
+    public class OpenBoardModelBoards
+    {
+        public string name { get; set; }
+        public string url { get; set; }
+        public string data_url { get; set; }
+
     }
 }

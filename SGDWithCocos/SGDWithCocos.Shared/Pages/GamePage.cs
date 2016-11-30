@@ -382,7 +382,7 @@ namespace SGDWithCocos.Shared.Pages
                     var base64string = "";
                     var buttonImageType = "png";
 
-                    var matchingImg = mImages.Where(i => i.id == button.image_id).First();
+                    var matchingImg = mImages.Where(i => i.id == button.image_id).FirstOrDefault();
 
                     if (matchingImg != null)
                     {
