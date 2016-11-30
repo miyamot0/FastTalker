@@ -48,6 +48,8 @@ using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
 using System.Text;
 using System.Net;
+using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Core;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -318,10 +320,13 @@ namespace SGDWithCocos.Shared.Pages
                         }
                         else if (extension == ".obz")
                         {
-                            Console.WriteLine("OBZ format");
-                            Console.WriteLine(Environment.NewLine);
+                            //Console.WriteLine("OBZ format");
+                            //Console.WriteLine(Environment.NewLine);
+                            
+                            //MemoryStream stream = new MemoryStream(file.DataArray);
+                            //string decoded = Encoding.UTF8.GetString(stream.ToArray());
 
-                            //ParseOBZ(savedPathFile);
+                            //ParseOBZ(decoded);
                         }
                     }
                     catch (Exception exception)
@@ -347,6 +352,8 @@ namespace SGDWithCocos.Shared.Pages
 
             try
             {
+                mLayer.MaskBackground();
+
                 List<OpenBoardModelImageReference> mImages = new List<OpenBoardModelImageReference>();
 
                 foreach (var image in jsonContent.images)
@@ -382,7 +389,14 @@ namespace SGDWithCocos.Shared.Pages
                     var base64string = "";
                     var buttonImageType = "png";
 
+                    // Exclude hidden buttons
                     if (button.hidden != null && button.hidden == true)
+                    {
+                        continue;
+                    }
+
+                    // Exclude clearing buttons, as we have them
+                    if (button.action != null && button.action == ":clear")
                     {
                         continue;
                     }
@@ -396,18 +410,128 @@ namespace SGDWithCocos.Shared.Pages
 
                     if (button.load_board == null)
                     {
-                        mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType);
+                        mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType, button.image_id);
                     }
                     else
                     {
-                        mLayer.MakeIconFolder(null, buttonLabel, base64string);
+                        mLayer.MakeIconFolder(null, buttonLabel, base64string, button.image_id);
                     }
+                }
 
+                double rows = Convert.ToDouble(jsonContent.grid.rows),
+                       cols = Convert.ToDouble(jsonContent.grid.columns);
+
+                for (int i = 0; i < rows; i++)
+                {
+                    var row = jsonContent.grid.order.ElementAt(i);
+
+                    for (int j=0; j < cols; j++)
+                    {
+                        string currItem = row[j];
+
+                        if (currItem == null) continue;
+
+                        double xProp = (((double)j / (cols + 1.0)) * width) + (width * 0.1);
+                        double yProp = height - (((double)i / (rows + 1.0)) * height) - (height * 0.1);
+
+                        Console.WriteLine("i: {0}, j: {1}, currItem: {2}, x: {3}, y: {4}", i, j, currItem, xProp, yProp);
+
+                        var mButton = jsonContent.buttons.Where(b => b.id == currItem).FirstOrDefault();
+
+                        mLayer.UpdatePositionNamedSprite(mButton.image_id, (int)xProp, (int)yProp);
+                    }
                 }
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception.ToString());
+            }
+            finally
+            {
+                mLayer.RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
+            }
+        }
+
+        /// <summary>
+        /// Parse OBZ files (not yet incorporated)
+        /// </summary>
+        /// <param name="fileText"></param>
+        private void ParseOBZ(string fileText)
+        {
+            try
+            {
+                ZipFile zf = null;
+                try
+                {
+                    OpenBoardModel jsonContent = JsonConvert.DeserializeObject<OpenBoardModel>(fileText);
+
+                    FileStream fs = File.OpenRead(fileText);
+                    zf = new ZipFile(fs);
+
+
+                    foreach (ZipEntry zipEntry in zf)
+                    {
+                        if (!zipEntry.Name.Contains("manifest.json")) continue;
+
+                        byte[] buffer = new byte[4096];     // 4K is optimum
+                        Stream zipStream = zf.GetInputStream(zipEntry);
+
+                        OpenBoardManifestModel jsonContent = null;
+
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            StreamUtils.Copy(zipStream, ms, buffer);
+                            ms.Position = 0;
+
+                            string myStr = Encoding.UTF8.GetString(ms.ToArray());
+
+                            jsonContent = JsonConvert.DeserializeObject<OpenBoardManifestModel>(myStr);
+
+                        }
+
+                        Console.WriteLine(jsonContent.root);
+
+                        //return;
+
+
+                        /*
+                        if (!zipEntry.Name.Contains(".obf")) continue; // Ignore directories
+
+                        string entryFileName = zipEntry.Name;
+
+                        Console.WriteLine(entryFileName);
+
+                        buffer = new byte[4096];     // 4K is optimum
+                        zipStream = zf.GetInputStream(zipEntry);
+
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            StreamUtils.Copy(zipStream, ms, buffer);
+                            ms.Position = 0;
+
+                            string myStr = Encoding.UTF8.GetString(ms.ToArray());
+
+                            ParseOBF(myStr);
+                        }
+
+
+                        return;
+                        */
+
+                    }
+                }
+                finally
+                {
+                    if (zf != null)
+                    {
+                        zf.IsStreamOwner = true;
+                        zf.Close();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
             }
         }
 
@@ -544,7 +668,7 @@ namespace SGDWithCocos.Shared.Pages
         public async void NameEmbeddedIcon(CCNode node)
         {
             var results = await NameWindow(node);
-            mLayer.CallBackIcon(results[0], results[1], results[2]);
+            mLayer.CallBackIcon(results[0], results[1], results[2], null);
         }
 
         /// <summary>
@@ -610,7 +734,7 @@ namespace SGDWithCocos.Shared.Pages
                     // If permissions granted, query selection and call back
 
                     var results = await GetImageSelection();
-                    mLayer.CallBackIcon(results[0], results[1], results[2]);
+                    mLayer.CallBackIcon(results[0], results[1], results[2], null);
                 }
                 else if (status != PermissionStatus.Unknown)
                 {
@@ -763,7 +887,7 @@ namespace SGDWithCocos.Shared.Pages
                 {
                     // if a color was supplied, create the necessary folder in the field
 
-                    mLayer.MakeIconFolder(assetName, folderName, null);
+                    mLayer.MakeIconFolder(assetName, folderName, null, null);
                 }
             }
         }
@@ -799,7 +923,7 @@ namespace SGDWithCocos.Shared.Pages
                     // If permissions granted, query selection and call back
 
                     var results = await GetImageCamera();
-                    mLayer.CallBackIcon(results[0], results[1], results[2]);
+                    mLayer.CallBackIcon(results[0], results[1], results[2], null);
                 }
                 else if (status != PermissionStatus.Unknown)
                 {

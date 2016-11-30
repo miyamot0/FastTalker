@@ -329,12 +329,31 @@ namespace SGDWithCocos.Shared.Layers
         }
 
         /// <summary>
+        /// Update named sprite
+        /// </summary>
+        public void UpdatePositionNamedSprite(string name, int positionX, int positionY)
+        {
+            Console.WriteLine(name);
+
+            ScheduleOnce((dt) =>
+            {
+                var namedSprite = iconList2.Where(i => i.Sprite.Name == name).FirstOrDefault();
+
+                if (namedSprite != null)
+                {
+                    namedSprite.Sprite.PositionX = positionX;
+                    namedSprite.Sprite.PositionY = positionY;
+                }
+            }, 0f);
+        }
+
+        /// <summary>
         /// Method called back from main UI thread
         /// </summary>
         /// <param name="base64">base64 image string</param>
         /// <param name="text">image text/speech text</param>
         /// <param name="extension">file extension</param>
-        public void CallBackIcon(string base64, string text, string extension)
+        public void CallBackIcon(string base64, string text, string extension, string name)
         {
             ScheduleOnce((dt) => {
                 // Loop into main game thread
@@ -360,7 +379,7 @@ namespace SGDWithCocos.Shared.Layers
                     sprite.Dispose();
 
                     // Loop back in
-                    CallBackIcon(base64ImageRepresentation, text, "png");
+                    CallBackIcon(base64ImageRepresentation, text, "png", null);
                 }
                 else if (base64 != "" && text != "")
                 {
@@ -370,6 +389,12 @@ namespace SGDWithCocos.Shared.Layers
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
                     var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+
+                    if (name != null)
+                    {
+                        newIcons.Name = name;
+                    }
+
                     var mIconRef = new IconReference(newIcons, base64, 1f, true);
                     iconList2.Add(mIconRef);
 
@@ -393,6 +418,12 @@ namespace SGDWithCocos.Shared.Layers
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
                     var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+
+                    if (name != null)
+                    {
+                        newIcons.Name = name;
+                    }
+
                     var mIconRef = new IconReference(newIcons, base64, 1f, true);
                     iconList2.Add(mIconRef);
 
@@ -418,7 +449,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         /// <param name="assetName">Refers to the colored sprite</param>
         /// <param name="folderName">The name of the actual folder</param>
-        public void MakeIconFolder(string assetName, string folderName, string base64)
+        public void MakeIconFolder(string assetName, string folderName, string base64, string name)
         {
             ScheduleOnce((dt) => {
                 // Introduce some jitter into the positioning of the icon

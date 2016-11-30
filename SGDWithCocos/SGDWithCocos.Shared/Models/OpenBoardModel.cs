@@ -67,6 +67,7 @@ namespace SGDWithCocos.Models
         public string background_color { get; set; }
         public string border_color { get; set; }
         public bool? hidden { get; set; }
+        public string action { get; set; }
         public OpenBoardModelBoards load_board { get; set; }
     }
 
