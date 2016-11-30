@@ -44,6 +44,10 @@ using SGDWithCocos.Scenes;
 using SGDWithCocos.Shared.Layers;
 using System.Linq;
 using SGDWithCocos.Utilities;
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
+using System.Text;
+using System.Net;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -219,6 +223,8 @@ namespace SGDWithCocos.Shared.Pages
         {
             string buttonSelect = await GetActionTypeActionSheet();
 
+            #region Change SGD Level
+
             if (buttonSelect == StringTypes.ChangeSettings)
             {
                 // Change mode logic
@@ -233,8 +239,12 @@ namespace SGDWithCocos.Shared.Pages
                 {
                     mLayer.SetSingleMode(false);
                 }
-
             }
+
+            #endregion
+
+            #region Add Icons
+
             else if (buttonSelect == StringTypes.AddIcon)
             {
                 // Add icon logic
@@ -250,12 +260,22 @@ namespace SGDWithCocos.Shared.Pages
                     CallImagePicker();
                 }
             }
+
+            #endregion
+
+            #region Take Photo
+
             else if (buttonSelect == StringTypes.TakePhoto)
             {
                 // Take picture for icon logic
 
                 CallImageTaker();
             }
+
+            #endregion
+
+            #region Add Folder
+
             else if (buttonSelect == StringTypes.AddFolder)
             {
                 // Get Active, foldered icons
@@ -276,6 +296,78 @@ namespace SGDWithCocos.Shared.Pages
 
                 GetFolderSetup(nameList);
             }
+
+            #endregion
+
+            else if (buttonSelect == StringTypes.ImportBoard)
+            {
+                try
+                {
+                    FileData file = await CrossFilePicker.Current.PickFile();
+
+                    try
+                    {
+                        var extension = Path.GetExtension(file.FileName);
+
+                        if (extension == ".obf")
+                        {
+                            MemoryStream stream = new MemoryStream(file.DataArray);
+                            string decoded = Encoding.UTF8.GetString(stream.ToArray());
+
+                            ParseOBF(decoded);
+                        }
+                        else if (extension == ".obz")
+                        {
+                            Console.WriteLine("OBZ format");
+                            Console.WriteLine(Environment.NewLine);
+
+                            //ParseOBZ(savedPathFile);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.ToString());
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Parse OBF file individually
+        /// </summary>
+        /// <param name="jsonContent"></param>
+        private void ParseOBF(string fileText)
+        {
+            OpenBoardModel jsonContent = JsonConvert.DeserializeObject<OpenBoardModel>(fileText);
+
+            try
+            {
+                foreach (var button in jsonContent.buttons)
+                {
+                    var buttonLabel = button.label;
+                    var base64string = "";
+                    var buttonImageType = "png";
+
+                    foreach (var image in jsonContent.images)
+                    {
+                        if (image.id == button.image_id)
+                        {
+                            base64string = image.data.Split(',')[1];
+                        }
+                    }
+
+                    mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType);
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.ToString());
+            }
         }
 
         /// <summary>
@@ -289,6 +381,7 @@ namespace SGDWithCocos.Shared.Pages
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
+                    StringTypes.ImportBoard,
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,

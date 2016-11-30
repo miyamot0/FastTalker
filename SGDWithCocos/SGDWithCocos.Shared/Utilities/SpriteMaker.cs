@@ -233,22 +233,42 @@ namespace SGDWithCocos.Utilities
                 Tag = SpriteTypes.IconTag
             };
 
-            byte[] bytes = System.Convert.FromBase64String(base64string);
+            CCSprite subIconFrame = null;
+
+            // If passed a blank base64, assume its meant to be just white
+            if (base64string != "")
+            {
+                byte[] bytes = System.Convert.FromBase64String(base64string);
                 var testTexture = new CCTexture2D(bytes);
                 var testFrame = new CCSpriteFrame(testTexture, new CCRect(0, 0, testTexture.PixelsWide, testTexture.PixelsHigh));
 
-            var dimToScale = System.Math.Max(testFrame.ContentSize.Width, testFrame.ContentSize.Height);
-            var scalingImg =  (parentSprite.ContentSize.Height * 0.75f) / dimToScale;
+                var dimToScale = System.Math.Max(testFrame.ContentSize.Width, testFrame.ContentSize.Height);
+                var scalingImg = (parentSprite.ContentSize.Height * 0.75f) / dimToScale;
 
-            var subIconFrame = new CCSprite(testFrame)
+                subIconFrame = new CCSprite(testFrame)
+                {
+                    AnchorPoint = CCPoint.AnchorMiddle,
+                    ContentSize = new CCSize(testFrame.ContentSize.Width * scalingImg, testFrame.ContentSize.Height * scalingImg),
+                    PositionX = parentSprite.ContentSize.Width / 2f,
+                    PositionY = parentSprite.ContentSize.Height / 2f + parentSprite.ContentSize.Height * 0.075f,
+                    Tag = SpriteTypes.ImageTag
+                };
+            }
+            else
             {
-                AnchorPoint = CCPoint.AnchorMiddle,
-                ContentSize = new CCSize(testFrame.ContentSize.Width * scalingImg, testFrame.ContentSize.Height * scalingImg),
-                PositionX = parentSprite.ContentSize.Width / 2f,
-                PositionY = parentSprite.ContentSize.Height / 2f + parentSprite.ContentSize.Height * 0.075f,
-                Tag = SpriteTypes.ImageTag
-            };
-            
+                var dimToScale = System.Math.Max(backing.ContentSize.Width, backing.ContentSize.Height);
+                var scalingImg = (parentSprite.ContentSize.Height * 0.75f) / dimToScale;
+
+                subIconFrame = new CCSprite(backing)
+                {
+                    AnchorPoint = CCPoint.AnchorMiddle,
+                    ContentSize = new CCSize(backing.ContentSize.Width * scalingImg, backing.ContentSize.Height * scalingImg),
+                    PositionX = parentSprite.ContentSize.Width / 2f,
+                    PositionY = parentSprite.ContentSize.Height / 2f + parentSprite.ContentSize.Height * 0.075f,
+                    Tag = SpriteTypes.ImageTag
+                };
+            }
+
             var label = new CCLabel(iconSpeechText, "Arial", 18, CCLabelFormat.SystemFont)
             {
                 Color = CCColor3B.Black,

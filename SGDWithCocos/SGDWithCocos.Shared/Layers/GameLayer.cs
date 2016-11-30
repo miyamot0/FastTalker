@@ -375,6 +375,29 @@ namespace SGDWithCocos.Shared.Layers
                     // Add salient animation to icons added back to field
                     mIconRef.Sprite.AddAction(iconAnimationRotate);
                 }
+                else if (text != "")
+                {
+                    // Introduce some jitter into the positioning of the icon
+
+                    var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
+                    var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
+
+                    var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    var mIconRef = new IconReference(newIcons, base64, 1f, true);
+                    iconList2.Add(mIconRef);
+
+                    // Assign listener event and tag
+                    AddEventListener(mListener.Copy(), mIconRef.Sprite);
+
+                    // Add child to field properly
+                    AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.IconTag);
+
+                    // Pop up to forefront
+                    ReorderChild(mIconRef.Sprite, 999);
+
+                    // Add salient animation to icons added back to field
+                    mIconRef.Sprite.AddAction(iconAnimationRotate);
+                }
 
             }, 0);
 
