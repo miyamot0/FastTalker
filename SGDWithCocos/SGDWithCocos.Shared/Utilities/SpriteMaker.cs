@@ -256,17 +256,17 @@ namespace SGDWithCocos.Utilities
             }
             else
             {
-                var dimToScale = System.Math.Max(backing.ContentSize.Width, backing.ContentSize.Height);
+                subIconFrame = new CCSprite("frameWhite");
+
+                var dimToScale = System.Math.Max(subIconFrame.ContentSize.Width, subIconFrame.ContentSize.Height);
                 var scalingImg = (parentSprite.ContentSize.Height * 0.75f) / dimToScale;
 
-                subIconFrame = new CCSprite(backing)
-                {
-                    AnchorPoint = CCPoint.AnchorMiddle,
-                    ContentSize = new CCSize(backing.ContentSize.Width * scalingImg, backing.ContentSize.Height * scalingImg),
-                    PositionX = parentSprite.ContentSize.Width / 2f,
-                    PositionY = parentSprite.ContentSize.Height / 2f + parentSprite.ContentSize.Height * 0.075f,
-                    Tag = SpriteTypes.ImageTag
-                };
+                subIconFrame.AnchorPoint = CCPoint.AnchorMiddle;
+                subIconFrame.ContentSize = new CCSize(subIconFrame.ContentSize.Height * scalingImg, subIconFrame.ContentSize.Height * scalingImg);
+                subIconFrame.PositionX = parentSprite.ContentSize.Width / 2f;
+                subIconFrame.PositionY = parentSprite.ContentSize.Height / 2f + parentSprite.ContentSize.Height * 0.075f;
+                subIconFrame.Tag = SpriteTypes.ImageTag;
+                subIconFrame.Color = CCColor3B.White;
             }
 
             var label = new CCLabel(iconSpeechText, "Arial", 18, CCLabelFormat.SystemFont)

@@ -354,8 +354,6 @@ namespace SGDWithCocos.Shared.Layers
                 }
                 else if (base64 != "" && text != "")
                 {
-                    Console.WriteLine("has base64");
-
                     // Introduce some jitter into the positioning of the icon
 
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
@@ -379,8 +377,6 @@ namespace SGDWithCocos.Shared.Layers
                 }
                 else if (base64 == "" & text != "")
                 {
-                    Console.WriteLine("no base64");
-
                     // Introduce some jitter into the positioning of the icon
 
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
