@@ -347,18 +347,46 @@ namespace SGDWithCocos.Shared.Pages
 
             try
             {
+                List<OpenBoardModelImageReference> mImages = new List<OpenBoardModelImageReference>();
+
+                foreach (var image in jsonContent.images)
+                {
+                    if (image.data != null)
+                    {
+                        var imgRef = new OpenBoardModelImageReference();
+                        imgRef.id = image.id;
+                        imgRef.url = null;
+                        imgRef.base64 = image.data.Split(',')[1];
+
+                        mImages.Add(imgRef);
+                    }
+                    else if (image.url != null)
+                    {
+                        var imgRef = new OpenBoardModelImageReference();
+                        imgRef.url = image.url;
+                        imgRef.id = image.id;
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            byte[] data = webClient.DownloadData(image.url);
+                            imgRef.base64 = Convert.ToBase64String(data);
+                        }
+
+                        mImages.Add(imgRef);
+                    }
+                }
+
                 foreach (var button in jsonContent.buttons)
                 {
                     var buttonLabel = button.label;
                     var base64string = "";
                     var buttonImageType = "png";
 
-                    foreach (var image in jsonContent.images)
+                    var matchingImg = mImages.Where(i => i.id == button.image_id).First();
+
+                    if (matchingImg != null)
                     {
-                        if (image.id == button.image_id)
-                        {
-                            base64string = image.data.Split(',')[1];
-                        }
+                        base64string = matchingImg.base64;
                     }
 
                     mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType);

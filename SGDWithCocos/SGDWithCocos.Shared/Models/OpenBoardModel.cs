@@ -89,6 +89,29 @@ namespace SGDWithCocos.Models
     }
 
     /// <summary>
+    /// Extended OBF model for parsing of base64 through LINQ
+    /// </summary>
+    public class OpenBoardModelImageReference
+    {
+        public string id { get; set; }
+        public string width { get; set; }
+        public string height { get; set; }
+        public string data { get; set; }
+
+        public string url { get; set; }
+        public string content_type { get; set; }
+
+        public string ext_speaker_freshness { get; set; }
+
+        public string path { get; set; }
+
+        // New Here
+        public string base64 { get; set; }
+
+        public OpenBoardModelLicense license { get; set; }
+    }
+
+    /// <summary>
     /// Deserialize Sounds (not actively used)
     /// </summary>
     public class OpenBoardModelSound
