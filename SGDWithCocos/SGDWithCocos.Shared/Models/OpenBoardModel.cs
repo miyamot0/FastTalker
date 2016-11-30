@@ -66,6 +66,7 @@ namespace SGDWithCocos.Models
         public string image_id { get; set; }
         public string background_color { get; set; }
         public string border_color { get; set; }
+        public bool? hidden { get; set; }
         public OpenBoardModelBoards load_board { get; set; }
     }
 
@@ -85,7 +86,7 @@ namespace SGDWithCocos.Models
         public string ext_speaker_freshness { get; set; }
 
         public string path { get; set; }
-
+        
         public OpenBoardModelLicense license { get; set; }
     }
 
