@@ -389,7 +389,15 @@ namespace SGDWithCocos.Shared.Pages
                         base64string = matchingImg.base64;
                     }
 
-                    mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType);
+                    if (button.load_board == null)
+                    {
+                        mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType);
+                    }
+                    else
+                    {
+                        mLayer.MakeIconFolder(null, buttonLabel, base64string);
+                    }
+
                 }
             }
             catch (Exception exception)
@@ -750,7 +758,7 @@ namespace SGDWithCocos.Shared.Pages
                 {
                     // if a color was supplied, create the necessary folder in the field
 
-                    mLayer.MakeIconFolder(assetName, folderName);
+                    mLayer.MakeIconFolder(assetName, folderName, null);
                 }
             }
         }
@@ -931,16 +939,26 @@ namespace SGDWithCocos.Shared.Pages
                     }
                     else if (iconRef.Sprite.Tag == SpriteTypes.FolderTag)
                     {
-                        var mModel = new FolderModel("", "", 0, 0, -1, iconRef.Sprite.ScaleX);
-
                         var spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+                        var mModel = new FolderModel("", "", "", 0, 0, -1, iconRef.Sprite.ScaleX, spriteLabel.Color);
 
                         if (spriteLabel != null)
                         {
                             mModel.Text = spriteLabel.Text;
                         }
 
-                        mModel.AssetName = iconRef.Base64;
+                        if (iconRef.Base64.Contains("FolderOpen"))
+                        {
+                            mModel.AssetName = iconRef.Base64;
+                            mModel.Base64 = null;
+                        }
+                        else
+                        {
+                            mModel.AssetName = null;
+                            mModel.Base64 = iconRef.Base64;
+                        }
+
                         mModel.X = (int)iconRef.Sprite.PositionX;
                         mModel.Y = (int)iconRef.Sprite.PositionY;
                         mModel.Tag = iconRef.Sprite.Tag;

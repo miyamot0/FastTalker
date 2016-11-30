@@ -222,10 +222,20 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         // if IconTag matches, add to field at saved location
 
-                        var newIcon = spriteModelFactory.MakeFolder(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName)),
-                            backingSpriteFrame, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        CCSpriteFrame content = null;
+
+                        if (icon.AssetName != null)
+                        {
+                            content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName));
+                        }
+
+                        var newIcon = spriteModelFactory.MakeFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                         newIcon.Tag = SpriteTypes.FolderTag;
-                        iconList2.Add(new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible));
+
+                        var newIconRef = new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible);
+                        newIconRef.Base64 = (icon.AssetName == null) ? icon.Base64 : icon.AssetName;
+
+                        iconList2.Add(newIconRef);
                         AddEventListener(mListener.Copy(), newIcon);
                     }
                 }
@@ -408,7 +418,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         /// <param name="assetName">Refers to the colored sprite</param>
         /// <param name="folderName">The name of the actual folder</param>
-        public void MakeIconFolder(string assetName, string folderName)
+        public void MakeIconFolder(string assetName, string folderName, string base64)
         {
             ScheduleOnce((dt) => {
                 // Introduce some jitter into the positioning of the icon
@@ -416,10 +426,22 @@ namespace SGDWithCocos.Shared.Layers
                 var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
                 var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
 
-                var parentSprite = spriteModelFactory.MakeFolder(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(assetName)),
-                            backingSpriteFrame, folderName, xLocation, yLocation, 1f, 1f, true);
+                CCSpriteFrame content = null;
+
+                if (assetName != null)
+                {
+                    content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(assetName));
+                }
+
+                var parentSprite = spriteModelFactory.MakeFolder(content, backingSpriteFrame, base64, folderName, xLocation, yLocation, 1f, 1f, true);
 
                 var mIconRef = new IconReference(parentSprite, assetName, 1f, true);
+
+                if (assetName == null)
+                {
+                    mIconRef.Base64 = base64;
+                }
+
                 iconList2.Add(mIconRef);
 
                 // Assign listener event and tag

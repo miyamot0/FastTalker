@@ -297,28 +297,19 @@ namespace SGDWithCocos.Utilities
         /// <param name="positionY">y pos</param>
         /// <param name="scale">scaled size</param>
         /// <returns></returns>
-        public CCSprite MakeFolder(CCSpriteFrame frame, CCSpriteFrame backing, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        public CCSprite MakeFolder(CCSpriteFrame frame, CCSpriteFrame backing, string base64string, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             var parentSprite = new CCSprite(backing);
             parentSprite.PositionX = positionX;
             parentSprite.PositionY = positionY;
 
             var scaling = (DynamicWidth * 0.1f) / parentSprite.ContentSize.Width;
-            parentSprite.ContentSize = new CCSize(parentSprite.ContentSize.Width * scaling, parentSprite.ContentSize.Height * scaling);
-            
+            parentSprite.ContentSize = new CCSize(parentSprite.ContentSize.Width * scaling, parentSprite.ContentSize.Height * scaling);            
             parentSprite.Scale = scale;
             parentSprite.Tag = SpriteTypes.FolderTag;
 
-            var subIconFrame = new CCSprite(frame)
-            {
-                AnchorPoint = CCPoint.AnchorMiddle,
-                ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.9f, parentSprite.ContentSize.Height * 0.9f),
-                PositionX = parentSprite.ContentSize.Width / 2,
-                PositionY = parentSprite.ContentSize.Height / 2,
-            };
-
             var label = new CCLabel(folderName, "Arial", 18, CCLabelFormat.SystemFont)
-            {                
+            {
                 Color = CCColor3B.White,
                 AnchorPoint = CCPoint.AnchorMiddle,
                 HorizontalAlignment = CCTextAlignment.Center,
@@ -330,8 +321,42 @@ namespace SGDWithCocos.Utilities
                 Visible = textVisible
             };
 
+            CCSprite subIconFrame = null;
+
+            // If passed a blank base64, assume its meant to be just white
+            if (base64string != null && base64string != "")
+            {
+                byte[] bytes = System.Convert.FromBase64String(base64string);
+                var testTexture = new CCTexture2D(bytes);
+                var testFrame = new CCSpriteFrame(testTexture, new CCRect(0, 0, testTexture.PixelsWide, testTexture.PixelsHigh));
+
+                var dimToScale = System.Math.Max(testFrame.ContentSize.Width, testFrame.ContentSize.Height);
+                var scalingImg = (parentSprite.ContentSize.Height * 0.75f) / dimToScale;
+
+                subIconFrame = new CCSprite(testFrame)
+                {
+                    AnchorPoint = CCPoint.AnchorMiddle,
+                    ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.9f, parentSprite.ContentSize.Height * 0.9f),
+                    PositionX = parentSprite.ContentSize.Width / 2,
+                    PositionY = parentSprite.ContentSize.Height / 2,
+                };
+
+                label.Color = CCColor3B.Black;
+            }
+            else if (frame != null)
+            {
+                subIconFrame = new CCSprite(frame)
+                {
+                    AnchorPoint = CCPoint.AnchorMiddle,
+                    ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.9f, parentSprite.ContentSize.Height * 0.9f),
+                    PositionX = parentSprite.ContentSize.Width / 2,
+                    PositionY = parentSprite.ContentSize.Height / 2,
+                };
+            }
+
             parentSprite.AddChild(subIconFrame);
             parentSprite.AddChild(label);
+            parentSprite.ReorderChild(label, 999);
 
             return parentSprite;
         }

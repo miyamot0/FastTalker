@@ -25,6 +25,7 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
+using CocosSharp;
 using System;
 
 namespace SGDWithCocos.Models
@@ -37,8 +38,10 @@ namespace SGDWithCocos.Models
     {
         public string Text { get; set; }
         public string AssetName { get; set; }
+        public string Base64 { get; set; }
         public float X { get; set; }
         public float Y { get; set; }
+        public CCColor3B TextColor { get; set; }
         public float Scale { get; set; }
         public int Tag { get; set; }
         public float TextScale { get; set; }
@@ -53,16 +56,18 @@ namespace SGDWithCocos.Models
         /// <param name="y"></param>
         /// <param name="tag"></param>
         /// <param name="scale"></param>
-        public FolderModel(string text, string assetName, float x, float y, int tag, float scale)
+        public FolderModel(string text, string assetName, string base64, float x, float y, int tag, float scale, CCColor3B color)
         {
             Text = text;
             AssetName = assetName;
+            Base64 = base64;
             X = x;
             Y = y;
             Tag = tag;
             Scale = scale;
             TextScale = 1f;
             TextVisible = true;
+            TextColor = color;
         }
     }
 }
