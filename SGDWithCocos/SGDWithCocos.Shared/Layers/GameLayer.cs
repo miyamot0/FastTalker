@@ -51,7 +51,7 @@ namespace SGDWithCocos.Shared.Layers
 
         CCEventListenerTouchOneByOne mListener;
 
-        SpriteMaker spriteModelFactory;
+        public SpriteMaker spriteModelFactory;
 
         CCSprite sentenceFrame,
                  speakerFrame,
@@ -98,7 +98,7 @@ namespace SGDWithCocos.Shared.Layers
         float totalDuration = 0f,
               saveInterval = 10f;
 
-        CCSpriteFrame backingSpriteFrame = null;
+        public CCSpriteFrame backingSpriteFrame = null;
 
         CCSpriteSheet staticSpriteSheet;
 
@@ -345,6 +345,19 @@ namespace SGDWithCocos.Shared.Layers
                     namedSprite.Sprite.PositionY = positionY;
                 }
             }, 0f);
+        }
+
+        /// <summary>
+        /// Add new icon to stored cache
+        /// </summary>
+        /// <param name="mContentTag"></param>
+        /// <param name="base64string2"></param>
+        public void CallBackIconStored(string base64, string text, string folderTag)
+        {
+            var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
+            var newItem = new StoredIconReference(newIcon, base64, folderTag, 1f, 1f, true);
+
+            storedList.Add(newItem);
         }
 
         /// <summary>
@@ -1834,14 +1847,8 @@ namespace SGDWithCocos.Shared.Layers
             #region Save Interval
 
             if (totalDuration > saveInterval)
-            {   
-                lock(iconList2)
-                {
-                    lock(storedList)
-                    {
-                        GamePageParent.SaveBoards(iconList2, storedList, inSingleMode);
-                    }
-                }
+            {
+                SaveJsonContent();
 
                 totalDuration = 0f;
             }
@@ -1894,6 +1901,20 @@ namespace SGDWithCocos.Shared.Layers
 
             #endregion
 
+        }
+
+        /// <summary>
+        /// Call to save json, made public to enable force saving
+        /// </summary>
+        public void SaveJsonContent()
+        {
+            lock (iconList2)
+            {
+                lock (storedList)
+                {
+                    GamePageParent.SaveBoards(iconList2, storedList, inSingleMode);
+                }
+            }
         }
 
         /// <summary>

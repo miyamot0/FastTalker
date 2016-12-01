@@ -145,9 +145,11 @@ namespace SGDWithCocos.Models
     /// </summary>
     public class OpenBoardModelBoards
     {
+        public string id { get; set; }
         public string name { get; set; }
         public string url { get; set; }
         public string data_url { get; set; }
+        public string path { get; set; }
 
     }
 }

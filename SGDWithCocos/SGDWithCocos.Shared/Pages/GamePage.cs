@@ -301,6 +301,8 @@ namespace SGDWithCocos.Shared.Pages
 
             #endregion
 
+            #region Import Board
+
             else if (buttonSelect == StringTypes.ImportBoard)
             {
                 try
@@ -320,26 +322,35 @@ namespace SGDWithCocos.Shared.Pages
                         }
                         else if (extension == ".obz")
                         {
-                            //Console.WriteLine("OBZ format");
-                            //Console.WriteLine(Environment.NewLine);
-                            
-                            //MemoryStream stream = new MemoryStream(file.DataArray);
-                            //string decoded = Encoding.UTF8.GetString(stream.ToArray());
-
-                            //ParseOBZ(decoded);
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Not Supported", "OBZ files aren't compatible with FastTalker's layout", "Close");
+                            });
+                        }
+                        else
+                        {
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Not Supported", "This file is not Open Board Format (*.obf)", "Close");
+                            });
                         }
                     }
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception.ToString());
                     }
-
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
             }
+            else if (buttonSelect == StringTypes.ForceSave)
+            {
+                mLayer.SaveJsonContent();
+            }
+
+            #endregion
         }
 
         /// <summary>
@@ -353,6 +364,8 @@ namespace SGDWithCocos.Shared.Pages
             try
             {
                 mLayer.MaskBackground();
+
+                #region Parse Images out
 
                 List<OpenBoardModelImageReference> mImages = new List<OpenBoardModelImageReference>();
 
@@ -383,6 +396,10 @@ namespace SGDWithCocos.Shared.Pages
                     }
                 }
 
+                #endregion
+
+                #region Loop through buttons
+
                 foreach (var button in jsonContent.buttons)
                 {
                     var buttonLabel = button.label;
@@ -395,12 +412,13 @@ namespace SGDWithCocos.Shared.Pages
                         continue;
                     }
 
-                    // Exclude clearing buttons, as we have them
+                    // Exclude clearing buttons, as we have them fixed natively
                     if (button.action != null && button.action == ":clear")
                     {
                         continue;
                     }
 
+                    // Select corresponding image from cached list
                     var matchingImg = mImages.Where(i => i.id == button.image_id).FirstOrDefault();
 
                     if (matchingImg != null)
@@ -418,6 +436,10 @@ namespace SGDWithCocos.Shared.Pages
                     }
                 }
 
+                #endregion
+
+                #region Loop through existing images, provide grid-like arrangement initially
+
                 double rows = Convert.ToDouble(jsonContent.grid.rows),
                        cols = Convert.ToDouble(jsonContent.grid.columns);
 
@@ -434,13 +456,12 @@ namespace SGDWithCocos.Shared.Pages
                         double xProp = (((double)j / (cols + 1.0)) * width) + (width * 0.1);
                         double yProp = height - (((double)i / (rows + 1.0)) * height) - (height * 0.1);
 
-                        Console.WriteLine("i: {0}, j: {1}, currItem: {2}, x: {3}, y: {4}", i, j, currItem, xProp, yProp);
-
                         var mButton = jsonContent.buttons.Where(b => b.id == currItem).FirstOrDefault();
-
                         mLayer.UpdatePositionNamedSprite(mButton.image_id, (int)xProp, (int)yProp);
                     }
                 }
+
+                #endregion
             }
             catch (Exception exception)
             {
@@ -453,72 +474,130 @@ namespace SGDWithCocos.Shared.Pages
         }
 
         /// <summary>
-        /// Parse OBZ files (not yet incorporated)
+        /// Parse OBZ files (stubbed)
         /// </summary>
         /// <param name="fileText"></param>
-        private void ParseOBZ(string fileText)
+        private void ParseOBZ(byte[] fileBytes)
         {
+            #region Stubbed out parsing
+
+            /*
+
             try
             {
+                Stream stream = new MemoryStream(fileBytes);
                 ZipFile zf = null;
+
                 try
                 {
-                    OpenBoardModel jsonContent = JsonConvert.DeserializeObject<OpenBoardModel>(fileText);
+                    zf = new ZipFile(stream);
 
-                    FileStream fs = File.OpenRead(fileText);
-                    zf = new ZipFile(fs);
+                    #region Open Manifest
 
+                    string rootFolder = ParseOBZManifest(zf);
 
-                    foreach (ZipEntry zipEntry in zf)
+                    #endregion
+
+                    #region Open Root Folder
+
+                    OpenBoardModel jsonContentModel = ParseOBZRoot(zf, rootFolder);
+
+                    List<OpenBoardModelImageReference> mImages = new List<OpenBoardModelImageReference>();
+
+                    foreach (var image in jsonContentModel.images)
                     {
-                        if (!zipEntry.Name.Contains("manifest.json")) continue;
-
-                        byte[] buffer = new byte[4096];     // 4K is optimum
-                        Stream zipStream = zf.GetInputStream(zipEntry);
-
-                        OpenBoardManifestModel jsonContent = null;
-
-                        using (MemoryStream ms = new MemoryStream())
+                        if (image.data != null)
                         {
-                            StreamUtils.Copy(zipStream, ms, buffer);
-                            ms.Position = 0;
+                            var imgRef = new OpenBoardModelImageReference();
+                            imgRef.id = image.id;
+                            imgRef.url = null;
+                            imgRef.base64 = image.data.Split(',')[1];
 
-                            string myStr = Encoding.UTF8.GetString(ms.ToArray());
-
-                            jsonContent = JsonConvert.DeserializeObject<OpenBoardManifestModel>(myStr);
-
+                            mImages.Add(imgRef);
                         }
-
-                        Console.WriteLine(jsonContent.root);
-
-                        //return;
-
-
-                        /*
-                        if (!zipEntry.Name.Contains(".obf")) continue; // Ignore directories
-
-                        string entryFileName = zipEntry.Name;
-
-                        Console.WriteLine(entryFileName);
-
-                        buffer = new byte[4096];     // 4K is optimum
-                        zipStream = zf.GetInputStream(zipEntry);
-
-                        using (MemoryStream ms = new MemoryStream())
+                        else if (image.url != null)
                         {
-                            StreamUtils.Copy(zipStream, ms, buffer);
-                            ms.Position = 0;
+                            var imgRef = new OpenBoardModelImageReference();
+                            imgRef.url = image.url;
+                            imgRef.id = image.id;
 
-                            string myStr = Encoding.UTF8.GetString(ms.ToArray());
+                            using (WebClient webClient = new WebClient())
+                            {
+                                byte[] data = webClient.DownloadData(image.url);
+                                imgRef.base64 = Convert.ToBase64String(data);
+                            }
 
-                            ParseOBF(myStr);
+                            mImages.Add(imgRef);
                         }
-
-
-                        return;
-                        */
-
                     }
+
+                    foreach (var button in jsonContentModel.buttons)
+                    {
+                        var buttonLabel = button.label;
+                        var base64string = "";
+                        var buttonImageType = "png";
+
+                        // Exclude hidden buttons
+                        if (button.hidden != null && button.hidden == true)
+                        {
+                            continue;
+                        }
+
+                        // Exclude clearing buttons, as we have them
+                        if (button.action != null && button.action == ":clear")
+                        {
+                            continue;
+                        }
+
+                        var matchingImg = mImages.Where(i => i.id == button.image_id).FirstOrDefault();
+
+                        if (matchingImg != null)
+                        {
+                            base64string = matchingImg.base64;
+                        }
+
+                        if (button.load_board == null)
+                        {
+                            mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType, button.image_id);
+                        }
+                        else
+                        {
+                            // Add folder to board
+                            mLayer.MakeIconFolder(null, buttonLabel, base64string, button.image_id);
+
+                            // Add children to folder
+                            ParseOBZChild(zf, button.load_board.path, buttonLabel);
+
+                        }
+                    }
+
+                    #region Arrange for grid-like appearance, root page only
+
+                    double rows = Convert.ToDouble(jsonContentModel.grid.rows),
+                           cols = Convert.ToDouble(jsonContentModel.grid.columns);
+
+                    for (int i = 0; i < rows; i++)
+                    {
+                        var row = jsonContentModel.grid.order.ElementAt(i);
+
+                        for (int j = 0; j < cols; j++)
+                        {
+                            string currItem = row[j];
+
+                            if (currItem == null) continue;
+
+                            double xProp = (((double)j / (cols + 1.0)) * width) + (width * 0.1);
+                            double yProp = height - (((double)i / (rows + 1.0)) * height) - (height * 0.1);
+
+                            var mButton = jsonContentModel.buttons.Where(b => b.id == currItem).FirstOrDefault();
+                            mLayer.UpdatePositionNamedSprite(mButton.image_id, (int)xProp, (int)yProp);
+                        }
+                    }
+
+                    #endregion
+
+                    #endregion
+
                 }
                 finally
                 {
@@ -533,6 +612,247 @@ namespace SGDWithCocos.Shared.Pages
             {
                 Console.WriteLine(e.ToString());
             }
+
+            */
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Parse the manifest from the zipped OBZ
+        /// </summary>
+        /// <param name="zf">Zipped file</param>
+        /// <returns></returns>
+        private string ParseOBZManifest(ZipFile zf)
+        {
+            ZipEntry zEntry = zf.GetEntry("manifest.json");
+
+            byte[] buffer = new byte[4096];     
+            Stream zipStream = zf.GetInputStream(zEntry);
+            OpenBoardManifestModel jsonContent = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                StreamUtils.Copy(zipStream, ms, buffer);
+                ms.Position = 0;
+                string myStr = Encoding.UTF8.GetString(ms.ToArray());
+                jsonContent = JsonConvert.DeserializeObject<OpenBoardManifestModel>(myStr);
+            }
+
+            return jsonContent.root;
+        }
+
+        /// <summary>
+        /// Parse only the specific root folder, for the organizational structure
+        /// </summary>
+        /// <param name="zf">Zipped File</param>
+        /// <param name="rootFolder">Name of root board</param>
+        /// <returns></returns>
+        private OpenBoardModel ParseOBZRoot(ZipFile zf, string rootFolder)
+        {
+            ZipEntry zEntry = zf.GetEntry(rootFolder);
+
+            byte[] buffer = new byte[4096];    
+            Stream zipStream = zf.GetInputStream(zEntry);
+
+            OpenBoardModel jsonContentModel = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                StreamUtils.Copy(zipStream, ms, buffer);
+                ms.Position = 0;
+                string myStr = Encoding.UTF8.GetString(ms.ToArray());
+                jsonContentModel = JsonConvert.DeserializeObject<OpenBoardModel>(myStr);
+            }
+
+            return jsonContentModel;
+        }
+
+        /// <summary>
+        /// Parse a child folder, enabling foldered structure
+        /// </summary>
+        /// <param name="zf">Zipped File</param>
+        /// <param name="boardName">Name of board to parse</param>
+        /// <param name="folderName">Name of folder to place children in</param>
+        private void ParseOBZChild(ZipFile zf, string boardName, string folderName)
+        {
+            ZipEntry zEntry = zf.GetEntry(boardName);
+
+            byte[] buffer = new byte[4096];
+            Stream zipStream = zf.GetInputStream(zEntry);
+
+            OpenBoardModel jsonContentModel = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                StreamUtils.Copy(zipStream, ms, buffer);
+                ms.Position = 0;
+                string myStr = Encoding.UTF8.GetString(ms.ToArray());
+                jsonContentModel = JsonConvert.DeserializeObject<OpenBoardModel>(myStr);
+            }
+
+            List<OpenBoardModelImageReference> mImages = new List<OpenBoardModelImageReference>();
+
+            #region Cache Images
+
+            foreach (var image in jsonContentModel.images)
+            {
+                if (image.data != null)
+                {
+                    var imgRef = new OpenBoardModelImageReference();
+                    imgRef.id = image.id;
+                    imgRef.url = null;
+                    imgRef.base64 = image.data.Split(',')[1];
+
+                    mImages.Add(imgRef);
+                }
+                else if (image.url != null)
+                {
+                    var imgRef = new OpenBoardModelImageReference();
+                    imgRef.url = image.url;
+                    imgRef.id = image.id;
+
+                    using (WebClient webClient = new WebClient())
+                    {
+                        byte[] data = webClient.DownloadData(image.url);
+                        imgRef.base64 = Convert.ToBase64String(data);
+                    }
+
+                    mImages.Add(imgRef);
+                }
+            }
+
+            #endregion
+
+            foreach (var button in jsonContentModel.buttons)
+            {
+                var buttonLabel = button.label;
+                var base64string = "";
+                //var buttonImageType = "png";
+
+                // Exclude hidden buttons
+                if (button.hidden != null && button.hidden == true)
+                {
+                    continue;
+                }
+
+                // Exclude clearing buttons, as we have them
+                if (button.action != null && button.action == ":clear")
+                {
+                    continue;
+                }
+
+                var matchingImg = mImages.Where(i => i.id == button.image_id).FirstOrDefault();
+
+                if (matchingImg != null)
+                {
+                    base64string = matchingImg.base64;
+                }
+
+                if (button.load_board == null)
+                {
+                    mLayer.CallBackIconStored(base64string, buttonLabel, folderName);
+                    //mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType, button.image_id);
+                    //mLayer.CallBackIcon(base64string, buttonLabel, buttonImageType, button.image_id);
+                }
+                else
+                {
+                    // TODO note all 2nd order children omitted!
+
+                    //mLayer.MakeIconFolder(null, buttonLabel, base64string, button.image_id);
+
+
+                    /*
+
+                    #region Load into Folder
+
+                    string boardTitle = button.load_board.name;
+
+                    ZipEntry zEntryPage = zf.GetEntry(boardTitle);
+
+                    byte[] buffer2 = new byte[4096];     // 4K is optimum
+                    Stream zipStream2 = zf.GetInputStream(zEntryPage);
+
+                    OpenBoardModel jsonContentModel2 = null;
+
+                    using (MemoryStream ms2 = new MemoryStream())
+                    {
+                        StreamUtils.Copy(zipStream2, ms2, buffer2);
+                        ms2.Position = 0;
+
+                        var myStr2 = Encoding.UTF8.GetString(ms2.ToArray());
+
+                        jsonContentModel2 = JsonConvert.DeserializeObject<OpenBoardModel>(myStr2);
+                    }
+
+                    List<OpenBoardModelImageReference> mImages2 = new List<OpenBoardModelImageReference>();
+
+                    foreach (var image2 in jsonContentModel2.images)
+                    {
+                        if (image2.data != null)
+                        {
+                            var imgRef = new OpenBoardModelImageReference();
+                            imgRef.id = image2.id;
+                            imgRef.url = null;
+                            imgRef.base64 = image2.data.Split(',')[1];
+
+                            mImages2.Add(imgRef);
+                        }
+                        else if (image2.url != null)
+                        {
+                            var imgRef = new OpenBoardModelImageReference();
+                            imgRef.url = image2.url;
+                            imgRef.id = image2.id;
+
+                            using (WebClient webClient = new WebClient())
+                            {
+                                byte[] data = webClient.DownloadData(image2.url);
+                                imgRef.base64 = Convert.ToBase64String(data);
+                            }
+
+                            mImages2.Add(imgRef);
+                        }
+                    }
+
+                    foreach (var button2 in jsonContentModel.buttons)
+                    {
+                        var buttonLabel2 = button.label;
+                        var base64string2 = "";
+
+                        // Exclude hidden buttons
+                        if (button2.hidden != null && button2.hidden == true)
+                        {
+                            continue;
+                        }
+
+                        // Exclude clearing buttons, as we have them
+                        if (button2.action != null && button2.action == ":clear")
+                        {
+                            continue;
+                        }
+
+                        var matchingImg2 = mImages2.Where(i => i.id == button2.image_id).FirstOrDefault();
+
+                        if (matchingImg2 != null)
+                        {
+                            base64string2 = matchingImg2.base64;
+                        }
+
+                        #region Add to folder here
+
+                        if (buttonLabel2 != "")
+                        {
+                            mLayer.CallBackIconStored(base64string2, buttonLabel2, buttonLabel);
+                        }
+
+                        #endregion
+
+                    }
+
+                    #endregion
+                    */
+                }
+            }
         }
 
         /// <summary>
@@ -546,6 +866,7 @@ namespace SGDWithCocos.Shared.Pages
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
+                    StringTypes.ForceSave,
                     StringTypes.ImportBoard,
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
