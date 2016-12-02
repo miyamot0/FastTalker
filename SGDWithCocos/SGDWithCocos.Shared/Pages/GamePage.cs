@@ -186,172 +186,7 @@ namespace SGDWithCocos.Shared.Pages
 
         #endregion
 
-        #region Image Selection Decision-making
-
-        /// <summary>
-        /// Async-able task related to a scrollable, action sheet
-        /// </summary>
-        /// <returns>Task w/ result</returns>
-        public Task<string> GetActionSheet()
-        {
-            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
-
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                var mAction = await DisplayActionSheet("Edit Current Icon? ", "Cancel", "OK",
-                    /*                     
-                    TODO Hide image 
-                    StringTypes.HideImage                     
-                    */
-
-                    StringTypes.ChangeSizeUp,
-                    StringTypes.ChangeSizeDefault,
-                    StringTypes.ChangeSizeDown,
-                    StringTypes.ChangeText,
-                    StringTypes.HideText,
-                    StringTypes.ChangeTextSizeUp,
-                    StringTypes.ChangeTextSizeDefault,
-                    StringTypes.ChangeTextSizeDown);
-                tcs.SetResult(mAction);
-            });
-
-            return tcs.Task;
-        }
-
-        /// <summary>
-        /// Branching logic for pictures
-        /// </summary>
-        public async void CallActionSheetChoice(List<IconReference> mIcons)
-        {
-            string buttonSelect = await GetActionTypeActionSheet();
-
-            #region Change SGD Level
-
-            if (buttonSelect == StringTypes.ChangeSettings)
-            {
-                // Change mode logic
-
-                string modeSelect = await GetSGDMode();
-
-                if (modeSelect == StringTypes.SingleMode)
-                {
-                    mLayer.SetSingleMode(true);
-                }
-                else if (modeSelect == StringTypes.FrameMode)
-                {
-                    mLayer.SetSingleMode(false);
-                }
-            }
-
-            #endregion
-
-            #region Add Icons
-
-            else if (buttonSelect == StringTypes.AddIcon)
-            {
-                // Add icon logic
-
-                string actionSelect = await GetActionSheetChoice();
-
-                if (actionSelect == StringTypes.LocalImage)
-                {
-                    CallCategoryPicker();
-                }
-                else if (actionSelect == StringTypes.DownloadedImage)
-                {
-                    CallImagePicker();
-                }
-            }
-
-            #endregion
-
-            #region Take Photo
-
-            else if (buttonSelect == StringTypes.TakePhoto)
-            {
-                // Take picture for icon logic
-
-                CallImageTaker();
-            }
-
-            #endregion
-
-            #region Add Folder
-
-            else if (buttonSelect == StringTypes.AddFolder)
-            {
-                // Get Active, foldered icons
-                var mList = mIcons.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
-
-                var nameList = new List<string>();
-
-                // For icons with a Folder value, add to a list, to avoid dupes
-                mList.ForEach(p =>
-                {
-                    var returnedString = SpriteTools.SpriteHasLabel(p.Sprite);
-
-                    if (returnedString != "")
-                    {
-                        nameList.Add(returnedString.ToLower());
-                    }
-                });
-
-                GetFolderSetup(nameList);
-            }
-
-            #endregion
-
-            #region Import Board
-
-            else if (buttonSelect == StringTypes.ImportBoard)
-            {
-                try
-                {
-                    FileData file = await CrossFilePicker.Current.PickFile();
-
-                    try
-                    {
-                        var extension = Path.GetExtension(file.FileName);
-
-                        if (extension == ".obf")
-                        {
-                            MemoryStream stream = new MemoryStream(file.DataArray);
-                            string decoded = Encoding.UTF8.GetString(stream.ToArray());
-
-                            ParseOBF(decoded);
-                        }
-                        else if (extension == ".obz")
-                        {
-                            Device.BeginInvokeOnMainThread(async () =>
-                            {
-                                await DisplayAlert("Not Supported", "OBZ files aren't compatible with FastTalker's layout", "Close");
-                            });
-                        }
-                        else
-                        {
-                            Device.BeginInvokeOnMainThread(async () =>
-                            {
-                                await DisplayAlert("Not Supported", "This file is not Open Board Format (*.obf)", "Close");
-                            });
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception.ToString());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
-            else if (buttonSelect == StringTypes.ForceSave)
-            {
-                mLayer.SaveJsonContent();
-            }
-
-            #endregion
-        }
+        #region Open Board Format
 
         /// <summary>
         /// Parse OBF file individually
@@ -447,7 +282,7 @@ namespace SGDWithCocos.Shared.Pages
                 {
                     var row = jsonContent.grid.order.ElementAt(i);
 
-                    for (int j=0; j < cols; j++)
+                    for (int j = 0; j < cols; j++)
                     {
                         string currItem = row[j];
 
@@ -627,7 +462,7 @@ namespace SGDWithCocos.Shared.Pages
         {
             ZipEntry zEntry = zf.GetEntry("manifest.json");
 
-            byte[] buffer = new byte[4096];     
+            byte[] buffer = new byte[4096];
             Stream zipStream = zf.GetInputStream(zEntry);
             OpenBoardManifestModel jsonContent = null;
 
@@ -652,7 +487,7 @@ namespace SGDWithCocos.Shared.Pages
         {
             ZipEntry zEntry = zf.GetEntry(rootFolder);
 
-            byte[] buffer = new byte[4096];    
+            byte[] buffer = new byte[4096];
             Stream zipStream = zf.GetInputStream(zEntry);
 
             OpenBoardModel jsonContentModel = null;
@@ -855,6 +690,184 @@ namespace SGDWithCocos.Shared.Pages
             }
         }
 
+        #endregion
+        
+        #region Settings
+
+        /// <summary>
+        /// Async-able task related to a scrollable, action sheet
+        /// </summary>
+        /// <returns>Task w/ result</returns>
+        public Task<string> GetActionSheet()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var mAction = await DisplayActionSheet("Edit Current Icon? ", "Cancel", "OK",
+                    /*                     
+                    TODO Hide image 
+                    StringTypes.HideImage                     
+                    */
+
+                    StringTypes.ChangeSizeUp,
+                    StringTypes.ChangeSizeDefault,
+                    StringTypes.ChangeSizeDown,
+                    StringTypes.ChangeText,
+                    StringTypes.HideText,
+                    StringTypes.ChangeTextSizeUp,
+                    StringTypes.ChangeTextSizeDefault,
+                    StringTypes.ChangeTextSizeDown);
+                tcs.SetResult(mAction);
+            });
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Branching logic for pictures
+        /// </summary>
+        public async void CallActionSheetChoice(List<IconReference> mIcons)
+        {
+            string buttonSelect = await GetActionTypeActionSheet();
+
+            #region Change SGD Level
+
+            if (buttonSelect == StringTypes.ChangeSettings)
+            {
+                // Change mode logic
+
+                string modeSelect = await GetSGDMode();
+
+                if (modeSelect == StringTypes.SingleMode)
+                {
+                    mLayer.SetSingleMode(true);
+                }
+                else if (modeSelect == StringTypes.FrameMode)
+                {
+                    mLayer.SetSingleMode(false);
+                }
+            }
+
+            #endregion
+
+            #region Add Icons
+
+            else if (buttonSelect == StringTypes.AddIcon)
+            {
+                // Add icon logic
+
+                string actionSelect = await GetActionSheetChoice();
+
+                if (actionSelect == StringTypes.LocalImage)
+                {
+                    CallCategoryPicker();
+                }
+                else if (actionSelect == StringTypes.DownloadedImage)
+                {
+                    CallImagePicker();
+                }
+            }
+
+            #endregion
+
+            #region Take Photo
+
+            else if (buttonSelect == StringTypes.TakePhoto)
+            {
+                // Take picture for icon logic
+
+                CallImageTaker();
+            }
+
+            #endregion
+
+            #region Add Folder
+
+            else if (buttonSelect == StringTypes.AddFolder)
+            {
+                // Get Active, foldered icons
+                var mList = mIcons.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
+
+                var nameList = new List<string>();
+
+                // For icons with a Folder value, add to a list, to avoid dupes
+                mList.ForEach(p =>
+                {
+                    var returnedString = SpriteTools.SpriteHasLabel(p.Sprite);
+
+                    if (returnedString != "")
+                    {
+                        nameList.Add(returnedString.ToLower());
+                    }
+                });
+
+                GetFolderSetup(nameList);
+            }
+
+            #endregion
+
+            #region Import Board
+
+            else if (buttonSelect == StringTypes.ImportBoard)
+            {
+                try
+                {
+                    FileData file = await CrossFilePicker.Current.PickFile();
+
+                    try
+                    {
+                        var extension = Path.GetExtension(file.FileName);
+
+                        if (extension == ".obf")
+                        {
+                            MemoryStream stream = new MemoryStream(file.DataArray);
+                            string decoded = Encoding.UTF8.GetString(stream.ToArray());
+
+                            ParseOBF(decoded);
+                        }
+                        else if (extension == ".obz")
+                        {
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Not Supported", "OBZ files aren't compatible with FastTalker's layout", "Close");
+                            });
+                        }
+                        else
+                        {
+                            Device.BeginInvokeOnMainThread(async () =>
+                            {
+                                await DisplayAlert("Not Supported", "This file is not Open Board Format (*.obf)", "Close");
+                            });
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+            else if (buttonSelect == StringTypes.ForceSave)
+            {
+                mLayer.SaveJsonContent();
+            }
+
+            #endregion
+
+            #region Resume Operation
+
+            else if (buttonSelect == StringTypes.ResumeOperation)
+            {
+                mLayer.SetEditMode(false);
+            }
+
+            #endregion
+        }
+        
         /// <summary>
         /// Open action sheet related to tweaks and additions, single button interface
         /// </summary>
@@ -866,6 +879,7 @@ namespace SGDWithCocos.Shared.Pages
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
+                    StringTypes.ResumeOperation,
                     StringTypes.ForceSave,
                     StringTypes.ImportBoard,
                     StringTypes.ChangeSettings,

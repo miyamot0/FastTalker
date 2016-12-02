@@ -46,6 +46,7 @@ namespace SGDWithCocos.Tags
         public static string LocalImage = "Local";
         public static string DownloadedImage = "Downloaded";
 
+        public static string ResumeOperation = "Resume Child Operation";
         public static string ForceSave = "Force Save";
         public static string ImportBoard = "Import Open Board File";
         public static string ChangeSettings = "Change Output Mode";

@@ -96,7 +96,7 @@ namespace SGDWithCocos.Shared.Layers
 
         // Time metrics, for screen press and save intervals
         float totalDuration = 0f,
-              saveInterval = 10f;
+              saveInterval = 30f;
 
         public CCSpriteFrame backingSpriteFrame = null;
 
