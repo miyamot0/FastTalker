@@ -38,13 +38,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Pages\GamePage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameSGDScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameStartScene.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\HttpBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\HttpProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\HttpServer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\Models\HttpRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\Models\HttpResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\Models\Route.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\RouteHandlers\RouteHandlers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Pages\Index.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\SimpleServer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\EditTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\SpriteTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\StringTypes.cs" />

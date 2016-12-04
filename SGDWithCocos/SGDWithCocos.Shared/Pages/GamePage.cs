@@ -50,9 +50,7 @@ using System.Text;
 using System.Net;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
-using SGDWithCocos.Shared.Server.Models;
-using SimpleServer;
-using System.Threading;
+using SGDWithCocos.Server;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -65,7 +63,7 @@ namespace SGDWithCocos.Shared.Pages
         public CCScene gameScene;
         GameLayer mLayer;
         int width, height;
-        private Thread serverThread;
+        SimpleIconServer mServer;
 
         /// <summary>
         /// NativeGame object
@@ -1383,8 +1381,10 @@ namespace SGDWithCocos.Shared.Pages
         /// <param name="icons">All icons in field, folder or typical</param>
         /// <param name="storedIcons">All saved icons</param>
         /// <param name="inSingleMode">If in single or framed mode</param>
-        public void SaveBoards(List<IconReference> icons, List<StoredIconReference> storedIcons, bool inSingleMode)
+        public string SaveBoards(List<IconReference> icons, List<StoredIconReference> storedIcons, bool inSingleMode)
         {
+            string mJsonString = "";
+
             Device.BeginInvokeOnMainThread(() =>
             {
                 // List of icons
@@ -1481,11 +1481,14 @@ namespace SGDWithCocos.Shared.Pages
                 mIconStorage.SingleMode = inSingleMode;
 
                 // Serialized object
-                var mJsonString = JsonConvert.SerializeObject(mIconStorage);
+                mJsonString = JsonConvert.SerializeObject(mIconStorage);
 
                 // Cross-platform call to save a JSON-based text file
                 DependencyService.Get<ISaveAndLoad>().SaveJSON("IconBoard", mJsonString);
+
             });
+
+            return mJsonString;
         }
 
         #endregion
@@ -1548,70 +1551,31 @@ namespace SGDWithCocos.Shared.Pages
         }
 
         /// <summary>
-        /// Start listening on 8080, so a browser can access
+        /// Start listening on a free port, enabling limited browser access to state
         /// </summary>
         public void StartServer()
         {
-            HttpServer httpServer = new HttpServer(8080, RoutingTable);
-            serverThread = new Thread(new ThreadStart(httpServer.Listen));
-            serverThread.Start();
+            mLayer.SaveJsonContent();
 
+            mServer = new SimpleIconServer(GetBoards("IconBoard"));
             mLayer.ServerActive = true;
-
-            string ipaddress = DependencyService.Get<INetwork>().GetIP();
-
+            
             Device.BeginInvokeOnMainThread(async () =>
             {
-                await DisplayAlert("Server Active", string.Format("{0}:{1}", ipaddress, 8080), "Close Server");
+                await DisplayAlert("Server Active", string.Format("{0}:{1}", mServer.IP, mServer.Port), "Close Server");
             });
-
         }
 
         /// <summary>
-        /// Awfulness
+        /// Shut down server methods
         /// </summary>
         public void StopServer()
         {
-            mLayer.ServerActive = false;
-
-            serverThread.Abort();
-        }
-
-        /// <summary>
-        /// To be refactored later, handle coordination of delegates based on request
-        /// </summary>
-        public List<Route> RoutingTable
-        {
-            get
+            if (mServer != null)
             {
-                return new List<Route>()
-                {
-                    new Route()
-                    {
-                        Callable = OpenPostPort,
-                        UrlRegex = "^\\/$",
-                        Method = "POST"
-                    }
-                };
-
+                mServer.Stop();
+                mLayer.ServerActive = false;
             }
-        }
-
-        /// <summary>
-        /// handle all POST logic here
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        private HttpResponse OpenPostPort(HttpRequest request)
-        {
-            string json = GetBoards("IconBoard");
-
-            return new HttpResponse()
-            {
-                ContentAsUTF8 = json,
-                ReasonPhrase = "OK",
-                StatusCode = "200"
-            };
         }
 
         /// <summary>

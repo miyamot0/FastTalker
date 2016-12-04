@@ -34,6 +34,7 @@ namespace SGDWithCocos.Droid.Implementation
         /// Public interface to Forms app, with Api-level routing
         /// </summary>
         /// <param name="text"></param>
+        [Obsolete("Message")]
         public void Speak(string text)
         {
             var ctx = Forms.Context;
