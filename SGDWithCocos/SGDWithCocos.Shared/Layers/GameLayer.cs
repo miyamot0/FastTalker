@@ -92,13 +92,26 @@ namespace SGDWithCocos.Shared.Layers
         // Logicals for editing, frame state
         bool inEditMode = false,
              inSingleMode = false,
-             isModal = false;
+             isModal = false,
+             isServerUp = false;
 
         // Time metrics, for screen press and save intervals
         float totalDuration = 0f,
-              saveInterval = 30f;
+              saveInterval = 5f;
 
         public CCSpriteFrame backingSpriteFrame = null;
+
+        /// <summary>
+        /// Flag to raise when server is up
+        /// </summary>
+        public bool ServerActive
+        {
+            get { return isServerUp; }
+            set
+            {
+                isServerUp = value;
+            }
+        }
 
         CCSpriteSheet staticSpriteSheet;
 

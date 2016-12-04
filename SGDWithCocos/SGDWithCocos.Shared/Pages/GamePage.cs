@@ -50,6 +50,9 @@ using System.Text;
 using System.Net;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Core;
+using SGDWithCocos.Shared.Server.Models;
+using SimpleServer;
+using System.Threading;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -62,6 +65,7 @@ namespace SGDWithCocos.Shared.Pages
         public CCScene gameScene;
         GameLayer mLayer;
         int width, height;
+        private Thread serverThread;
 
         /// <summary>
         /// NativeGame object
@@ -709,7 +713,6 @@ namespace SGDWithCocos.Shared.Pages
                     TODO Hide image 
                     StringTypes.HideImage                     
                     */
-
                     StringTypes.ChangeSizeUp,
                     StringTypes.ChangeSizeDefault,
                     StringTypes.ChangeSizeDown,
@@ -866,8 +869,22 @@ namespace SGDWithCocos.Shared.Pages
             }
 
             #endregion
+
+            #region Server Operation
+
+            else if (buttonSelect == StringTypes.ServerStart)
+            {
+                StartServer();
+            }
+
+            else if (buttonSelect == StringTypes.ServerShutdown)
+            {
+                StopServer();
+            }
+
+            #endregion
         }
-        
+
         /// <summary>
         /// Open action sheet related to tweaks and additions, single button interface
         /// </summary>
@@ -880,6 +897,7 @@ namespace SGDWithCocos.Shared.Pages
             {
                 var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
                     StringTypes.ResumeOperation,
+                    !mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
                     StringTypes.ForceSave,
                     StringTypes.ImportBoard,
                     StringTypes.ChangeSettings,
@@ -1527,6 +1545,73 @@ namespace SGDWithCocos.Shared.Pages
                 // Begin building the icon-based scene
                 ConstructGameScene(nativeGameView);
             }
+        }
+
+        /// <summary>
+        /// Start listening on 8080, so a browser can access
+        /// </summary>
+        public void StartServer()
+        {
+            HttpServer httpServer = new HttpServer(8080, RoutingTable);
+            serverThread = new Thread(new ThreadStart(httpServer.Listen));
+            serverThread.Start();
+
+            mLayer.ServerActive = true;
+
+            string ipaddress = DependencyService.Get<INetwork>().GetIP();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await DisplayAlert("Server Active", string.Format("{0}:{1}", ipaddress, 8080), "Close Server");
+            });
+
+        }
+
+        /// <summary>
+        /// Awfulness
+        /// </summary>
+        public void StopServer()
+        {
+            mLayer.ServerActive = false;
+
+            serverThread.Abort();
+        }
+
+        /// <summary>
+        /// To be refactored later, handle coordination of delegates based on request
+        /// </summary>
+        public List<Route> RoutingTable
+        {
+            get
+            {
+                return new List<Route>()
+                {
+                    new Route()
+                    {
+                        Callable = OpenPostPort,
+                        UrlRegex = "^\\/$",
+                        Method = "POST"
+                    }
+                };
+
+            }
+        }
+
+        /// <summary>
+        /// handle all POST logic here
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        private HttpResponse OpenPostPort(HttpRequest request)
+        {
+            string json = GetBoards("IconBoard");
+
+            return new HttpResponse()
+            {
+                ContentAsUTF8 = json,
+                ReasonPhrase = "OK",
+                StatusCode = "200"
+            };
         }
 
         /// <summary>
