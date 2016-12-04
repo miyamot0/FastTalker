@@ -8,7 +8,9 @@ Features include:
   - Constructs speech output using native functionality
   - Dynamically resize, mark icons, and apply other within-stimulus prompts
   - Incorporate images from anywhere, including your own camera and local pictures
-  - Save boards automatically, all locally managed
+  - Use boards from other devices, with the supported Open Book Format
+  - Setup boards remotely and deliver prompting from another computer or tablet
+  - Save all boards automatically, all locally managed!
 
 ### Images
 ![Alt text](FT-Drag.gif?raw=true "Drag Icons")
@@ -16,9 +18,11 @@ Features include:
 ![Alt text](FT-Folders.gif?raw=true "Open Folders")
 
 ### Version
-1.1.0.0
+1.3.0.0
 
 ### Changelog
+ * 1.3.0.0 - Initial server support, remote operation and setup
+ * 1.2.0.0 - Support for the Open Book Format, embedded and web-based tags
  * 1.1.0.0 - Straight-Street images and embedded visual fixes
  * 1.0.0.0 - Initial push
 
@@ -28,6 +32,8 @@ Fast Talker uses licensed visual images in order to operate:
 
 ### Referenced Works (Packages)
 Fast Talker uses a number of open source projects to work properly:
+
+* [Simple Web Server](https://github.com/jeske/SimpleHttpServer) - Public Domain. Copyright (c) David Jeske
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - MIT Licensed. Copyright (c) 2007 James Newton-King 
 * [Xamarin.Plugin.Permissions](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
 * [Xamarin.Plugin.Media](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
@@ -49,7 +55,9 @@ This is currently under active development and evaluation.
 
 ### Todos
 * ~~Additional, embedded visuals samples~~
-* Additional within-stimulus modifications
+* ~~Additional within-stimulus modifications~~
+* ~~Support for Open Book Format (OBF)~~
+* Web based portal for quick setup and remote operation
 * Support for embedded data collection
 
 ### License
