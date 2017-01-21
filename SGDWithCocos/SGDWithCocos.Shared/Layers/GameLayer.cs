@@ -1034,7 +1034,7 @@ namespace SGDWithCocos.Shared.Layers
             var borderBackGray = new CCSprite(staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains("frameWhite")));
             borderBackGray.Color = CCColor3B.Gray;
             borderBackGray.Opacity = 200;
-            borderBackGray.ContentSize = new CCSize(spriteModelFactory.DynamicWidth, spriteModelFactory.DynamicHeight);
+            borderBackGray.ContentSize = new CCSize(spriteModelFactory.DynamicWidth + 5, spriteModelFactory.DynamicHeight + 5);
             borderBackGray.PositionX = spriteModelFactory.DynamicWidth / 2f;
             borderBackGray.PositionY = spriteModelFactory.DynamicHeight / 2f;
             borderBackGray.Tag = SpriteTypes.ColorLayerTag;
@@ -1807,6 +1807,8 @@ namespace SGDWithCocos.Shared.Layers
 
                     var clampLow = highestHeight.ContentSize.Height / 2f + padding;
 
+                    Console.WriteLine("Icon #" + 1 + ": " + mIcons[0].Position.Y + " Clamp high: " + clampHigh + " Clamp low: " + clampLow);
+
                     if (lowestHeight.PositionY + deltaPos >= clampLow)
                     {
                         return;
@@ -1821,6 +1823,8 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             if (mIcons[i].Tag == SpriteTypes.IconTag || mIcons[i].Tag == SpriteTypes.EmbeddedIconTag)
                             {
+                                mIcons[i].Visible = (mIcons[i].Position.Y > (clampHigh + mIcons[i].ContentSize.Width) ||
+                                    mIcons[i].Position.Y < (clampLow - mIcons[i].ContentSize.Width)) ? false : true;
                                 mIcons[i].PositionY = mIcons[i].PositionY + deltaPos;
                             }
                         }
