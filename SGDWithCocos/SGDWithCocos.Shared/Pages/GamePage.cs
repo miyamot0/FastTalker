@@ -895,9 +895,15 @@ namespace SGDWithCocos.Shared.Pages
             {
                 var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
                     StringTypes.ResumeOperation,
-                    !mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
+
+                    // Stub out server code
+                    //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
+
                     StringTypes.ForceSave,
-                    StringTypes.ImportBoard,
+
+                    // Stub out board import
+                    //StringTypes.ImportBoard,
+
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,

@@ -346,8 +346,6 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void UpdatePositionNamedSprite(string name, int positionX, int positionY)
         {
-            Console.WriteLine(name);
-
             ScheduleOnce((dt) =>
             {
                 var namedSprite = iconList2.Where(i => i.Sprite.Name == name).FirstOrDefault();
