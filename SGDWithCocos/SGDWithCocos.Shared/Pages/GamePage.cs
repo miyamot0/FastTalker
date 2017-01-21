@@ -966,20 +966,21 @@ namespace SGDWithCocos.Shared.Pages
 
             Device.BeginInvokeOnMainThread(async () =>
             {
-                var mChunk = await DisplayActionSheet("What type of icon? ",
+                var mChunk = await DisplayActionSheet("Lookup icon category by name range: ",
                     "Cancel", null,
-                    App.CategoryChunks.ToArray());
+                    App.CategoryChunks);
 
-                if (mChunk != null || mChunk == "Cancel")
+                if (mChunk != null || mChunk != "Cancel")
                 {
                     char mFirst = mChunk[0];
                     char mLast = mChunk[mChunk.Length - 1];
 
-                    var mItems = mLayer.Categories.Where(d => (int)d.ToUpper().First() >= (int) mFirst && (int)d.ToUpper().First() <= (int) mLast).ToArray();
+                    var mItems = mLayer.Categories.Where((s) => s.ToUpper()[0] >= mFirst && s.ToUpper()[0] <= mLast);
 
                     var mAction = await DisplayActionSheet("What type of icon? ",
                         "Cancel", null,
-                        mItems);
+                        mItems.ToArray());
+
                     tcs.SetResult(mAction);
                 }
                 else
