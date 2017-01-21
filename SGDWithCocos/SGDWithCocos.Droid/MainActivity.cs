@@ -43,7 +43,8 @@ namespace SGDWithCocos.Droid
             ConfigChanges.ScreenSize | 
             ConfigChanges.Keyboard | 
             ConfigChanges.KeyboardHidden)]
-
+    [IntentFilter(new[] { Android.Content.Intent.ActionMain },
+        Categories = new[] { Android.Content.Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
 		protected override void OnCreate (Bundle bundle)
