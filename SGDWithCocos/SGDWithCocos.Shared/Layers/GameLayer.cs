@@ -1807,8 +1807,6 @@ namespace SGDWithCocos.Shared.Layers
 
                     var clampLow = highestHeight.ContentSize.Height / 2f + padding;
 
-                    Console.WriteLine("Icon #" + 1 + ": " + mIcons[0].Position.Y + " Clamp high: " + clampHigh + " Clamp low: " + clampLow);
-
                     if (lowestHeight.PositionY + deltaPos >= clampLow)
                     {
                         return;
