@@ -40,6 +40,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameStartScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\Pages\Index.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\SimpleServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tags\CategoryTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\EditTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\SpriteTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\StringTypes.cs" />

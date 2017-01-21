@@ -26,12 +26,28 @@
 //----------------------------------------------------------------------------------------------
 
 using SGDWithCocos.Shared.Pages;
+using SGDWithCocos.Tags;
+using System.Collections.Generic;
 using Xamarin.Forms;
 
 namespace SGDWithCocos.Shared
 {
     public class App : Application
 	{
+        private static List<string> _categoryChunks;
+        public static List<string> CategoryChunks
+        {
+            get
+            {
+                if (_categoryChunks == null)
+                {
+                    _categoryChunks = new List<string>() { CategoryTypes.AtoF, CategoryTypes.GtoL, CategoryTypes.MtoR, CategoryTypes.StoZ };
+                }
+
+                return _categoryChunks;
+            }
+        }
+
         /// <summary>
         /// XF cross platform controls
         /// </summary>

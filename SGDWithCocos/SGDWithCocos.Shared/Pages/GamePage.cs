@@ -966,10 +966,26 @@ namespace SGDWithCocos.Shared.Pages
 
             Device.BeginInvokeOnMainThread(async () =>
             {
-                var mAction = await DisplayActionSheet("What type of icon? ",
-                    "Cancel", "OK",
-                    mLayer.Categories);
-                tcs.SetResult(mAction);
+                var mChunk = await DisplayActionSheet("What type of icon? ",
+                    "Cancel", null,
+                    App.CategoryChunks.ToArray());
+
+                if (mChunk != null || mChunk == "Cancel")
+                {
+                    char mFirst = mChunk[0];
+                    char mLast = mChunk[mChunk.Length - 1];
+
+                    var mItems = mLayer.Categories.Where(d => (int)d.ToUpper().First() >= (int) mFirst && (int)d.ToUpper().First() <= (int) mLast).ToArray();
+
+                    var mAction = await DisplayActionSheet("What type of icon? ",
+                        "Cancel", null,
+                        mItems);
+                    tcs.SetResult(mAction);
+                }
+                else
+                {
+                    tcs.SetResult(null);
+                }
             });
 
             return tcs.Task;
@@ -983,6 +999,12 @@ namespace SGDWithCocos.Shared.Pages
             try
             {
                 var result = await SelectCategory();
+
+                if (result == null || result == "Cancel")
+                {
+                    return;
+                }
+
                 var matches = await GetMatchingTasks(result);
                 mLayer.ShowStoredWindow(matches);
             }
