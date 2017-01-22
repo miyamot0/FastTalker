@@ -35,7 +35,7 @@ Fast Talker uses licensed visual images in order to operate:
 ### Referenced Works (Packages)
 Fast Talker uses a number of open source projects to work properly:
 
-* [LauncherHijack](https://github.com/parrotgeek1/LauncherHijack) - Permissively Licensed - Copyright (c) parrotgeek1
+* [LauncherHijack](https://github.com/parrotgeek1/LauncherHijack) - Permissively Licensed - Copyright (c) 2017 Ethan Nelson-Moore
 * [SimpleHTTPServer](https://gist.github.com/aksakalli/9191056) - MIT License - Copyright (c) 2016 Can Güney Aksakalli
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - MIT Licensed. Copyright (c) 2007 James Newton-King 
 * [Xamarin.Plugin.Permissions](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
