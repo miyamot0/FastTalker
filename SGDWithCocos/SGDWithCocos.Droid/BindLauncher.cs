@@ -87,7 +87,7 @@ namespace SGDWithCocos.Droid
                 }
                 catch (InterruptedException exc) { }
 
-                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.Back);
+                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionBack);
                 StartActivity(intent);
             }
         }
@@ -112,7 +112,7 @@ namespace SGDWithCocos.Droid
 
             SetServiceInfo(info);
 
-            PerformGlobalAction(Android.AccessibilityServices.GlobalAction.Recents);
+            PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionRecents);
 
             try
             {
@@ -120,7 +120,7 @@ namespace SGDWithCocos.Droid
             }
             catch (InterruptedException e) { }
 
-            PerformGlobalAction(Android.AccessibilityServices.GlobalAction.Back);
+            PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionBack);
 
             StartActivity(intent);
         }
