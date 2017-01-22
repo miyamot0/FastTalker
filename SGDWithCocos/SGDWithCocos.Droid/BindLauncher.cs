@@ -18,11 +18,11 @@
 // </copyright>
 //
 // <summary>
-// The FastTalker is a tool to assist researchers in behavior economics.
+// The FastTalker is a tool to assist clinicians and researchers in the treatment of communication disorders.
 // 
 // Email: shawn(dot)gilroy(at)temple.edu
 //
-// FastTalker utilizes LauncherHijack to leverage interactions with XML file formats
+// FastTalker utilizes LauncherHijack to keep children out of distracting applications or non-therapeutic activities
 //
 //    LauncherHijack is distributed under the following terms:
 //

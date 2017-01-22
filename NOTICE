@@ -64,3 +64,14 @@ Copyright (c) 2016 James Montemagno / Refractored LLC
     * /LICENSE-Xamarin.Plugins (MIT)
   * HOMEPAGE:
     * https://github.com/xamarin/plugins
+
+--------------------------------------------------------------------------------
+
+This project utilizes LauncherHijack, which has been developed by parrotgeek1.
+
+Copyright (c) parrotgeek1
+
+  * LICENSE:
+    * /LICENSE-LauncherHijack 
+  * HOMEPAGE:
+    * https://github.com/parrotgeek1/LauncherHijack
