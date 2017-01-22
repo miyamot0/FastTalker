@@ -180,7 +180,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoundingService.cs" />
+    <Compile Include="BindLauncher.cs" />
     <Compile Include="Implementation\DisplayImplementation.cs" />
     <Compile Include="Implementation\NetworkImplementation.cs" />
     <Compile Include="Implementation\PopUpWindowImplementation.cs" />

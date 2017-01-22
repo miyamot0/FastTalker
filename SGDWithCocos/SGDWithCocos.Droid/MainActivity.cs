@@ -61,40 +61,5 @@ namespace SGDWithCocos.Droid
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
         }
     }
-
-    [Service(Label = "Keep FastTalker Loaded", Permission = Manifest.Permission.BindAccessibilityService)]
-    [IntentFilter(new[] { "android.accessibilityservice.AccessibilityService" })]
-    public class BoundingService : AccessibilityService
-    {
-        Intent intent = new Intent(Android.Content.Intent.ActionMain)
-            .AddCategory(Android.Content.Intent.CategoryHome)
-            .SetPackage("com.smallnstats.fasttalker")
-            .AddFlags(ActivityFlags.NewTask | 
-                    ActivityFlags.ExcludeFromRecents | 
-                    ActivityFlags.ClearTop | 
-                    ActivityFlags.ReorderToFront);
-
-        public override void OnAccessibilityEvent(AccessibilityEvent e)
-        {
-            if (e.PackageName.Contains("com.amazon.firelauncher")) 
-            {
-                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionRecents);
-
-                try
-                {
-                    Thread.Sleep(200);
-                }
-                catch (InterruptedException exc) { }
-
-                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionRecents);
-                StartActivity(intent);
-            }
-        }
-
-        public override void OnInterrupt()
-        {
-
-        }
-    }
 }
 
