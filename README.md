@@ -14,7 +14,6 @@ Features include:
   - Save all boards automatically, all locally managed!
 
 ### Images
-![Alt text](FT-Title.gif?raw=true "Title Screen")
 ![Alt text](FT-Drag.gif?raw=true "Drag Icons")
 ![Alt text](FT-Modify.gif?raw=true "Modify Icons")
 ![Alt text](FT-Folders.gif?raw=true "Open Folders")
