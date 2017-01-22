@@ -2991,6 +2991,9 @@ namespace SGDWithCocos.Droid
 			// aapt resource value: 0x7f080021
 			public const int abc_toolbar_collapse_description = 2131230753;
 			
+			// aapt resource value: 0x7f080029
+			public const int accessibility_service_description = 2131230761;
+			
 			// aapt resource value: 0x7f080023
 			public const int appbar_scrolling_view_behavior = 2131230755;
 			

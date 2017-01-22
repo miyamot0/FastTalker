@@ -2,4 +2,5 @@
 <resources>
     <string name="ApplicationName">CPCA</string>
     <string name="Hello">Hello World!</string>
+    <string name="accessibility_service_description">Service Description</string>
 </resources>

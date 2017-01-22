@@ -180,6 +180,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoundingService.cs" />
     <Compile Include="Implementation\DisplayImplementation.cs" />
     <Compile Include="Implementation\NetworkImplementation.cs" />
     <Compile Include="Implementation\PopUpWindowImplementation.cs" />
@@ -11510,6 +11511,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\Stored\Want.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\xml\" />
   </ItemGroup>
   <Import Project="..\SGDWithCocos.Shared\EmptyProject.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
