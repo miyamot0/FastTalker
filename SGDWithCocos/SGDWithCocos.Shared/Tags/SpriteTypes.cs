@@ -48,6 +48,7 @@ namespace SGDWithCocos.Tags
         public const int BorderTag = 17;
         public const int ColorLayerTag = 18;
         public const int EmbeddedIconTag = 19;
-        public const int LicenseTag = 20;
+        public const int IconLicenseTag = 20;
+        public const int LauncherLicenseTag = 21;
     }
 }

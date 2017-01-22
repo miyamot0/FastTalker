@@ -45,8 +45,7 @@ namespace SGDWithCocos.Scenes
         private GamePage mGamePage;
         private CCLayer mainLayer;
         private CCControlButton buttonControl;
-        private CCEventListenerTouchOneByOne mListener;
-        private CCLabel label;
+        private CCLabel iconsLabel, launcherLabel;
         private CCSpriteSheet spriteSheet;
 
         /// <summary>
@@ -176,12 +175,7 @@ namespace SGDWithCocos.Scenes
         /// </summary>
         private void ShowLogos()
         {
-            mListener = new CCEventListenerTouchOneByOne();
-            mListener.IsSwallowTouches = true;
-            mListener.OnTouchBegan = OnTouchBegan;
-            mListener.OnTouchEnded = OnTouchesEnded;
-
-            var widthClamp = (mWidth * 0.3f > 250f) ? 250 : mWidth * 0.3f;
+            var widthClamp = (mWidth * 0.3f > 225f) ? 225 : mWidth * 0.3f;
 
             var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("respect_logo"));
             var respectSprite = new CCSprite(ccSpriteFrame);
@@ -201,56 +195,36 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(nuiSprite);
 
-            label = new CCLabel("Visual symbols from \"Mulberry Symbol Set\" Copyright 2008-2012 Garry Paxton (CC-BY-SA 2.0). http://straight-street.com", "Arial", 72, CCLabelFormat.SystemFont)
+            iconsLabel = new CCLabel("Visual symbols from \"Mulberry Symbol Set\" Copyright 2008-2012 Garry Paxton (CC-BY-SA 2.0). http://straight-street.com", "Arial", 72, CCLabelFormat.SystemFont)
             {
                 Color = CCColor3B.White,
                 AnchorPoint = CCPoint.AnchorMiddle,
                 HorizontalAlignment = CCTextAlignment.Center,
                 VerticalAlignment = CCVerticalTextAlignment.Center,
-                Tag = SpriteTypes.LicenseTag
+                Tag = SpriteTypes.IconLicenseTag
             };
 
-            var labelScale = (mWidth * 0.75f) / label.ContentSize.Width;
-            label.Scale = labelScale;
-            label.PositionX = mainLayer.VisibleBoundsWorldspace.Center.X;
-            label.PositionY = mHeight - label.ScaledContentSize.Height / 2f - (mHeight * 0.02f);
-            label.AddEventListener(mListener);
+            var labelScale = (mWidth * 0.75f) / iconsLabel.ContentSize.Width;
+            iconsLabel.Scale = labelScale;
+            iconsLabel.PositionX = mainLayer.VisibleBoundsWorldspace.Center.X;
+            iconsLabel.PositionY = mHeight - iconsLabel.ScaledContentSize.Height / 2f - (mHeight * 0.02f);
 
-            mainLayer.AddChild(label);
-        }
+            mainLayer.AddChild(iconsLabel, 0, SpriteTypes.IconLicenseTag);
 
-        /// <summary>
-        /// Touch begin event, just to return true anyway
-        /// </summary>
-        /// <param name="touch"></param>
-        /// <param name="touchEvent"></param>
-        /// <returns></returns>
-        bool OnTouchBegan(CCTouch touch, CCEvent touchEvent)
-        {
-            if (label.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
+            launcherLabel = new CCLabel("Code from \"Launcher Hijack\" Copyright 2017 parrotgeek1. https://github.com/parrotgeek1/LauncherHijack", "Arial", 72, CCLabelFormat.SystemFont)
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+                Color = CCColor3B.White,
+                AnchorPoint = CCPoint.AnchorMiddle,
+                HorizontalAlignment = CCTextAlignment.Center,
+                VerticalAlignment = CCVerticalTextAlignment.Center,
+                Tag = SpriteTypes.LauncherLicenseTag
+            };
 
-        /// <summary>
-        /// Touch event, trigger license link for Straight-Street icons
-        /// </summary>
-        /// <param name="touch"></param>
-        /// <param name="touchEvent"></param>
-        void OnTouchesEnded(CCTouch touch, CCEvent touchEvent)
-        {
-            if (touchEvent.CurrentTarget.Tag == SpriteTypes.LicenseTag)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    Device.OpenUri(new Uri("http://straight-street.com/"));
-                });
-            }
+            launcherLabel.Scale = labelScale;
+            launcherLabel.PositionX = mainLayer.VisibleBoundsWorldspace.Center.X;
+            launcherLabel.PositionY = iconsLabel.PositionY - launcherLabel.ScaledContentSize.Height / 2f - (mHeight * 0.03f);
+
+            mainLayer.AddChild(launcherLabel, 0, SpriteTypes.LauncherLicenseTag);
         }
 
         /// <summary>
