@@ -61,6 +61,8 @@ namespace SGDWithCocos.Droid
     [IntentFilter(new[] { "android.accessibilityservice.AccessibilityService" })]
     public class BindLauncher : AccessibilityService
     {
+        private const int delay = 300;
+
         Intent intent = new Intent(Android.Content.Intent.ActionMain)
             .AddCategory(Android.Content.Intent.CategoryHome)
             .SetPackage("com.smallnstats.fasttalker")
@@ -81,11 +83,11 @@ namespace SGDWithCocos.Droid
 
                 try
                 {
-                    Thread.Sleep(200);
+                    Thread.Sleep(delay);
                 }
                 catch (InterruptedException exc) { }
 
-                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionRecents);
+                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.Back);
                 StartActivity(intent);
             }
         }
@@ -114,11 +116,11 @@ namespace SGDWithCocos.Droid
 
             try
             {
-                Thread.Sleep(200);
+                Thread.Sleep(delay);
             }
             catch (InterruptedException e) { }
 
-            PerformGlobalAction(Android.AccessibilityServices.GlobalAction.Recents);
+            PerformGlobalAction(Android.AccessibilityServices.GlobalAction.Back);
 
             StartActivity(intent);
         }
