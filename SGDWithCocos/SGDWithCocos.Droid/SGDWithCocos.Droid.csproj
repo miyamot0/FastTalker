@@ -197,8 +197,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base\BlockingViewGroup.cs" />
+    <Compile Include="Base\DeviceAdminReceiverClass.cs" />
     <Compile Include="BindLauncher.cs" />
+    <Compile Include="Implementation\AdminImplementation.cs" />
     <Compile Include="Implementation\DisplayImplementation.cs" />
     <Compile Include="Implementation\NetworkImplementation.cs" />
     <Compile Include="Implementation\PopUpWindowImplementation.cs" />
@@ -11530,8 +11531,9 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\Content\Stored\Want.png" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Resources\xml\" />
+    <AndroidResource Include="Resources\xml\admin.xml" />
   </ItemGroup>
   <Import Project="..\SGDWithCocos.Shared\EmptyProject.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

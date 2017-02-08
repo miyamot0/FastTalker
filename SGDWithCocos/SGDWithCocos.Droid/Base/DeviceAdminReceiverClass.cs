@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------------------------
-// <copyright file="MainActivity.cs" 
-// Copyright February 8, 2017 Shawn Gilroy
+// <copyright file="DeviceAdminReceiverClass.cs" 
+// Copyright February 8, 2016 Shawn Gilroy
 //
 // This file is part of Fast Talker
 //
@@ -26,38 +26,23 @@
 //----------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.App;
 using Android.Content;
+using Android.OS;
+using Android.Runtime;
 using Android.Views;
+using Android.Widget;
+using Android.App.Admin;
+using Android.Util;
 
 namespace SGDWithCocos.Droid.Base
 {
-    public class BlockingViewGroup : ViewGroup
-    {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="context"></param>
-        public BlockingViewGroup(Context context) : base(context) { }
-
-        /// <summary>
-        /// Base method
-        /// </summary>
-        /// <param name="changed"></param>
-        /// <param name="l"></param>
-        /// <param name="t"></param>
-        /// <param name="r"></param>
-        /// <param name="b"></param>
-        protected override void OnLayout(bool changed, int l, int t, int r, int b) { }
-
-        /// <summary>
-        /// Override and return true for all interactions
-        /// </summary>
-        /// <param name="ev"></param>
-        /// <returns></returns>
-        [Android.Runtime.Register("onInterceptTouchEvent", "(Landroid/view/MotionEvent;)Z", "GetOnInterceptTouchEvent_Landroid_view_MotionEvent_Handler")]
-        public override Boolean OnInterceptTouchEvent(MotionEvent ev)
-        {
-            return true;
-        }
-    }
+    [BroadcastReceiver(Permission = "android.permission.BIND_DEVICE_ADMIN", Name = "com.smallnstats.fasttalker.Base.DeviceAdminReceiverClass")]
+    [MetaData("android.app.device_admin",  Resource = "@xml/admin")]
+    [IntentFilter(new[] { "android.app.action.DEVICE_ADMIN_ENABLED", Intent.ActionMain })]
+    public class DeviceAdminReceiverClass : DeviceAdminReceiver { }
 }

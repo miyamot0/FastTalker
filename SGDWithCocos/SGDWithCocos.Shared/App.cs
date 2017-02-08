@@ -25,6 +25,7 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
+using SGDWithCocos.Interface;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
 using Xamarin.Forms;
@@ -33,6 +34,9 @@ namespace SGDWithCocos.Shared
 {
     public class App : Application
 	{
+        /// <summary>
+        /// Segmented categories for less clunky selections
+        /// </summary>
         private static string[] _categoryChunks;
         public static string[] CategoryChunks
         {
@@ -56,9 +60,18 @@ namespace SGDWithCocos.Shared
 		}
 
         /// <summary>
-        /// Lifecycle overrides
+        /// Lifecycle override: check for ownership if on android
         /// </summary>
-		protected override void OnStart () {}
+		protected override void OnStart ()
+        {
+            if (Device.OS == TargetPlatform.Android)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    DependencyService.Get<IAdmin>().RequestAdmin();
+                });
+            }
+        }
 
         /// <summary>
         /// Lifecycle overrides

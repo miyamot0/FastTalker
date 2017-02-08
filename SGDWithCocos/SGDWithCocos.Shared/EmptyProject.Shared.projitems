@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9Sprite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9SpriteFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCScale9SpriteFrame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interface\IAdmin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\IDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\INetwork.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\IPermissionManager.cs" />
