@@ -32,7 +32,6 @@ using SGDWithCocos.Shared.Pages;
 using System.Collections.Generic;
 using SGDWithCocos.Utilities;
 using SGDWithCocos.Tags;
-using Xamarin.Forms;
 
 namespace SGDWithCocos.Scenes
 {

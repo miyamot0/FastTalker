@@ -34,6 +34,8 @@ namespace SGDWithCocos.Shared
 {
     public class App : Application
 	{
+        public static GamePage MainGamePage;
+
         /// <summary>
         /// Segmented categories for less clunky selections
         /// </summary>
@@ -56,7 +58,9 @@ namespace SGDWithCocos.Shared
         /// </summary>
 		public App ()
 		{
-            MainPage = new GamePage();
+            MainGamePage = new GamePage();
+
+            MainPage = MainGamePage;
 		}
 
         /// <summary>

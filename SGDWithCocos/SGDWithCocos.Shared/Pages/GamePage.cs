@@ -74,10 +74,7 @@ namespace SGDWithCocos.Shared.Pages
         /// Constructor, with DependencyService calls to native display metrics
         /// </summary>
         public GamePage()
-        {
-            //width = DeviceInfo.Hardware.ScreenWidth;
-            //height = DeviceInfo.Hardware.ScreenHeight;
-            
+        {           
             width = DependencyService.Get<IDisplay>().Width;
             height = DependencyService.Get<IDisplay>().Height;
 
@@ -1570,8 +1567,8 @@ namespace SGDWithCocos.Shared.Pages
                 var contentSearchPaths = new List<string>() { "Stored" };
                 nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
 
-                int width = nativeGameView.DesignResolution.Width;
-                int height = nativeGameView.DesignResolution.Height;
+                int width = DependencyService.Get<IDisplay>().Width;
+                int height = DependencyService.Get<IDisplay>().Height;
                 nativeGameView.Stats.Enabled = false;
 
                 // Show the start screen
