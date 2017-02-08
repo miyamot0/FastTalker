@@ -36,17 +36,9 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android;
 using Android.AccessibilityServices;
 using Android.Views.Accessibility;
@@ -79,15 +71,15 @@ namespace SGDWithCocos.Droid
         {
             if (e.PackageName.Contains("com.amazon.firelauncher"))
             {
-                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionRecents);
+                PerformGlobalAction(GlobalAction.Recents);
 
                 try
                 {
                     Thread.Sleep(delay);
                 }
-                catch (InterruptedException exc) { }
+                catch { }
 
-                PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionBack);
+                PerformGlobalAction(GlobalAction.Back);
                 StartActivity(intent);
             }
         }
@@ -105,22 +97,22 @@ namespace SGDWithCocos.Droid
             base.OnServiceConnected();
 
             AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-            info.Flags = AccessibilityServiceInfo.Default;
+            info.Flags = AccessibilityServiceFlags.Default;
             info.EventTypes = EventTypes.WindowStateChanged;
-            info.FeedbackType = Android.AccessibilityServices.FeedbackFlags.Generic;
+            info.FeedbackType = FeedbackFlags.Generic;
             info.PackageNames = new string[] { "com.amazon.firelauncher" };
 
             SetServiceInfo(info);
 
-            PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionRecents);
+            PerformGlobalAction(GlobalAction.Recents);
 
             try
             {
                 Thread.Sleep(delay);
             }
-            catch (InterruptedException e) { }
+            catch { }
 
-            PerformGlobalAction(Android.AccessibilityServices.AccessibilityService.GlobalActionBack);
+            PerformGlobalAction(GlobalAction.Back);
 
             StartActivity(intent);
         }

@@ -96,7 +96,7 @@ namespace SGDWithCocos.Server
                     HttpListenerContext context = httpListener.GetContext();
                     Process(context);
                 }
-                catch (Exception ex) { }
+                catch { }
             }
         }
 
@@ -164,10 +164,7 @@ namespace SGDWithCocos.Server
 
                 context.Response.OutputStream.Close();
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch { }
         }
 
         /// <summary>
