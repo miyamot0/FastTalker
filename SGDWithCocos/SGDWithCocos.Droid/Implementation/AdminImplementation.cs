@@ -70,6 +70,10 @@ namespace SGDWithCocos.Droid.Implementation
             }
         }
 
+        /// <summary>
+        /// Check for whether owner privileges are held
+        /// </summary>
+        /// <returns></returns>
         bool IAdmin.IsAdmin()
         {
             DevicePolicyManager devicePolicyManager = (DevicePolicyManager)Application.Context.GetSystemService(Context.DevicePolicyService);

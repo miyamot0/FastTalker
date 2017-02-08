@@ -323,6 +323,14 @@ namespace SGDWithCocos.Shared.Layers
 
                 inEditMode = !inEditMode;
             }
+
+            if (Device.OS == TargetPlatform.Android)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    DependencyService.Get<IAdmin>().RequestAdmin(!edit);
+                });
+            }
         }
 
         /// <summary>

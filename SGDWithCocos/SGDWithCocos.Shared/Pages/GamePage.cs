@@ -1155,7 +1155,7 @@ namespace SGDWithCocos.Shared.Pages
                 {
                     // If permissions not granted, report back to user
 
-                    await DisplayAlert("Location Denied", "Can not continue, try again.", "OK");
+                    await DisplayAlert("Permissions Denied", "Can not continue, try again.", "OK");
                 }
             }
             catch (Exception ex)
@@ -1174,6 +1174,8 @@ namespace SGDWithCocos.Shared.Pages
 
             Device.BeginInvokeOnMainThread(async () =>
             {
+                await CrossMedia.Current.Initialize();
+
                 if (!CrossMedia.Current.IsPickPhotoSupported)
                 {
                     // If photo picking isn't supported, return with blank array
