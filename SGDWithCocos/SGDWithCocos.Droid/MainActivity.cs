@@ -36,6 +36,7 @@ using Android.Views;
 using SGDWithCocos.Droid.Base;
 using SGDWithCocos.Droid.Implementation;
 using SGDWithCocos.Shared;
+using System;
 
 namespace SGDWithCocos.Droid
 {
@@ -109,6 +110,34 @@ namespace SGDWithCocos.Droid
 
             var mManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
             mManager.RemoveView(view);
+        }
+
+        /// <summary>
+        /// Method to detect longer home-press action, overriding with a return to the therapeutic activity
+        /// </summary>
+        protected override void OnUserLeaveHint()
+        {
+            Intent intent = new Intent(Android.Content.Intent.ActionMain)
+                .SetClass(this, typeof(MainActivity))
+                .AddFlags(ActivityFlags.ReorderToFront);
+
+            FireIntent(this, intent);
+
+            base.OnUserLeaveHint();
+        }
+
+        /// <summary>
+        /// Create a pending intent, returning to the therapeutic activity
+        /// </summary>
+        /// <param name="paramContext"></param>
+        /// <param name="paramIntent"></param>
+        public static void FireIntent(Context paramContext, Intent paramIntent)
+        {
+            if (paramIntent != null)
+            {
+                var mAlarm = Application.Context.GetSystemService(Context.AlarmService).JavaCast<AlarmManager>();
+                mAlarm.Set(AlarmType.Rtc, Java.Lang.JavaSystem.CurrentTimeMillis(), PendingIntent.GetActivity(paramContext, 0, paramIntent, 0));
+            }
         }
     }
 }
