@@ -53,6 +53,13 @@ Fast Talker uses a number of open source projects to work properly:
 ### Installation
 Fast Talker can be installed as either an Android or iOS application.  
 
+### Device Owner
+Fast Talker can be set to be a dedicated, SGD-only device by having the administrator run the following command from ADB:
+
+<i>adb shell dpm set-device-owner com.smallnstats.fasttalker/com.smallnstats.fasttalker.Base.DeviceAdminReceiverClass</i>
+
+Issuing this demand will perform indefinite screen pinning, much as single-use devices (e.g., inventory counters, touch screen cash registers) function.
+
 ### Download
 All downloads, if/when posted, will be hosted at [Small N Stats](http://www.smallnstats.com). Formal app store/market release planned following formal evaluation through research and clinical development.
 
