@@ -34,52 +34,84 @@ using Android.OS;
 using Android.App;
 using Android.Graphics;
 using System;
+using Android.Util;
 
 [assembly: Xamarin.Forms.Dependency(typeof(DisplayImplementation))]
 namespace SGDWithCocos.Droid.Implementation
 {
     public class DisplayImplementation : IDisplay
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public DisplayImplementation() { }
 
+        /// <summary>
+        /// Hackish call to ensure assemblies are properly loaded
+        /// </summary>
         public static void Init() { }
 
+        /// <summary>
+        /// Methods for referencing dimensions, with optional callbacks to deprecated methods if best not suited
+        /// </summary>
         [Obsolete("Message")]
         int IDisplay.Height
         {
             get
             {
-                IWindowManager windowManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+                var mManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
 
-                if (Build.VERSION.SdkInt < BuildVersionCodes.HoneycombMr2)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Honeycomb)
                 {
-                    return windowManager.DefaultDisplay.Height;
+                    var size = new Point();
+                    try
+                    {
+                        mManager.DefaultDisplay.GetRealSize(size);
+                        return size.Y;
+                    }
+                    catch (Java.Lang.NoSuchMethodError)
+                    {
+                        return mManager.DefaultDisplay.Height;
+                    }
                 }
                 else
                 {
-                    Point size = new Point();
-                    windowManager.DefaultDisplay.GetSize(size);
-                    return size.Y;
+                    var metrics = new DisplayMetrics();
+                    mManager.DefaultDisplay.GetMetrics(metrics);
+                    return metrics.HeightPixels;
                 }
             }
         }
 
+        /// <summary>
+        /// Methods for referencing dimensions, with optional callbacks to deprecated methods if best not suited
+        /// </summary>
         [Obsolete("Message")]
         int IDisplay.Width
         {
             get
             {
-                IWindowManager windowManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+                var mManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
 
-                if (Build.VERSION.SdkInt < BuildVersionCodes.HoneycombMr2)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Honeycomb)
                 {
-                    return windowManager.DefaultDisplay.Width;
+                    var size = new Point();
+                    try
+                    {
+                        mManager.DefaultDisplay.GetRealSize(size);
+                        return size.X;
+                    }
+                    catch (Java.Lang.NoSuchMethodError)
+                    {
+                        return mManager.DefaultDisplay.Width;
+                    }
                 }
                 else
                 {
-                    Point size = new Point();
-                    windowManager.DefaultDisplay.GetSize(size);
-                    return size.X;
+                    var metrics = new DisplayMetrics();
+                    mManager.DefaultDisplay.GetMetrics(metrics);
+
+                    return metrics.WidthPixels;
                 }
             }
         }

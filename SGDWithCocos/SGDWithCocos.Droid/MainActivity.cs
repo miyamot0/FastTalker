@@ -25,15 +25,12 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
-using Android;
-using Android.AccessibilityServices;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
-using Android.Views.Accessibility;
-using Java.Lang;
+using SGDWithCocos.Droid.Implementation;
 using SGDWithCocos.Shared;
 
 namespace SGDWithCocos.Droid
@@ -41,7 +38,7 @@ namespace SGDWithCocos.Droid
     [Activity (Label = "FastTalker",
         AlwaysRetainTaskState = true,
         Icon = "@drawable/icon",
-        ScreenOrientation = ScreenOrientation.Landscape,
+        ScreenOrientation = ScreenOrientation.ReverseLandscape,
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleInstance,
         ConfigurationChanges = ConfigChanges.Orientation | 
@@ -57,8 +54,24 @@ namespace SGDWithCocos.Droid
 			base.OnCreate (bundle);
             global::Xamarin.Forms.Forms.Init (this, bundle);
 
+            DisplayImplementation.Init();
+
             LoadApplication (new App ());
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+
+            /* Stub for now
+            var am = Android.App.Application.Context.GetSystemService(Context.ActivityService) as ActivityManager;
+
+            if (am != null)
+            {
+                am.MoveTaskToFront(TaskId, 0);
+            }
+            */         
         }
     }
 }

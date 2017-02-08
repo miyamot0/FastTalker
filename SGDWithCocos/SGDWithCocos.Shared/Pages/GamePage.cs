@@ -75,6 +75,9 @@ namespace SGDWithCocos.Shared.Pages
         /// </summary>
         public GamePage()
         {
+            //width = DeviceInfo.Hardware.ScreenWidth;
+            //height = DeviceInfo.Hardware.ScreenHeight;
+            
             width = DependencyService.Get<IDisplay>().Width;
             height = DependencyService.Get<IDisplay>().Height;
 
