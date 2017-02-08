@@ -59,6 +59,7 @@ namespace SGDWithCocos.Shared.Pages
     /// </summary>
     public class GamePage : ContentPage
     {
+        public bool IsAdmin = false;
         public CocosSharpView gameView;
         public CCScene gameScene;
         GameLayer mLayer;
@@ -905,23 +906,43 @@ namespace SGDWithCocos.Shared.Pages
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 
-            Device.BeginInvokeOnMainThread(async () =>
+            string[] mOptions = null;
+
+            if (IsAdmin)
             {
-                var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK",
-                    StringTypes.ResumeOperation,
-
+                mOptions = new string[] { StringTypes.ResumeOperation,
                     // Stub out server code
+
                     //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
-
                     StringTypes.ForceSave,
-
                     // Stub out board import
+
                     //StringTypes.ImportBoard,
                     (isScreenLocked) ? "Deactivate Lock" : "Reactivate Lock",
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
-                    StringTypes.AddFolder);
+                    StringTypes.AddFolder };
+            }
+            else
+            {
+                mOptions = new string[] { StringTypes.ResumeOperation,
+                    // Stub out server code
+
+                    //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
+                    StringTypes.ForceSave,
+                    // Stub out board import
+
+                    //StringTypes.ImportBoard,
+                    StringTypes.ChangeSettings,
+                    StringTypes.AddIcon,
+                    StringTypes.TakePhoto,
+                    StringTypes.AddFolder };
+            }
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var mAction = await DisplayActionSheet("Change settings or icons?", "Cancel", "OK", mOptions);
                 tcs.SetResult(mAction);
             });
 

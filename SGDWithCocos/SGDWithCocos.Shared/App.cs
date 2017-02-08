@@ -73,6 +73,8 @@ namespace SGDWithCocos.Shared
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     DependencyService.Get<IAdmin>().RequestAdmin(true);
+
+                    MainGamePage.IsAdmin = DependencyService.Get<IAdmin>().IsAdmin();
                 });
             }
         }

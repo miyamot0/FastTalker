@@ -69,5 +69,13 @@ namespace SGDWithCocos.Droid.Implementation
                 }
             }
         }
+
+        bool IAdmin.IsAdmin()
+        {
+            DevicePolicyManager devicePolicyManager = (DevicePolicyManager)Application.Context.GetSystemService(Context.DevicePolicyService);
+            ComponentName mDeviceAdminRcvr = new ComponentName(Application.Context, Java.Lang.Class.FromType(typeof(DeviceAdminReceiverClass)).Name);
+
+            return devicePolicyManager.IsAdminActive(mDeviceAdminRcvr);
+        }
     }
 }
