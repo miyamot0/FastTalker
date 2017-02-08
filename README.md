@@ -28,7 +28,10 @@ Features include:
  * 1.1.0.0 - Straight-Street images and embedded visual fixes
  * 1.0.0.0 - Initial push
 
-### Derivative Works (Media)
+### Derivative Works
+Fast Talker is a derivative work of an earlier project and uses licensed software:
+* [Cross-Platform-Communication-App](https://github.com/miyamot0/Cross-Platform-Communication-App) - [GPL-V3](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) - Copyright 2016-2017 Shawn Gilroy. [www.smallnstats.com](http://www.smallnstats.com)
+
 Fast Talker uses licensed visual images in order to operate:
 * [Mulberry Symbols](https://github.com/straight-street/mulberry-symbols) - [CC-BY-SA 2.0.](http://creativecommons.org/licenses/by-sa/2.0/uk/) - Copyright 2008-2012 Garry Paxton. [www.straight-street-.com](http://straight-street.com/)
 
