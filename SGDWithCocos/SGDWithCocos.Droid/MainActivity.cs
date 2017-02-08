@@ -28,8 +28,12 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
+using Android.Graphics;
 using Android.OS;
+using Android.Runtime;
+using Android.Util;
 using Android.Views;
+using SGDWithCocos.Droid.Base;
 using SGDWithCocos.Droid.Implementation;
 using SGDWithCocos.Shared;
 
@@ -49,7 +53,9 @@ namespace SGDWithCocos.Droid
         Categories = new[] { Android.Content.Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
-		protected override void OnCreate (Bundle bundle)
+        private BlockingViewGroup view;
+
+        protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
             global::Xamarin.Forms.Forms.Init (this, bundle);
@@ -58,6 +64,26 @@ namespace SGDWithCocos.Droid
 
             LoadApplication (new App ());
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+
+            var mManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+            WindowManagerLayoutParams localLayoutParams = new WindowManagerLayoutParams();
+            localLayoutParams.Type = WindowManagerTypes.SystemError;
+            localLayoutParams.Gravity = GravityFlags.Top;
+            localLayoutParams.Flags = WindowManagerFlags.NotFocusable | WindowManagerFlags.NotTouchModal | WindowManagerFlags.LayoutInScreen;
+
+            localLayoutParams.Width = WindowManagerLayoutParams.MatchParent;
+
+            var metrics = new DisplayMetrics();
+            mManager.DefaultDisplay.GetMetrics(metrics);
+
+            localLayoutParams.Height = (int)(50 * metrics.ScaledDensity);
+
+            localLayoutParams.Format = Android.Graphics.Format.Transparent;
+
+            view = new BlockingViewGroup(this);
+
+            mManager.AddView(view, localLayoutParams);
+
         }
 
         protected override void OnPause()
@@ -71,7 +97,18 @@ namespace SGDWithCocos.Droid
             {
                 am.MoveTaskToFront(TaskId, 0);
             }
-            */         
+            */
+        }
+
+        /// <summary>
+        /// Remove overlay, if/when destroyed
+        /// </summary>
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            var mManager = Application.Context.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
+            mManager.RemoveView(view);
         }
     }
 }

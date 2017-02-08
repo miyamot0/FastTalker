@@ -197,6 +197,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\BlockingViewGroup.cs" />
     <Compile Include="BindLauncher.cs" />
     <Compile Include="Implementation\DisplayImplementation.cs" />
     <Compile Include="Implementation\NetworkImplementation.cs" />
