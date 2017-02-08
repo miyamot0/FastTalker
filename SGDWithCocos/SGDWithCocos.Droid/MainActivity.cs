@@ -30,6 +30,7 @@ using Android.App.Admin;
 using Android.Content;
 using Android.Content.PM;
 using Android.Graphics;
+using Android.Media;
 using Android.OS;
 using Android.Runtime;
 using Android.Util;
@@ -47,12 +48,8 @@ namespace SGDWithCocos.Droid
         ScreenOrientation = ScreenOrientation.ReverseLandscape,
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleInstance,
-        ConfigurationChanges = ConfigChanges.Orientation | 
-            ConfigChanges.ScreenSize | 
-            ConfigChanges.Keyboard | 
-            ConfigChanges.KeyboardHidden)]
-    [IntentFilter(new[] { Android.Content.Intent.ActionMain },
-        Categories = new[] { Android.Content.Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
+        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden)]
+    [IntentFilter(new[] { Android.Content.Intent.ActionMain }, Categories = new[] { Android.Content.Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
         public static Activity MainApplicationActivity;
@@ -67,6 +64,17 @@ namespace SGDWithCocos.Droid
 
             LoadApplication (new App());
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
+
+            AudioManager audioManager = (AudioManager) Application.Context.GetSystemService(Context.AudioService);
+            audioManager.SetStreamVolume(Stream.System, audioManager.GetStreamMaxVolume(Stream.System), 0);
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            AudioManager audioManager = (AudioManager)Application.Context.GetSystemService(Context.AudioService);
+            audioManager.SetStreamVolume(Stream.System, audioManager.GetStreamMaxVolume(Stream.System), 0);
         }
     }
 }

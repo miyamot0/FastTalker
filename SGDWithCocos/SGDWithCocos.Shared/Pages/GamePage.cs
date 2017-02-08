@@ -86,7 +86,7 @@ namespace SGDWithCocos.Shared.Pages
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 DesignResolution = new Size(width, height),
                 ResolutionPolicy = CocosSharpView.ViewResolutionPolicy.ExactFit,
-                ViewCreated = LoadGame
+                ViewCreated = LoadGame,
             };
 
             Content = gameView;
@@ -1598,17 +1598,17 @@ namespace SGDWithCocos.Shared.Pages
 
             if (nativeGameView != null)
             {
-
                 var contentSearchPaths = new List<string>() { "Stored" };
                 nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
 
                 int width = DependencyService.Get<IDisplay>().Width;
                 int height = DependencyService.Get<IDisplay>().Height;
+
                 nativeGameView.Stats.Enabled = false;
 
                 // Show the start screen
                 nativeGameView.RunWithScene(new GameStartScene(nativeGameView, width, height, this));
-
+                
                 // Begin building the icon-based scene
                 ConstructGameScene(nativeGameView);
             }

@@ -88,5 +88,6 @@ namespace SGDWithCocos.Shared
         /// Lifecycle overrides
         /// </summary>
         protected override void OnResume () {}
+
 	}
 }
