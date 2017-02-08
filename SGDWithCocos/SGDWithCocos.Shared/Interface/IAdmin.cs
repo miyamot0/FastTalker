@@ -29,6 +29,6 @@ namespace SGDWithCocos.Interface
 {
     public interface IAdmin
     {
-        void RequestAdmin();
+        void RequestAdmin(bool status);
     }
 }

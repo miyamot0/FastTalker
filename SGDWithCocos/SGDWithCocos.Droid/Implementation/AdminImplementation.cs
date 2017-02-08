@@ -49,7 +49,7 @@ namespace SGDWithCocos.Droid.Implementation
         /// <summary>
         /// Method for checking if user has acquired owner rights.  If user is owner, lock that screen up tight
         /// </summary>
-        void IAdmin.RequestAdmin()
+        void IAdmin.RequestAdmin(bool status)
         {
             DevicePolicyManager devicePolicyManager = (DevicePolicyManager)Application.Context.GetSystemService(Context.DevicePolicyService);
             ComponentName mDeviceAdminRcvr = new ComponentName(Application.Context, Java.Lang.Class.FromType(typeof(DeviceAdminReceiverClass)).Name);
@@ -58,7 +58,14 @@ namespace SGDWithCocos.Droid.Implementation
             {
                 if (devicePolicyManager.IsLockTaskPermitted(Application.Context.PackageName))
                 {
-                    MainActivity.MainApplicationActivity.StartLockTask();
+                    if (status)
+                    {
+                        MainActivity.MainApplicationActivity.StartLockTask();
+                    }
+                    else
+                    {
+                        MainActivity.MainApplicationActivity.StopLockTask();
+                    }
                 }
             }
         }

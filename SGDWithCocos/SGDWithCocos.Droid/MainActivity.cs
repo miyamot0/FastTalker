@@ -65,7 +65,7 @@ namespace SGDWithCocos.Droid
             DisplayImplementation.Init();
             MainApplicationActivity = this;
 
-            LoadApplication (new App ());
+            LoadApplication (new App());
             this.Window.AddFlags(WindowManagerFlags.Fullscreen);
         }
     }

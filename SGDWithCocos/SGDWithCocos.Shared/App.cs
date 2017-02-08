@@ -72,7 +72,7 @@ namespace SGDWithCocos.Shared
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    DependencyService.Get<IAdmin>().RequestAdmin();
+                    DependencyService.Get<IAdmin>().RequestAdmin(true);
                 });
             }
         }

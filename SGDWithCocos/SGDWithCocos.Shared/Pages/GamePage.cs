@@ -64,6 +64,7 @@ namespace SGDWithCocos.Shared.Pages
         GameLayer mLayer;
         int width, height;
         SimpleIconServer mServer;
+        private bool isScreenLocked = true;
 
         /// <summary>
         /// NativeGame object
@@ -866,6 +867,19 @@ namespace SGDWithCocos.Shared.Pages
                 mLayer.SetEditMode(false);
             }
 
+            else if (buttonSelect.Contains("activate Lock"))
+            {
+                isScreenLocked = !isScreenLocked;
+
+                if (Device.OS == TargetPlatform.Android)
+                {
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        DependencyService.Get<IAdmin>().RequestAdmin(isScreenLocked);
+                    });
+                }
+            }
+
             #endregion
 
             #region Server Operation
@@ -903,7 +917,7 @@ namespace SGDWithCocos.Shared.Pages
 
                     // Stub out board import
                     //StringTypes.ImportBoard,
-
+                    (isScreenLocked) ? "Deactivate Lock" : "Reactivate Lock",
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
