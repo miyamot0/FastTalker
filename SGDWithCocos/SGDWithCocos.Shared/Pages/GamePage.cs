@@ -1377,7 +1377,9 @@ namespace SGDWithCocos.Shared.Pages
                 var mediaOptions = new Plugin.Media.Abstractions.StoreCameraMediaOptions
                 {
                     Directory = "SGDPhotos",
-                    Name = $"{DateTime.UtcNow}.jpg"
+                    Name = $"{DateTime.UtcNow}.jpg",
+                    SaveToAlbum = true,
+                    AllowCropping = true
                 };
 
                 var file = await CrossMedia.Current.TakePhotoAsync(mediaOptions);
