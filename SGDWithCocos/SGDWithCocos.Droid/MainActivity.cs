@@ -26,19 +26,13 @@
 //----------------------------------------------------------------------------------------------
 
 using Android.App;
-using Android.App.Admin;
 using Android.Content;
 using Android.Content.PM;
-using Android.Graphics;
 using Android.Media;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
 using Android.Views;
-using SGDWithCocos.Droid.Base;
 using SGDWithCocos.Droid.Implementation;
 using SGDWithCocos.Shared;
-using System;
 
 namespace SGDWithCocos.Droid
 {
@@ -49,7 +43,7 @@ namespace SGDWithCocos.Droid
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleInstance,
         ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden)]
-    [IntentFilter(new[] { Android.Content.Intent.ActionMain }, Categories = new[] { Android.Content.Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
+    [IntentFilter(new[] { Intent.ActionMain }, Categories = new[] { Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
         public static Activity MainApplicationActivity;

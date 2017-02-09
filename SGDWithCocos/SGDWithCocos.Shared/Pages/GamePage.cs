@@ -76,9 +76,20 @@ namespace SGDWithCocos.Shared.Pages
         /// Constructor, with DependencyService calls to native display metrics
         /// </summary>
         public GamePage()
-        {           
-            width = DependencyService.Get<IDisplay>().Width;
-            height = DependencyService.Get<IDisplay>().Height;
+        {
+            int mWidth = DependencyService.Get<IDisplay>().Width;
+            int mHeight = DependencyService.Get<IDisplay>().Height;
+
+            if (mWidth > mHeight)
+            {
+                width = DependencyService.Get<IDisplay>().Width;
+                height = DependencyService.Get<IDisplay>().Height;
+            }
+            else
+            {
+                height = DependencyService.Get<IDisplay>().Width;
+                width = DependencyService.Get<IDisplay>().Height;
+            }
 
             gameView = new CocosSharpView()
             {
@@ -1604,9 +1615,20 @@ namespace SGDWithCocos.Shared.Pages
             {
                 var contentSearchPaths = new List<string>() { "Stored" };
                 nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
+                
+                int mWidth = DependencyService.Get<IDisplay>().Width;
+                int mHeight = DependencyService.Get<IDisplay>().Height;
 
-                int width = DependencyService.Get<IDisplay>().Width;
-                int height = DependencyService.Get<IDisplay>().Height;
+                if (mWidth > mHeight)
+                {
+                    width = DependencyService.Get<IDisplay>().Width;
+                    height = DependencyService.Get<IDisplay>().Height;
+                }
+                else
+                {
+                    height = DependencyService.Get<IDisplay>().Width;
+                    width = DependencyService.Get<IDisplay>().Height;
+                }
 
                 nativeGameView.Stats.Enabled = false;
 
@@ -1669,6 +1691,20 @@ namespace SGDWithCocos.Shared.Pages
                 {
                     jsonObject = null;
                 }
+            }
+
+            int mWidth = DependencyService.Get<IDisplay>().Width;
+            int mHeight = DependencyService.Get<IDisplay>().Height;
+
+            if (mWidth > mHeight)
+            {
+                width = DependencyService.Get<IDisplay>().Width;
+                height = DependencyService.Get<IDisplay>().Height;
+            }
+            else
+            {
+                height = DependencyService.Get<IDisplay>().Width;
+                width = DependencyService.Get<IDisplay>().Height;
             }
 
             // Create layer for icon board scene

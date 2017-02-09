@@ -28,6 +28,7 @@
 using SGDWithCocos.Interface;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
+using System;
 using Xamarin.Forms;
 
 namespace SGDWithCocos.Shared
@@ -60,24 +61,20 @@ namespace SGDWithCocos.Shared
 		{
             MainGamePage = new GamePage();
 
+            if (Device.OS == TargetPlatform.Android)
+            {
+                MainGamePage.IsAdmin = DependencyService.Get<IAdmin>().IsAdmin();
+
+                DependencyService.Get<IAdmin>().RequestAdmin(MainGamePage.IsAdmin);
+            }
+
             MainPage = MainGamePage;
 		}
 
         /// <summary>
         /// Lifecycle override: check for ownership if on android
         /// </summary>
-		protected override void OnStart ()
-        {
-            if (Device.OS == TargetPlatform.Android)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    DependencyService.Get<IAdmin>().RequestAdmin(true);
-
-                    MainGamePage.IsAdmin = DependencyService.Get<IAdmin>().IsAdmin();
-                });
-            }
-        }
+		protected override void OnStart () {}
 
         /// <summary>
         /// Lifecycle overrides

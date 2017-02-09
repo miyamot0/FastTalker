@@ -25,21 +25,13 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using SGDWithCocos.Interface;
 using SGDWithCocos.Droid.Implementation;
 using Android.App.Admin;
 using SGDWithCocos.Droid.Base;
+using System;
 
 [assembly: Xamarin.Forms.Dependency(typeof(AdminImplementation))]
 namespace SGDWithCocos.Droid.Implementation
@@ -56,6 +48,8 @@ namespace SGDWithCocos.Droid.Implementation
 
             if (devicePolicyManager.IsAdminActive(mDeviceAdminRcvr))
             {
+                devicePolicyManager.SetLockTaskPackages(mDeviceAdminRcvr, new String[] { Application.Context.PackageName });
+
                 if (devicePolicyManager.IsLockTaskPermitted(Application.Context.PackageName))
                 {
                     if (status)
