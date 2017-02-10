@@ -1390,7 +1390,7 @@ namespace SGDWithCocos.Shared.Pages
                     Directory = "SGDPhotos",
                     Name = $"{DateTime.UtcNow}.jpg",
                     SaveToAlbum = true,
-                    AllowCropping = true
+                    AllowCropping = true,                    
                 };
 
                 var file = await CrossMedia.Current.TakePhotoAsync(mediaOptions);

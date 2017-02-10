@@ -31,6 +31,8 @@ using System;
 using System.IO;
 using SGDWithCocos.Droid.Implementation;
 using Xamarin.Forms;
+using Android.Media;
+using Java.Lang;
 
 [assembly: Dependency(typeof(ResizerImplementation))]
 namespace SGDWithCocos.Droid.Implementation
@@ -51,9 +53,7 @@ namespace SGDWithCocos.Droid.Implementation
                    bitmap.Width / 2 - bitmap.Height / 2,
                    0,
                    bitmap.Height,
-                   bitmap.Height
-                   );
-
+                   bitmap.Height);
             }
             else
             {
@@ -62,8 +62,7 @@ namespace SGDWithCocos.Droid.Implementation
                    0,
                    bitmap.Height / 2 - bitmap.Width / 2,
                    bitmap.Width,
-                   bitmap.Width
-                   );
+                   bitmap.Width);
             }
 
             FileStream stream = null;
@@ -71,11 +70,12 @@ namespace SGDWithCocos.Droid.Implementation
             try
             {
                 stream = new FileStream(newPhotoPath, FileMode.Create);
+                croppedBitmap = ModifyOrientation(photoPath, croppedBitmap);
                 croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
-                System.Console.WriteLine("Failed to write: " + e.ToString());
+                Console.WriteLine("Failed to write: " + e.ToString());
             }
             finally
             {
@@ -85,10 +85,71 @@ namespace SGDWithCocos.Droid.Implementation
                         stream.Close();
                     }
                 }
-                catch (System.IO.IOException e)
+                catch (IOException e)
                 {
-                    System.Console.WriteLine("Failed to close: " + e.ToString());
+                    Console.WriteLine("Failed to close: " + e.ToString());
                 }
+            }
+        }
+
+        private Bitmap ModifyOrientation(string photoPath, Bitmap bitmap)
+        {
+            ExifInterface exifInterface = new ExifInterface(photoPath);
+            int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, 0);
+
+            var matrix = new Matrix();
+            switch (orientation)
+            {
+                case 2:
+                    matrix.SetScale(-1, 1);
+                    break;
+
+                case 3:
+                    matrix.SetRotate(180);
+                    break;
+
+                case 4:
+                    matrix.SetRotate(180);
+                    matrix.PostScale(-1, 1);
+                    break;
+
+                case 5:
+                    matrix.SetRotate(90);
+                    matrix.PostScale(-1, 1);
+                    break;
+
+                case 6:
+                    matrix.SetRotate(90);
+                    break;
+
+                case 7:
+                    matrix.SetRotate(-90);
+                    matrix.PostScale(-1, 1);
+                    break;
+
+                case 8:
+                    matrix.SetRotate(-90);
+                    break;
+
+                default:
+                    return bitmap;
+            }
+
+            try
+            {
+                Bitmap oriented = Bitmap.CreateBitmap(bitmap, 0, 0, bitmap.Width, bitmap.Height, matrix, true);
+                bitmap.Recycle();
+                return oriented;
+            }
+            catch (OutOfMemoryError e)
+            {
+                e.PrintStackTrace();
+                return bitmap;
+            }
+            catch (System.Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return bitmap;
             }
         }
     }
