@@ -81,7 +81,8 @@ namespace SGDWithCocos.Droid.Implementation
             {
                 try
                 {
-                    if (stream != null) {
+                    if (stream != null)
+                    {
                         stream.Close();
                     }
                 }
@@ -139,16 +140,19 @@ namespace SGDWithCocos.Droid.Implementation
             {
                 Bitmap oriented = Bitmap.CreateBitmap(bitmap, 0, 0, bitmap.Width, bitmap.Height, matrix, true);
                 bitmap.Recycle();
+
                 return oriented;
             }
             catch (OutOfMemoryError e)
             {
                 e.PrintStackTrace();
+
                 return bitmap;
             }
             catch (System.Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
+
                 return bitmap;
             }
         }

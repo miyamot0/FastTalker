@@ -7,17 +7,17 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.smallnstats.fasttalker</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>CFBundleVersion</key>
-	<string>1.1</string>
+	<string>1.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>The camera is used to make icons</string>
-  <key>NSCalendarsUsageDescription</key>
-  <string>This is necessary for use in the Xamarin Framework</string>
-  <key>UIRequiresFullScreen</key>
-  <true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This is necessary for use in the Xamarin Framework</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>The library is used to make icons</string>
 	<key>MinimumOSVersion</key>
@@ -47,8 +47,8 @@
 		<string>Icon-72@2x.png</string>
 		<string>Icon-72.png</string>
 		<string>Icon-76@2x.png</string>
-    <string>Icon-83.5@2x.png</string>
 		<string>Icon-76.png</string>
+		<string>Icon-83.5@2x.png</string>
 		<string>Icon-Small.png</string>
 		<string>Icon-Small@2x.png</string>
 		<string>Icon-Small-50@2x.png</string>

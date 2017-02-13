@@ -745,6 +745,11 @@ namespace SGDWithCocos.Shared.Pages
         {
             string buttonSelect = await GetActionTypeActionSheet();
 
+            if (buttonSelect == null)
+            {
+                return;
+            }
+
             #region Change SGD Level
 
             if (buttonSelect == StringTypes.ChangeSettings)
