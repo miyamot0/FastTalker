@@ -25,6 +25,8 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
+using System.IO;
+
 namespace SGDWithCocos.Interface
 {
     /// <summary>
@@ -33,5 +35,6 @@ namespace SGDWithCocos.Interface
     public interface IResizer
     {
         void ResizeBitmaps(string photoPath, string newPhotoPath);
+        byte[] RotateImage(string photoPath);
     }
 }

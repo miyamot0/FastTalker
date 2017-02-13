@@ -70,7 +70,7 @@ namespace SGDWithCocos.Droid.Implementation
             try
             {
                 stream = new FileStream(newPhotoPath, FileMode.Create);
-                croppedBitmap = ModifyOrientation(photoPath, croppedBitmap);
+                //croppedBitmap = ModifyOrientation(photoPath, croppedBitmap);
                 croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
             }
             catch (System.Exception e)
@@ -93,68 +93,83 @@ namespace SGDWithCocos.Droid.Implementation
             }
         }
 
-        private Bitmap ModifyOrientation(string photoPath, Bitmap bitmap)
+        public byte[] RotateImage(string photoPath)
         {
-            ExifInterface exifInterface = new ExifInterface(photoPath);
-            int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, 0);
-
-            var matrix = new Matrix();
-            switch (orientation)
-            {
-                case 2:
-                    matrix.SetScale(-1, 1);
-                    break;
-
-                case 3:
-                    matrix.SetRotate(180);
-                    break;
-
-                case 4:
-                    matrix.SetRotate(180);
-                    matrix.PostScale(-1, 1);
-                    break;
-
-                case 5:
-                    matrix.SetRotate(90);
-                    matrix.PostScale(-1, 1);
-                    break;
-
-                case 6:
-                    matrix.SetRotate(90);
-                    break;
-
-                case 7:
-                    matrix.SetRotate(-90);
-                    matrix.PostScale(-1, 1);
-                    break;
-
-                case 8:
-                    matrix.SetRotate(-90);
-                    break;
-
-                default:
-                    return bitmap;
-            }
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.InPreferredConfig = Bitmap.Config.Argb8888;
+            Bitmap bitmap = BitmapFactory.DecodeFile(photoPath, options);
 
             try
             {
-                Bitmap oriented = Bitmap.CreateBitmap(bitmap, 0, 0, bitmap.Width, bitmap.Height, matrix, true);
-                bitmap.Recycle();
+                ExifInterface exifInterface = new ExifInterface(photoPath);
+                int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, (int)Android.Media.Orientation.Normal);
 
-                return oriented;
-            }
-            catch (OutOfMemoryError e)
-            {
-                e.PrintStackTrace();
+                System.Diagnostics.Debug.WriteLine("Orientation of image" + orientation.ToString());
+                Console.WriteLine("Orientation of image" + orientation.ToString());
 
-                return bitmap;
-            }
-            catch (System.Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                int rotate = 0;
 
-                return bitmap;
+                switch (orientation)
+                {
+                    case (int)Android.Media.Orientation.Normal:
+                        rotate = 0;
+                        break;
+
+                    case (int)Android.Media.Orientation.Rotate90:
+                        rotate = 90;
+                        break;
+
+                    case (int)Android.Media.Orientation.Rotate270:
+                        rotate = 270;
+                        break;
+
+                    case (int)Android.Media.Orientation.Rotate180:
+                        rotate = 180;
+                        break;
+
+                    default:
+                        rotate = 0;
+                        break;
+                }
+
+                using (var ms = new MemoryStream())
+                {
+                    Bitmap croppedBitmap = null;
+
+                    Matrix mtx = new Matrix();
+                    mtx.PreRotate(rotate);
+
+                    if (bitmap.Width >= bitmap.Height)
+                    {
+                        croppedBitmap = Bitmap.CreateBitmap(
+                           bitmap,
+                           bitmap.Width / 2 - bitmap.Height / 2,
+                           0,
+                           bitmap.Height,
+                           bitmap.Height,
+                           mtx,
+                           false);
+                    }
+                    else
+                    {
+                        croppedBitmap = Bitmap.CreateBitmap(
+                           bitmap,
+                           0,
+                           bitmap.Height / 2 - bitmap.Width / 2,
+                           bitmap.Width,
+                           bitmap.Width,
+                           mtx,
+                           false);
+                    }
+                                        
+                    croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, ms);
+
+                    return ms.ToArray();
+                }
             }
+            catch { }
+
+            return null;
         }
     }
 }

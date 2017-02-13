@@ -1217,7 +1217,17 @@ namespace SGDWithCocos.Shared.Pages
                             {
                                 // If user provides valid name, convert image file to base64 and return
 
-                                byte[] imageArray = File.ReadAllBytes(@file.Path);
+                                byte[] imageArray = null;
+
+                                if (Device.OS == TargetPlatform.Android)
+                                {
+                                    imageArray = DependencyService.Get<IResizer>().RotateImage(@file.Path);
+                                }
+                                else
+                                {
+                                    imageArray = File.ReadAllBytes(@file.Path);
+                                }
+
                                 string base64ImageRepresentation = Convert.ToBase64String(imageArray);
                                 var extension = Path.GetExtension(@file.Path);
 
