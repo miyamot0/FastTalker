@@ -36,6 +36,11 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class ResizerImplementation : IResizer
     {
+        public byte[] RotateImage(string photoPath)
+        {
+            return null;
+        }
+
         void IResizer.ResizeBitmaps(string photoPath, string newPhotoPath)
         {
             var sourceImage = UIImage.FromFile(photoPath);
@@ -77,7 +82,6 @@ namespace SGDWithCocos.iOS.Implementation
                 UIGraphics.EndImageContext();
 
                 modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
-
             }
         }
     }
