@@ -78,6 +78,12 @@ namespace SGDWithCocos.Tags
         public static string TakePhoto = "Take a Photo";
         public static string AddFolder = "Add a Folder";
 
+        public static string DeactivateLock = "Deactivate Lock";
+        public static string ReactivateLock = "Reactivate Lock";
+
+        public static string PreventDeselect = "Prevent Auto Deselect";
+        public static string ForceDeselect = "Require Auto Deselect";
+
         #endregion
 
         #region Presentation Format Tags

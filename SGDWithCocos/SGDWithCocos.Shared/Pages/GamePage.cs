@@ -904,6 +904,15 @@ namespace SGDWithCocos.Shared.Pages
 
             #endregion
 
+            #region Session Conditions
+
+            else if (buttonSelect.ToLower().Contains("auto deselect"))
+            {
+                mLayer.UnselectAuto = !mLayer.UnselectAuto;
+            }
+
+            #endregion
+
             #region Server Operation
 
             else if (buttonSelect == StringTypes.ServerStart)
@@ -942,7 +951,8 @@ namespace SGDWithCocos.Shared.Pages
                     // Stub out board import
                     //StringTypes.ImportBoard,
 
-                    (isScreenLocked) ? "Deactivate Lock" : "Reactivate Lock",
+                    (isScreenLocked) ? StringTypes.DeactivateLock : StringTypes.ReactivateLock,
+                    (mLayer.UnselectAuto) ? StringTypes.PreventDeselect : StringTypes.ForceDeselect,
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
@@ -960,7 +970,8 @@ namespace SGDWithCocos.Shared.Pages
 
                     // Stub out board import
                     //StringTypes.ImportBoard,
-
+                    
+                    (mLayer.UnselectAuto) ? StringTypes.PreventDeselect : StringTypes.ForceDeselect,
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
@@ -1486,7 +1497,7 @@ namespace SGDWithCocos.Shared.Pages
         /// <param name="icons">All icons in field, folder or typical</param>
         /// <param name="storedIcons">All saved icons</param>
         /// <param name="inSingleMode">If in single or framed mode</param>
-        public string SaveBoards(List<IconReference> icons, List<StoredIconReference> storedIcons, bool inSingleMode)
+        public string SaveBoards(List<IconReference> icons, List<StoredIconReference> storedIcons, bool inSingleMode, bool autoDeselect)
         {
             string mJsonString = "";
 
@@ -1584,6 +1595,7 @@ namespace SGDWithCocos.Shared.Pages
                 mIconStorage.Folders = mJsonFolderArray;
                 mIconStorage.StoredIcons = mJsonStoredIconArray;
                 mIconStorage.SingleMode = inSingleMode;
+                mIconStorage.AutoUnselectSingleMode = autoDeselect;
 
                 // Serialized object
                 mJsonString = JsonConvert.SerializeObject(mIconStorage);

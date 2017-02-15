@@ -92,8 +92,18 @@ namespace SGDWithCocos.Shared.Layers
         // Logicals for editing, frame state
         bool inEditMode = false,
              inSingleMode = true,
+             unselectAuto = false,
              isModal = false,
              isServerUp = false;
+
+        public bool UnselectAuto
+        {
+            get { return unselectAuto; }
+            set
+            {
+                unselectAuto = value;
+            }
+        }
 
         // Time metrics, for screen press and save intervals
         float totalDuration = 0f,
@@ -266,10 +276,12 @@ namespace SGDWithCocos.Shared.Layers
                 // Set the display mode
 
                 SetSingleMode(json.SingleMode);
+                UnselectAuto = json.AutoUnselectSingleMode;
             }
             else
             {
                 SetSingleMode(inSingleMode);
+                UnselectAuto = false;
             }
 
             var counter = 1;
@@ -311,7 +323,7 @@ namespace SGDWithCocos.Shared.Layers
             {
                 // Orange background = edit mode
 
-                this.Color = CCColor3B.Orange;
+                Color = CCColor3B.Orange;
                 addFrame.Visible = true;
                 deleteFrame.Visible = true;
 
@@ -321,7 +333,7 @@ namespace SGDWithCocos.Shared.Layers
             {
                 // Gray background = active mode
 
-                this.Color = CCColor3B.Gray;
+                Color = CCColor3B.Gray;
                 addFrame.Visible = false;
                 deleteFrame.Visible = false;
 
@@ -1588,6 +1600,11 @@ namespace SGDWithCocos.Shared.Layers
                     var outputString = string.Join(" ", labelList.ToArray());
 
                     DependencyService.Get<ITextToSpeech>().Speak(outputString);
+
+                    if (unselectAuto && inSingleMode)
+                    {
+                        DeSelectIcons();
+                    }
                 }
 
                 #endregion
@@ -1959,7 +1976,7 @@ namespace SGDWithCocos.Shared.Layers
             {
                 lock (storedList)
                 {
-                    GamePageParent.SaveBoards(iconList2, storedList, inSingleMode);
+                    GamePageParent.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
                 }
             }
         }

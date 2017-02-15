@@ -38,6 +38,7 @@ namespace SGDWithCocos.Models
         public List<StoredIconModel> StoredIcons { get; set; }
         public List<FolderModel> Folders { get; set; }
         public bool SingleMode { get; set; }
+        public bool AutoUnselectSingleMode { get; set; }
 
         /// <summary>
         /// Constructor
@@ -48,6 +49,7 @@ namespace SGDWithCocos.Models
             StoredIcons = new List<StoredIconModel>();
             Folders = new List<FolderModel>();
             SingleMode = true;
+            AutoUnselectSingleMode = false;
         }
     }
 }
