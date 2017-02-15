@@ -750,12 +750,10 @@ namespace SGDWithCocos.Shared.Pages
                 return;
             }
 
-            #region Change SGD Level
-
+            #region Change SGD Presentation Type
+            
             if (buttonSelect == StringTypes.ChangeSettings)
             {
-                // Change mode logic
-
                 string modeSelect = await GetSGDMode();
 
                 if (modeSelect == StringTypes.SingleMode)
@@ -774,8 +772,6 @@ namespace SGDWithCocos.Shared.Pages
 
             else if (buttonSelect == StringTypes.AddIcon)
             {
-                // Add icon logic
-
                 string actionSelect = await GetActionSheetChoice();
 
                 if (actionSelect == StringTypes.LocalImage)
@@ -794,8 +790,6 @@ namespace SGDWithCocos.Shared.Pages
 
             else if (buttonSelect == StringTypes.TakePhoto)
             {
-                // Take picture for icon logic
-
                 CallImageTaker();
             }
 
@@ -826,7 +820,7 @@ namespace SGDWithCocos.Shared.Pages
 
             #endregion
 
-            #region Import Board
+            #region Import Board (STUBBED)
 
             else if (buttonSelect == StringTypes.ImportBoard)
             {
@@ -926,14 +920,17 @@ namespace SGDWithCocos.Shared.Pages
 
             if (IsAdmin)
             {
-                mOptions = new string[] { StringTypes.ResumeOperation,
+                mOptions = new string[] {
+                    StringTypes.ResumeOperation,
+
                     // Stub out server code
-
                     //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
-                    StringTypes.ForceSave,
-                    // Stub out board import
 
+                    StringTypes.ForceSave,
+
+                    // Stub out board import
                     //StringTypes.ImportBoard,
+
                     (isScreenLocked) ? "Deactivate Lock" : "Reactivate Lock",
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
@@ -942,14 +939,17 @@ namespace SGDWithCocos.Shared.Pages
             }
             else
             {
-                mOptions = new string[] { StringTypes.ResumeOperation,
+                mOptions = new string[] {
+                    StringTypes.ResumeOperation,
+
                     // Stub out server code
-
                     //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
-                    StringTypes.ForceSave,
-                    // Stub out board import
 
+                    StringTypes.ForceSave,
+
+                    // Stub out board import
                     //StringTypes.ImportBoard,
+
                     StringTypes.ChangeSettings,
                     StringTypes.AddIcon,
                     StringTypes.TakePhoto,
