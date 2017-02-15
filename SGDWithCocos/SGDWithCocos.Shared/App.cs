@@ -28,7 +28,6 @@
 using SGDWithCocos.Interface;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
-using System;
 using Xamarin.Forms;
 
 namespace SGDWithCocos.Shared

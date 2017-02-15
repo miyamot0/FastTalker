@@ -91,7 +91,7 @@ namespace SGDWithCocos.Shared.Layers
 
         // Logicals for editing, frame state
         bool inEditMode = false,
-             inSingleMode = false,
+             inSingleMode = true,
              isModal = false,
              isServerUp = false;
 
@@ -146,9 +146,9 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="_gamePage">Page reference</param>
         public GameLayer(float _dynamicWidth, float _dynamicHeight, IconStorageObject json, GamePage _gamePage) : base(CCColor4B.Gray)
         {
-            this.Color = CCColor3B.Gray;
-            this.GamePageParent = _gamePage;
-            this.mRandom = new Random(DateTime.Now.Millisecond);
+            Color = CCColor3B.Gray;
+            GamePageParent = _gamePage;
+            mRandom = new Random(DateTime.Now.Millisecond);
             
             spriteModelFactory = new SpriteMaker(_dynamicWidth, _dynamicHeight);
             spriteModelFactory.padding = 10;
@@ -266,6 +266,10 @@ namespace SGDWithCocos.Shared.Layers
                 // Set the display mode
 
                 SetSingleMode(json.SingleMode);
+            }
+            else
+            {
+                SetSingleMode(inSingleMode);
             }
 
             var counter = 1;
