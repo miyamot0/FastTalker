@@ -36,8 +36,10 @@ namespace SGDWithCocos.Tags
 
         public const int HideImage = 5;
         public const int UpdateSizeUp = 2;
+        public const int UpdateSizeUp2 = 10;
         public const int UpdateSizeDefault = 4;
         public const int UpdateSizeDown = 3;
+        public const int UpdateSizeDown2 = 11;
 
         public const int HideText = 6;
         public const int UpdateText = 1;

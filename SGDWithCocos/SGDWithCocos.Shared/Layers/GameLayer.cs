@@ -703,7 +703,19 @@ namespace SGDWithCocos.Shared.Layers
                         var action = new CCScaleBy(0.5f, 1.1f);
 
                         mSprite.AddAction(action);
+                    }
+                    else if (edit == EditTypes.UpdateSizeUp2)
+                    {
+                        // The referenced icon, as retrieved from the list
+                        var mIconRef = iconList2[index];
 
+                        // The sprite from the reference
+                        var mSprite = mIconRef.Sprite;
+
+                        // Relative scale 110%
+                        var action = new CCScaleBy(0.5f, 1.5f);
+
+                        mSprite.AddAction(action);
                     }
                     else if (edit == EditTypes.UpdateSizeDown)
                     {
@@ -712,6 +724,16 @@ namespace SGDWithCocos.Shared.Layers
 
                         // Relative scale 90%
                         var action = new CCScaleBy(0.5f, 0.9f);
+
+                        mSprite.AddAction(action);
+                    }
+                    else if (edit == EditTypes.UpdateSizeDown2)
+                    {
+                        var mIconRef = iconList2[index];
+                        var mSprite = mIconRef.Sprite;
+
+                        // Relative scale 90%
+                        var action = new CCScaleBy(0.5f, 0.5f);
 
                         mSprite.AddAction(action);
                     }

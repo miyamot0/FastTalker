@@ -37,10 +37,10 @@ namespace SGDWithCocos.Tags
         public static string HideImage = "Toggle Image";
 
         public static string ChangeSizeDefault = "Scale Image to Default";
-        public static string ChangeSizeUp = "Scale Image Up %10";
-        public static string ChangeSizeUp2 = "Scale Image Up %50";
-        public static string ChangeSizeDown = "Scale Image Down 10%";
-        public static string ChangeSizeDown2 = "Scale Image Down 50%";
+        public static string ChangeSizeUp = "Scale Image Up (10%)";
+        public static string ChangeSizeUp2 = "Scale Image Up Significantly (50%)";
+        public static string ChangeSizeDown = "Scale Image Down (10%)";
+        public static string ChangeSizeDown2 = "Scale Image Down Significantly (50%)";
 
         #endregion
 
@@ -48,9 +48,9 @@ namespace SGDWithCocos.Tags
 
         public static string HideText = "Toggle Label";
         public static string ChangeText = "Edit Label";
-        public static string ChangeTextSizeUp = "Scale Label Up";
+        public static string ChangeTextSizeUp = "Scale Label Up (10%)";
         public static string ChangeTextSizeDefault = "Scale Label to Default";
-        public static string ChangeTextSizeDown = "Scale Label Down";
+        public static string ChangeTextSizeDown = "Scale Label Down (10%)";
 
         #endregion
 
