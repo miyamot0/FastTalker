@@ -32,10 +32,19 @@ namespace SGDWithCocos.Tags
     /// </summary>
     public static class StringTypes
     {
+        #region Image Tags
+
         public static string HideImage = "Toggle Image";
-        public static string ChangeSizeUp = "Scale Image Up";
+
         public static string ChangeSizeDefault = "Scale Image to Default";
-        public static string ChangeSizeDown = "Scale Image Down";
+        public static string ChangeSizeUp = "Scale Image Up %10";
+        public static string ChangeSizeUp2 = "Scale Image Up %50";
+        public static string ChangeSizeDown = "Scale Image Down 10%";
+        public static string ChangeSizeDown2 = "Scale Image Down 50%";
+
+        #endregion
+
+        #region Label Tags
 
         public static string HideText = "Toggle Label";
         public static string ChangeText = "Edit Label";
@@ -43,11 +52,23 @@ namespace SGDWithCocos.Tags
         public static string ChangeTextSizeDefault = "Scale Label to Default";
         public static string ChangeTextSizeDown = "Scale Label Down";
 
+        #endregion
+
+        #region Location Tags
+
         public static string LocalImage = "Local";
         public static string DownloadedImage = "Downloaded";
 
+        #endregion
+
+        #region Server Tags (Stubbed for now)
+
         public static string ServerStart = "Start Server";
         public static string ServerShutdown = "Shut Down Server";
+
+        #endregion
+
+        #region Global Settings Tags
 
         public static string ResumeOperation = "Resume Child Operation";
         public static string ForceSave = "Force Save";
@@ -57,7 +78,13 @@ namespace SGDWithCocos.Tags
         public static string TakePhoto = "Take a Photo";
         public static string AddFolder = "Add a Folder";
 
+        #endregion
+
+        #region Presentation Format Tags
+
         public static string SingleMode = "Single Icons";
         public static string FrameMode = "Sentence Structure";
+
+        #endregion
     }
 }
