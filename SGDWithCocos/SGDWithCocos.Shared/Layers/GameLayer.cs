@@ -1395,13 +1395,15 @@ namespace SGDWithCocos.Shared.Layers
 
                 var timeDiff = endTime - startTime;
 
-                #region Ended on Active Icon in Field, Icon over folder
+                #region Ended on Active Icon in Field
 
                 if (touchType == Tags.Tag.Icon)
                 {
                     var target = (CCSprite)touchEvent.CurrentTarget;
                     CurrentSpriteTouched.Opacity = 255;
                     CCRect rect = target.BoundingBoxTransformedToWorld;
+
+                    #region Check if icon over a folder
 
                     List<IconReference> mFolders = iconList2.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
                     var mIntersect = mFolders.Where(t => t.Sprite.BoundingBoxTransformedToParent.IntersectsRect(rect)).ToList();
@@ -1450,7 +1452,6 @@ namespace SGDWithCocos.Shared.Layers
                                     scaleAction2,
                                     danceAction,
                                     endAction);
-
                             }, 0);
 
                             iconList2.Remove(mCloneCopy);
@@ -1460,18 +1461,30 @@ namespace SGDWithCocos.Shared.Layers
                         }
                     }
 
+                    #endregion
+
+                    #region Check if icon over frame
+
                     if (!inEditMode && sentenceFrame.BoundingBoxTransformedToWorld.IntersectsRect(target.BoundingBoxTransformedToWorld))
                     {
                         float xScale = target.ScaleX,
                               yScale = target.ScaleX;
 
-                        CCSequence iconAnimationFocus = new CCSequence(
-                            new CCDelayTime(0.1f), 
-                            new CCScaleTo(0.1f, xScale * 1.1f, yScale * 1.1f),
-                            new CCScaleTo(0.1f, xScale, yScale));
+                        // Catch for potentially overlapping rescaling
+                        if (target.NumberOfRunningActions == 0)
+                        {
+                            CCSequence iconAnimationFocus = new CCSequence(
+                                new CCDelayTime(0.1f),
+                                new CCScaleTo(0.1f, xScale * 1.1f, yScale * 1.1f),
+                                new CCScaleTo(0.1f, xScale, yScale));
 
-                        target.AddAction(iconAnimationFocus);
+                            target.AddAction(iconAnimationFocus);
+                        }
                     }
+
+                    #endregion
+
+                    #region Check if over delete field
 
                     if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(rect) && inEditMode)
                     {
@@ -1483,6 +1496,11 @@ namespace SGDWithCocos.Shared.Layers
 
                         iconList2.Remove(mSprite);
                     }
+
+                    #endregion
+
+                    #region Ended on icon, in edit mode
+
                     else if (inEditMode && timeDiff.TotalSeconds < 0.25)
                     {
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
@@ -1490,6 +1508,8 @@ namespace SGDWithCocos.Shared.Layers
 
                         GamePageParent.CallActionSheet(mCounter);
                     }
+
+                    #endregion
                 }
 
                 #endregion
