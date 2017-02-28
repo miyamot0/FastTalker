@@ -53,7 +53,7 @@ Fast Talker uses a number of open source projects to work properly:
 ### Installation
 Fast Talker can be installed as either an Android or iOS application.  
 
-### Device Owner
+### Device Owner Mode (Android)
 Fast Talker can be set to be a dedicated, SGD-only device by having the administrator run the following command from ADB:
 
 <i>adb shell dpm set-device-owner com.smallnstats.fasttalker/com.smallnstats.fasttalker.Base.DeviceAdminReceiverClass</i>
