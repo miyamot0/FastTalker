@@ -210,7 +210,7 @@ namespace SGDWithCocos.Scenes
 
             mainLayer.AddChild(iconsLabel, 0, SpriteTypes.IconLicenseTag);
 
-            launcherLabel = new CCLabel("Code from \"Launcher Hijack\" Copyright 2017 parrotgeek1. https://github.com/parrotgeek1/LauncherHijack", "Arial", 72, CCLabelFormat.SystemFont)
+            launcherLabel = new CCLabel("Code from \"Launcher Hijack\" Copyright 2017 Ethan Nelson-Moore. https://github.com/parrotgeek1/LauncherHijack", "Arial", 72, CCLabelFormat.SystemFont)
             {
                 Color = CCColor3B.White,
                 AnchorPoint = CCPoint.AnchorMiddle,
