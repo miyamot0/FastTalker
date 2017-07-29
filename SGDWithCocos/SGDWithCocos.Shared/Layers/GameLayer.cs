@@ -340,7 +340,7 @@ namespace SGDWithCocos.Shared.Layers
                 inEditMode = !inEditMode;
             }
 
-            if (Device.OS == TargetPlatform.Android)
+            if (Device.RuntimePlatform == Device.Android)
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {

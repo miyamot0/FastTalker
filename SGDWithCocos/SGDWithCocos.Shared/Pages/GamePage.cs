@@ -893,7 +893,7 @@ namespace SGDWithCocos.Shared.Pages
             {
                 isScreenLocked = !isScreenLocked;
 
-                if (Device.OS == TargetPlatform.Android)
+                if (Device.RuntimePlatform == Device.Android)
                 {
                     Device.BeginInvokeOnMainThread(() =>
                     {
@@ -1241,7 +1241,7 @@ namespace SGDWithCocos.Shared.Pages
 
                                 byte[] imageArray = null;
 
-                                if (Device.OS == TargetPlatform.Android)
+                                if (Device.RuntimePlatform == Device.Android)
                                 {
                                     imageArray = DependencyService.Get<IResizer>().RotateImage(@file.Path);
                                 }
