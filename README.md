@@ -75,9 +75,10 @@ This is currently under active development and evaluation.
 * ~~Additional within-stimulus modifications~~
 * ~~Support for Open Book Format (OBF)~~
 * ~~Launcher mode to keep children/patients away from games~~
-* Web based portal for quick setup and remote operation
+* Backup and import of Open Board Format (OBF) files
+* Web-based portal for quick setup and remote operation
 * Support for embedded data collection
 
 ### License
 ----
-Fast Talker - Copyright November 7, 2016 Shawn Gilroy, Shawn P. Gilroy. GPL-Version 3
+Fast Talker - Copyright July 7, 2016 Shawn Gilroy, Shawn P. Gilroy. GPL-Version 3
