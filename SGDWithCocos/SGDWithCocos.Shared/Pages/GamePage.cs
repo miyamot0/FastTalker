@@ -197,6 +197,10 @@ namespace SGDWithCocos.Shared.Pages
             {
                 mLayer.UpdateSpriteTextSize(counter, EditTypes.UpdateLabelSizeUp);
             }
+            else if (buttonSelect == StringTypes.ChangeTextSizeUp2)
+            {
+                mLayer.UpdateSpriteTextSize(counter, EditTypes.UpdateLabelSizeUp2);
+            }
             else if (buttonSelect == StringTypes.ChangeTextSizeDefault)
             {
                 mLayer.UpdateSpriteTextSize(counter, EditTypes.UpdateLabelSizeDefault);
@@ -204,6 +208,10 @@ namespace SGDWithCocos.Shared.Pages
             else if (buttonSelect == StringTypes.ChangeTextSizeDown)
             {
                 mLayer.UpdateSpriteTextSize(counter, EditTypes.UpdateLabelSizeDown);
+            }
+            else if (buttonSelect == StringTypes.ChangeTextSizeDown2)
+            {
+                mLayer.UpdateSpriteTextSize(counter, EditTypes.UpdateLabelSizeDown2);
             }
         }
 
@@ -741,7 +749,9 @@ namespace SGDWithCocos.Shared.Pages
                     StringTypes.ChangeText,
                     StringTypes.HideText,
                     StringTypes.ChangeTextSizeUp,
+                    StringTypes.ChangeTextSizeUp2,
                     StringTypes.ChangeTextSizeDown,
+                    StringTypes.ChangeTextSizeDown2,
                     StringTypes.ChangeTextSizeDefault);
                 tcs.SetResult(mAction);
             });

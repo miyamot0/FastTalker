@@ -44,7 +44,9 @@ namespace SGDWithCocos.Tags
         public const int HideText = 6;
         public const int UpdateText = 1;
         public const int UpdateLabelSizeUp = 7;
+        public const int UpdateLabelSizeUp2 = 10;
         public const int UpdateLabelSizeDefault = 8;
         public const int UpdateLabelSizeDown = 9;
+        public const int UpdateLabelSizeDown2 = 11;
     }
 }

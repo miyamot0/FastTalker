@@ -661,6 +661,12 @@ namespace SGDWithCocos.Shared.Layers
                                 mContent.AddAction(new CCScaleBy(0.2f, 1.1f));
                                 break;
 
+                            case EditTypes.UpdateLabelSizeUp2:
+                                // Relative scale 150%
+
+                                mContent.AddAction(new CCScaleBy(0.2f, 1.5f));
+                                break;
+
                             case EditTypes.UpdateLabelSizeDefault:
                                 // Absolute scale to 100%
 
@@ -671,6 +677,12 @@ namespace SGDWithCocos.Shared.Layers
                                 // Relative scale to 90%
 
                                 mContent.AddAction(new CCScaleBy(0.2f, 0.9f));
+                                break;
+
+                            case EditTypes.UpdateLabelSizeDown2:
+                                // Relative scale to 50%
+
+                                mContent.AddAction(new CCScaleBy(0.2f, 0.5f));
                                 break;
                         }
 

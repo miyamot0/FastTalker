@@ -49,8 +49,10 @@ namespace SGDWithCocos.Tags
         public static string HideText = "Toggle Label";
         public static string ChangeText = "Edit Label";
         public static string ChangeTextSizeUp = "Scale Label Up (10%)";
+        public static string ChangeTextSizeUp2 = "Scale Label Up Significantly (50%)";
         public static string ChangeTextSizeDefault = "Scale Label to Default";
         public static string ChangeTextSizeDown = "Scale Label Down (10%)";
+        public static string ChangeTextSizeDown2 = "Scale Label Down Significantly (50%)";
 
         #endregion
 
