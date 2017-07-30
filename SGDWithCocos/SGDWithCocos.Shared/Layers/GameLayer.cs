@@ -1943,7 +1943,7 @@ namespace SGDWithCocos.Shared.Layers
 
             foreach (var t in iconList2)
             {
-                if (t.Sprite.Tag == SpriteTypes.IconTag)
+                if (t.Sprite.Tag == SpriteTypes.IconTag || t.Sprite.Tag == SpriteTypes.FolderTag)
                 {
                     if (!inSingleMode)
                     {
