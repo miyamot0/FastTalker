@@ -210,6 +210,18 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Async call to create base64 sprite
+        /// </summary>
+        /// <param name="backing"></param>
+        /// <param name="base64string"></param>
+        /// <param name="iconSpeechText"></param>
+        /// <param name="positionX"></param>
+        /// <param name="positionY"></param>
+        /// <param name="scale"></param>
+        /// <param name="textScale"></param>
+        /// <param name="textVisible"></param>
+        /// <returns></returns>
         public Task<CCSprite> AsyncCreateBase64Sprite(CCSpriteFrame backing, string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             TaskCompletionSource<CCSprite> tcs = new TaskCompletionSource<CCSprite>();
@@ -298,6 +310,19 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        /// <summary>
+        /// Async call to create folder sprite
+        /// </summary>
+        /// <param name="frame"></param>
+        /// <param name="backing"></param>
+        /// <param name="base64string"></param>
+        /// <param name="folderName"></param>
+        /// <param name="positionX"></param>
+        /// <param name="positionY"></param>
+        /// <param name="scale"></param>
+        /// <param name="textScale"></param>
+        /// <param name="textVisible"></param>
+        /// <returns></returns>
         public Task<CCSprite> AsyncCreateFolder(CCSpriteFrame frame, CCSpriteFrame backing, string base64string, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             TaskCompletionSource<CCSprite> tcs = new TaskCompletionSource<CCSprite>();

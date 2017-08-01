@@ -39,6 +39,7 @@ using Newtonsoft.Json;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Data;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SGDWithCocos.Shared.Layers
 {
@@ -944,6 +945,8 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="folderName">Name of the folder</param>
         public void ShowWindow(CCSprite currentSprite, string folderName)
         {
+            Console.WriteLine("Creating window");
+
             // If already modal mode, just return
             if (isModal) return;
 
@@ -979,78 +982,6 @@ namespace SGDWithCocos.Shared.Layers
                 // Add close window
                 windowFrame.AddChild(closeButton, 1001, SpriteTypes.CloseWindowTag);
 
-                // !important: lock for concurrency issues
-                lock (storedList)
-                {
-                    // Pull items where folder reference holds
-                    var mEqualList = storedList.Where(l => l.FolderName == folderName).ToList();
-
-                    for (var i = 0; i < mEqualList.Count; i++)
-                    {
-                        // The referenced icon, as retrieved from the list
-                        var mStoredIconRef = mEqualList[i];
-
-                        // The sprite from the reference
-                        var mSprite = mStoredIconRef.Sprite;
-
-                        // The text sprite, from mSprite, cast to CCLabel
-                        var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
-
-                        if (mContent != null)
-                        {
-                            var parentSprite = new CCSprite(backingSpriteFrame);
-
-                            parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
-
-                            var pSpacing = parentSprite.ContentSize.Width * 0.15f;
-                            var xSpacing = parentSprite.ContentSize.Width * ((i % 3)) + pSpacing * ((i % 3) + 1);
-                            var ySpacing = parentSprite.ContentSize.Height * ((i / 3)) + pSpacing * ((i / 3) + 1);
-
-                            parentSprite.PositionX = (parentSprite.ContentSize.Width * 0.5f) + xSpacing;
-                            parentSprite.PositionY = windowFrame.ContentSize.Height - (parentSprite.ContentSize.Height * 0.5f) - ySpacing;
-
-                            parentSprite.Tag = SpriteTypes.IconTag;
-
-                            mStoredIconRef.Sprite.ContentSize = parentSprite.ContentSize;
-                            mStoredIconRef.Sprite.PositionX = parentSprite.PositionX;
-                            mStoredIconRef.Sprite.PositionY = parentSprite.PositionY;
-
-                            byte[] bytes = Convert.FromBase64String(mStoredIconRef.Base64);
-                            var testTexture = new CCTexture2D(bytes);
-                            var testFrame = new CCSpriteFrame(testTexture, new CCRect(0, 0, testTexture.PixelsWide, testTexture.PixelsHigh));
-                            var subIconFrame = new CCSprite(testFrame)
-                            {
-                                AnchorPoint = CCPoint.AnchorMiddle,
-                                ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.75f, parentSprite.ContentSize.Height * 0.75f),
-                                PositionX = parentSprite.ContentSize.Width * 0.5f,
-                                PositionY = parentSprite.ContentSize.Height * 0.5f + parentSprite.ContentSize.Height * 0.075f,
-                                Tag = SpriteTypes.ImageTag
-                            };
-
-                            var label = new CCLabel(mContent.Text, "Arial", 22, CCLabelFormat.SystemFont)
-                            {
-                                Scale = 0.25f * scaling,
-                                AnchorPoint = CCPoint.AnchorMiddle,
-                                HorizontalAlignment = CCTextAlignment.Center,
-                                VerticalAlignment = CCVerticalTextAlignment.Center,
-                                PositionX = parentSprite.ContentSize.Width * 0.5f,
-                                PositionY = parentSprite.ContentSize.Height * 0.075f,
-                                Color = CCColor3B.Black,
-                                Visible = mStoredIconRef.TextVisible,
-                                Tag = SpriteTypes.ContentTag
-                            };
-
-                            parentSprite.AddChild(subIconFrame);
-                            AddEventListener(mListener.Copy(), parentSprite);
-
-                            parentSprite.Visible = false;
-
-                            windowFrame.AddChild(parentSprite, 1001, SpriteTypes.IconTag);
-                            parentSprite.AddChild(label);
-                        }
-                    }
-                }
-
                 AddEventListener(mListener.Copy(), windowFrame);
                 tempWindow = new IconReference(windowFrame, "Window", 1f, true);
                 iconList2.Add(tempWindow);
@@ -1072,10 +1003,155 @@ namespace SGDWithCocos.Shared.Layers
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, scaleAction, revealIcons);
+                windowFrame.AddActions(false, moveAction, scaleAction);
+
+                ShowStoredSprites(folderName, storedList, backingSpriteFrame, windowFrame, scaling, this, mListener);
 
                 isModal = true;
             }, 0);
+        }
+
+        /// <summary>
+        /// Show icons stored in folder, main call from user loop
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <param name="storedList"></param>
+        /// <param name="backingSpriteFrame"></param>
+        /// <param name="windowFrame"></param>
+        /// <param name="scaling"></param>
+        /// <param name="gameLayer"></param>
+        /// <param name="mListener"></param>
+        public static void ShowStoredSprites(string folderName, List<StoredIconReference> storedList, CCSpriteFrame backingSpriteFrame, CCSprite windowFrame, float scaling, GameLayer gameLayer, CCEventListenerTouchOneByOne mListener)
+        {
+            List<StoredIconReference> mEqualList;
+
+            // !important: lock for concurrency issues
+            lock (storedList)
+            {
+                mEqualList = storedList.Where(l => l.FolderName == folderName).ToList();
+            }
+
+            ShowStoredSprites(mEqualList, backingSpriteFrame, windowFrame, scaling, gameLayer, mListener);
+        }
+
+        /// <summary>
+        /// Method to build icons for folder
+        /// </summary>
+        /// <param name="mEqualList"></param>
+        /// <param name="backingSpriteFrame"></param>
+        /// <param name="windowFrame"></param>
+        /// <param name="scaling"></param>
+        /// <param name="gameLayer"></param>
+        /// <param name="mListener"></param>
+        public static async void ShowStoredSprites(List<StoredIconReference> mEqualList, CCSpriteFrame backingSpriteFrame, CCSprite windowFrame, float scaling, GameLayer gameLayer, CCEventListenerTouchOneByOne mListener)
+        {
+            for (var i = 0; i < mEqualList.Count; i++)
+            {
+                var mSprite = await BuildStoredSpriteTask(i, mEqualList[i], backingSpriteFrame, windowFrame, scaling, gameLayer, mListener);
+
+                if (mSprite != null)
+                {
+                    windowFrame.AddChild(mSprite, 1001, SpriteTypes.IconTag);
+                }
+            }
+
+            mEqualList = null;
+        }
+
+        /// <summary>
+        /// Awaitable task for building stored icons
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="mStoredIconRef"></param>
+        /// <param name="backingSpriteFrame"></param>
+        /// <param name="windowFrame"></param>
+        /// <param name="scaling"></param>
+        /// <param name="gameLayer"></param>
+        /// <param name="mListener"></param>
+        /// <returns></returns>
+        public static Task<CCSprite> BuildStoredSpriteTask(int i, StoredIconReference mStoredIconRef, CCSpriteFrame backingSpriteFrame, CCSprite windowFrame, float scaling, GameLayer gameLayer, CCEventListenerTouchOneByOne mListener)
+        {
+            TaskCompletionSource<CCSprite> tcs = new TaskCompletionSource<CCSprite>();
+            var mSprite = BuildStoredSprite(i, mStoredIconRef, backingSpriteFrame, windowFrame, scaling, gameLayer, mListener);
+            tcs.SetResult(mSprite);
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Create icons stored in folders
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="mStoredIconRef"></param>
+        /// <param name="backingSpriteFrame"></param>
+        /// <param name="windowFrame"></param>
+        /// <param name="scaling"></param>
+        /// <param name="gameLayer"></param>
+        /// <param name="mListener"></param>
+        /// <returns></returns>
+        public static CCSprite BuildStoredSprite(int i, StoredIconReference mStoredIconRef, CCSpriteFrame backingSpriteFrame, CCSprite windowFrame, float scaling, GameLayer gameLayer, CCEventListenerTouchOneByOne mListener)
+        {
+            // The sprite from the reference
+            var mSprite = mStoredIconRef.Sprite;
+
+            // The text sprite, from mSprite, cast to CCLabel
+            var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+            if (mContent != null)
+            {
+                var parentSprite = new CCSprite(backingSpriteFrame);
+
+                parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
+
+                var pSpacing = parentSprite.ContentSize.Width * 0.15f;
+                var xSpacing = parentSprite.ContentSize.Width * ((i % 3)) + pSpacing * ((i % 3) + 1);
+                var ySpacing = parentSprite.ContentSize.Height * ((i / 3)) + pSpacing * ((i / 3) + 1);
+
+                parentSprite.PositionX = (parentSprite.ContentSize.Width * 0.5f) + xSpacing;
+                parentSprite.PositionY = windowFrame.ContentSize.Height - (parentSprite.ContentSize.Height * 0.5f) - ySpacing;
+
+                parentSprite.Tag = SpriteTypes.IconTag;
+
+                mStoredIconRef.Sprite.ContentSize = parentSprite.ContentSize;
+                mStoredIconRef.Sprite.PositionX = parentSprite.PositionX;
+                mStoredIconRef.Sprite.PositionY = parentSprite.PositionY;
+
+                byte[] bytes = Convert.FromBase64String(mStoredIconRef.Base64);
+                var testTexture = new CCTexture2D(bytes);
+                var testFrame = new CCSpriteFrame(testTexture, new CCRect(0, 0, testTexture.PixelsWide, testTexture.PixelsHigh));
+                var subIconFrame = new CCSprite(testFrame)
+                {
+                    AnchorPoint = CCPoint.AnchorMiddle,
+                    ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.75f, parentSprite.ContentSize.Height * 0.75f),
+                    PositionX = parentSprite.ContentSize.Width * 0.5f,
+                    PositionY = parentSprite.ContentSize.Height * 0.5f + parentSprite.ContentSize.Height * 0.075f,
+                    Tag = SpriteTypes.ImageTag
+                };
+
+                var label = new CCLabel(mContent.Text, "Arial", 22, CCLabelFormat.SystemFont)
+                {
+                    Scale = 0.25f * scaling,
+                    AnchorPoint = CCPoint.AnchorMiddle,
+                    HorizontalAlignment = CCTextAlignment.Center,
+                    VerticalAlignment = CCVerticalTextAlignment.Center,
+                    PositionX = parentSprite.ContentSize.Width * 0.5f,
+                    PositionY = parentSprite.ContentSize.Height * 0.075f,
+                    Color = CCColor3B.Black,
+                    Visible = mStoredIconRef.TextVisible,
+                    Tag = SpriteTypes.ContentTag
+                };
+
+                parentSprite.AddChild(subIconFrame);
+                gameLayer.AddEventListener(mListener.Copy(), parentSprite);
+
+                parentSprite.AddChild(label);
+
+                return parentSprite;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
