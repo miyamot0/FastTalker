@@ -238,7 +238,8 @@ namespace SGDWithCocos.Shared.Layers
                             content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName));
                         }
 
-                        var newIcon = spriteModelFactory.MakeFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        //var newIcon = spriteModelFactory.MakeFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        var newIcon = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                         newIcon.Tag = SpriteTypes.FolderTag;
 
                         var newIconRef = new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible);
@@ -490,7 +491,8 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="folderName">The name of the actual folder</param>
         public void MakeIconFolder(string assetName, string folderName, string base64, string name)
         {
-            ScheduleOnce((dt) => {
+            ScheduleOnce(async (dt) =>
+            {
                 // Introduce some jitter into the positioning of the icon
 
                 var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
@@ -503,7 +505,8 @@ namespace SGDWithCocos.Shared.Layers
                     content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(assetName));
                 }
 
-                var parentSprite = spriteModelFactory.MakeFolder(content, backingSpriteFrame, base64, folderName, xLocation, yLocation, 1f, 1f, true);
+                //var parentSprite = spriteModelFactory.MakeFolder(content, backingSpriteFrame, base64, folderName, xLocation, yLocation, 1f, 1f, true);
+                var parentSprite = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, base64, folderName, xLocation, yLocation, 1f, 1f, true);
 
                 var mIconRef = new IconReference(parentSprite, assetName, 1f, true);
 

@@ -298,6 +298,15 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        public Task<CCSprite> AsyncCreateFolder(CCSpriteFrame frame, CCSpriteFrame backing, string base64string, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        {
+            TaskCompletionSource<CCSprite> tcs = new TaskCompletionSource<CCSprite>();
+
+            tcs.SetResult(MakeFolder(frame, backing, base64string, folderName, positionX, positionY, scale, textScale, textVisible));
+
+            return tcs.Task;
+        }
+
         /// <summary>
         /// Construct and return folder frame
         /// </summary>
@@ -307,7 +316,7 @@ namespace SGDWithCocos.Utilities
         /// <param name="positionY">y pos</param>
         /// <param name="scale">scaled size</param>
         /// <returns></returns>
-        public CCSprite MakeFolder(CCSpriteFrame frame, CCSpriteFrame backing, string base64string, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        private CCSprite MakeFolder(CCSpriteFrame frame, CCSpriteFrame backing, string base64string, string folderName, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             var parentSprite = new CCSprite(backing);
             parentSprite.PositionX = positionX;
