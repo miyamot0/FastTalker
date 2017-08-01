@@ -36,6 +36,7 @@ namespace SGDWithCocos.Shared
 	{
         public static GamePage MainGamePage;
         public static bool HasAdmin;
+        public static int Height = -1, Width = -1;
 
         /// <summary>
         /// Segmented categories for less clunky selections
@@ -63,10 +64,8 @@ namespace SGDWithCocos.Shared
 
             if (Device.RuntimePlatform == Device.Android)
             {
-                //MainGamePage.IsAdmin = DependencyService.Get<IAdmin>().IsAdmin();
                 HasAdmin = DependencyService.Get<IAdmin>().IsAdmin();
 
-                //DependencyService.Get<IAdmin>().RequestAdmin(MainGamePage.IsAdmin);
                 DependencyService.Get<IAdmin>().RequestAdmin(HasAdmin);
             }
 

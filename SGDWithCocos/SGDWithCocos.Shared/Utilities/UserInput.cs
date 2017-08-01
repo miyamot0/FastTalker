@@ -25,6 +25,7 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
+using CocosSharp;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Plugin.FilePicker;
@@ -564,6 +565,49 @@ namespace SGDWithCocos.Utilities
         }
 
         #endregion
+
+        /// <summary>
+        /// Async naming call with callback to layer
+        /// </summary>
+        /// <param name="node"></param>
+        public async void NameEmbeddedIcon(CCNode node)
+        {
+            var results = await NameWindow(node);
+            mLayer.CallBackIcon(results[0], results[1], results[2], null);
+        }
+
+        /// <summary>
+        /// Await-able window for assigning icon label
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public Task<string[]> NameWindow(CCNode node)
+        {
+            TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
+                popup.PopupClosed += (o, closedArgs) =>
+                {
+                    var sprite = node as CCSprite;
+                    var mContent = sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+
+                    if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
+                    {
+                        tcs.SetResult(new string[] { mContent.Text, closedArgs.Text.Trim(), "Embedded" });
+                    }
+                    else
+                    {
+                        tcs.SetResult(new string[] { "", "", "" });
+                    }
+                };
+
+                popup.Show();
+            });
+
+            return tcs.Task;
+        }
 
         /// <summary>
         /// Cross-platform call to get JSON-saved boards from local storage

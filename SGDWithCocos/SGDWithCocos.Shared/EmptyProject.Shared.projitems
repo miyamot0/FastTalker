@@ -46,6 +46,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Tags\SpriteTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\StringTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\Tags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\AnimationTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ColorTools.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\FileTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteMaker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserInput.cs" />

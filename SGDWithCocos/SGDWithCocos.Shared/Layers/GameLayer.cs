@@ -1698,7 +1698,7 @@ namespace SGDWithCocos.Shared.Layers
                         }
                         else
                         {
-                            GamePageParent.NameEmbeddedIcon(CurrentSpriteTouched);
+                            GamePageParent.mInputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
                             
                             isModal = false;
                             ClearIconsInModal();
@@ -2008,7 +2008,7 @@ namespace SGDWithCocos.Shared.Layers
             {
                 lock (storedList)
                 {
-                    GamePageParent.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
+                    FileTools.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
                 }
             }
         }
