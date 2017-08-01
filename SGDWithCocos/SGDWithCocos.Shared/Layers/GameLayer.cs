@@ -1518,7 +1518,7 @@ namespace SGDWithCocos.Shared.Layers
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
                         var mCounter = iconList2.IndexOf(mSprite);
 
-                        GamePageParent.CallActionSheet(mCounter);
+                        GamePageParent.mInputFactory.CallActionSheet(mCounter);
                     }
 
                     #endregion
@@ -1535,7 +1535,7 @@ namespace SGDWithCocos.Shared.Layers
                     var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
                     var mCounter = iconList2.IndexOf(mSprite);
 
-                    GamePageParent.CallActionSheet(mCounter);
+                    GamePageParent.mInputFactory.CallActionSheet(mCounter);
                 }
 
                 #endregion
@@ -1561,7 +1561,7 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     CurrentSpriteTouched.Opacity = 255;
 
-                    GamePageParent.CallActionSheetChoice(new List<IconReference>(iconList2));
+                    GamePageParent.mInputFactory.CallActionSheetChoice(new List<IconReference>(iconList2));
                 }
 
                 #endregion
@@ -1589,7 +1589,7 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
                         var mCounter = iconList2.IndexOf(mSprite);
-                        GamePageParent.CallActionSheet(mCounter);
+                        GamePageParent.mInputFactory.CallActionSheet(mCounter);
                     }
                 }
 
