@@ -71,31 +71,16 @@ namespace SGDWithCocos.Shared.Layers
         // Information loaded from static JSON
         StorageContainer storageInformation;
 
-        CCSequence iconAnimationRotate = new CCSequence(new CCRotateTo(0.1f, 5f),
-            new CCRotateTo(0.2f, -10f), new CCRotateTo(0.2f, 10f),
-            new CCRotateTo(0.2f, -10f), new CCRotateTo(0.2f, 10f),
-            new CCRotateTo(0.1f, 0f));
-
-        // Categories
-        List<string> mCategories;
-
         Random mRandom;
 
-        DateTime startTime,
-                 endTime;
-
-        CCColor3B White = new CCColor3B(255, 255, 255),
-                  Red = new CCColor3B(255, 0, 0),
-                  Green = new CCColor3B(0, 255, 0),
-                  LightBlue = new CCColor3B(0, 0, 155);
+        DateTime startTime, endTime;
 
         // Logicals for editing, frame state
         bool inEditMode = false,
              inSingleMode = true,
-             unselectAuto = false,
-             isModal = false,
-             isServerUp = false;
+             isModal = false;
 
+        private bool unselectAuto = false;
         public bool UnselectAuto
         {
             get { return unselectAuto; }
@@ -105,15 +90,7 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
-        // Time metrics, for screen press and save intervals
-        float totalDuration = 0f,
-              saveInterval = 5f;
-
-        public CCSpriteFrame backingSpriteFrame = null;
-
-        /// <summary>
-        /// Flag to raise when server is up
-        /// </summary>
+        private bool isServerUp = false;
         public bool ServerActive
         {
             get { return isServerUp; }
@@ -123,16 +100,24 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        // Time metrics, for screen press and save intervals
+        float totalDuration = 0f, saveInterval = 5f;
+
+        CCSpriteFrame backingSpriteFrame = null;
         CCSpriteSheet staticSpriteSheet;
 
-        /// <summary>
-        /// Pull specific tags from categories
-        /// </summary>
+        List<string> CategoryList;
+        private string[] categories = null;
         public string[] Categories
         {
             get
             {
-                return mCategories.Where(j => j.Trim() != "").OrderBy(j => j).ToArray();
+                if (categories == null)
+                {
+                    categories = CategoryList.Where(j => j.Trim() != "").OrderBy(j => j).ToArray();
+                }
+
+                return categories;
             }
         }
 
@@ -154,13 +139,13 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="_dynamicHeight">Device height</param>
         /// <param name="json">JSON string for icons, nullable</param>
         /// <param name="_gamePage">Page reference</param>
-        public GameLayer(float _dynamicWidth, float _dynamicHeight, IconStorageObject json, GamePage _gamePage) : base(CCColor4B.Gray)
+        public GameLayer(IconStorageObject json, GamePage _gamePage) : base(CCColor4B.Gray)
         {
             Color = CCColor3B.Gray;
             GamePageParent = _gamePage;
             mRandom = new Random(DateTime.Now.Millisecond);
             
-            spriteModelFactory = new SpriteMaker(_dynamicWidth, _dynamicHeight);
+            spriteModelFactory = new SpriteMaker(App.Width, App.Height);
             spriteModelFactory.padding = 10;
 
             staticSpriteSheet = new CCSpriteSheet("static.plist");
@@ -456,7 +441,7 @@ namespace SGDWithCocos.Shared.Layers
                     ReorderChild(mIconRef.Sprite, 999);
 
                     // Add salient animation to icons added back to field
-                    mIconRef.Sprite.AddAction(iconAnimationRotate);
+                    mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
                 }
                 else if (base64 == "" & text != "")
                 {
@@ -485,7 +470,7 @@ namespace SGDWithCocos.Shared.Layers
                     ReorderChild(mIconRef.Sprite, 999);
 
                     // Add salient animation to icons added back to field
-                    mIconRef.Sprite.AddAction(iconAnimationRotate);
+                    mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
                 }
 
             }, 0);
@@ -530,7 +515,7 @@ namespace SGDWithCocos.Shared.Layers
                 AddChild(mIconRef.Sprite, iconList2.Count, SpriteTypes.FolderTag);
 
                 // Add salient animation to icons added back to field
-                mIconRef.Sprite.AddAction(iconAnimationRotate);
+                mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
             }, 0);
         }
 
@@ -815,9 +800,9 @@ namespace SGDWithCocos.Shared.Layers
         {
             foreach (IconReference iconRef in iconList2)
             {
-                if (iconRef.Sprite.Color != White)
+                if (iconRef.Sprite.Color != ColorTools.White)
                 {
-                    iconRef.Sprite.Color = White;
+                    iconRef.Sprite.Color = ColorTools.White;
                 }
             }
         }
@@ -1304,7 +1289,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                     DeSelectIcons();
 
-                                    highestIcon.Sprite.Color = Green;
+                                    highestIcon.Sprite.Color = ColorTools.Green;
                                 }
                                 else
                                 {
@@ -1315,7 +1300,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                     DeSelectIcons();
 
-                                    caller.Color = Green;
+                                    caller.Color = ColorTools.Green;
                                 }
 
                                 return true;
@@ -1344,7 +1329,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                     if (!inEditMode)
                                     {
-                                        highestIcon.Sprite.Color = Green;
+                                        highestIcon.Sprite.Color = ColorTools.Green;
                                     }
                                 }
                                 else
@@ -1355,7 +1340,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                     if (!inEditMode)
                                     {
-                                        iconRef.Sprite.Color = Green;
+                                        iconRef.Sprite.Color = ColorTools.Green;
                                     }
                                 }
 
@@ -1445,13 +1430,13 @@ namespace SGDWithCocos.Shared.Layers
                             {
                                 var moveAction = new CCMoveTo(0.2f, mIntersect[0].Sprite.Position);
                                 var scaleAction = new CCScaleTo(0.2f, 0.1f);
-                                var clearColor = new CCCallFuncN(node => node.Color = White);
+                                var clearColor = new CCCallFuncN(node => node.Color = ColorTools.White);
                                 var setInvisible = new CCCallFuncN(node => node.Visible = false);
                                 var scaleAction2 = new CCScaleTo(0.01f, savedScale);
 
                                 // Animation to make identified folder target salient
                                 var danceAction = new CCCallFunc(() => {
-                                    mIntersect[0].Sprite.AddAction(iconAnimationRotate);
+                                    mIntersect[0].Sprite.AddAction(AnimationTools.iconAnimationRotate);
                                 });
 
                                 var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
@@ -1609,7 +1594,7 @@ namespace SGDWithCocos.Shared.Layers
                     }
                     else
                     {
-                        mList = iconList2.Where(t => t.Sprite.Color == Green).ToList();
+                        mList = iconList2.Where(t => t.Sprite.Color == ColorTools.Green).ToList();
                     }
 
                     if (mList.Count > 1)
@@ -1769,7 +1754,7 @@ namespace SGDWithCocos.Shared.Layers
                                                 AddChild(mIconRef.Sprite);
 
                                                 // Add salient animation to icons added back to field
-                                                mIconRef.Sprite.AddAction(iconAnimationRotate);
+                                                mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
 
                                             }, 0.01f);
 
@@ -1961,16 +1946,16 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         if (!sentenceFrame.BoundingBoxTransformedToParent.IntersectsRect(t.Sprite.BoundingBoxTransformedToParent))
                         {
-                            if (t.Sprite.Color != White)
+                            if (t.Sprite.Color != ColorTools.White)
                             {
-                                t.Sprite.Color = White;
+                                t.Sprite.Color = ColorTools.White;
                             }
                         }
                         else
                         {
-                            if (t.Sprite.Color != Green)
+                            if (t.Sprite.Color != ColorTools.Green)
                             {
-                                t.Sprite.Color = Green;
+                                t.Sprite.Color = ColorTools.Green;
                             }
                         }
                     }
@@ -1979,16 +1964,16 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(t.Sprite.BoundingBoxTransformedToParent))
                         {
-                            if (t.Sprite.Color != Red)
+                            if (t.Sprite.Color != ColorTools.Red)
                             {
-                                t.Sprite.Color = Red;
+                                t.Sprite.Color = ColorTools.Red;
                             }
                         }
                         else
                         {
-                            if (t.Sprite.Color != White)
+                            if (t.Sprite.Color != ColorTools.White)
                             {
-                                t.Sprite.Color = White;
+                                t.Sprite.Color = ColorTools.White;
                             }
                         }
                     }
@@ -2021,7 +2006,7 @@ namespace SGDWithCocos.Shared.Layers
             string mJson = StoredJson.LoadJson();
             storageInformation = JsonConvert.DeserializeObject<StorageContainer>(mJson);
 
-            mCategories = storageInformation.StoredIcons
+            CategoryList = storageInformation.StoredIcons
                 .SelectMany(m => m.Tags)
                 .Distinct()
                 .ToList();

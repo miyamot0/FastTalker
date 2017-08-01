@@ -6,6 +6,5 @@
             new CocosSharp.CCRotateTo(0.2f, -10f), new CocosSharp.CCRotateTo(0.2f, 10f),
             new CocosSharp.CCRotateTo(0.2f, -10f), new CocosSharp.CCRotateTo(0.2f, 10f),
             new CocosSharp.CCRotateTo(0.1f, 0f));
-
     }
 }

@@ -174,7 +174,7 @@ namespace SGDWithCocos.Shared.Pages
             }
             
             // Create layer for icon board scene
-            mLayer = new GameLayer(App.Width, App.Height, jsonObject, this);
+            mLayer = new GameLayer(jsonObject, this);
 
             mInputFactory = new UserInput
             {
