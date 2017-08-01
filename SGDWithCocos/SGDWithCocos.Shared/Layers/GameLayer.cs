@@ -821,7 +821,7 @@ namespace SGDWithCocos.Shared.Layers
         /// Show window with icons matching query
         /// </summary>
         /// <param name="mMatchingIcons"></param>
-        public void ShowStoredWindow(List<Storage> mMatchingIcons)
+        public void ShowCategoryWindow(List<Storage> mMatchingIcons)
         {
             Console.WriteLine("Showing categories");
 
@@ -945,7 +945,7 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         /// <param name="currentSprite">Current sprite (folder) touched</param>
         /// <param name="folderName">Name of the folder</param>
-        public void ShowWindow(CCSprite currentSprite, string folderName)
+        public void ShowStoredWindow(CCSprite currentSprite, string folderName)
         {
             // If already modal mode, just return
             if (isModal) return;
@@ -1622,7 +1622,7 @@ namespace SGDWithCocos.Shared.Layers
 
                     if (contentTag != "")
                     {
-                        ShowWindow(CurrentSpriteTouched, contentTag);
+                        ShowStoredWindow(CurrentSpriteTouched, contentTag);
                     }
                 }
 

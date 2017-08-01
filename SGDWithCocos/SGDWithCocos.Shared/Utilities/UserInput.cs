@@ -664,7 +664,7 @@ namespace SGDWithCocos.Utilities
                 }
 
                 var matches = await GetMatchingTasks(result);
-                mLayer.ShowStoredWindow(matches);
+                mLayer.ShowCategoryWindow(matches);
             }
             catch (Exception e)
             {
