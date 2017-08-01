@@ -823,6 +823,8 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="mMatchingIcons"></param>
         public void ShowStoredWindow(List<Storage> mMatchingIcons)
         {
+            Console.WriteLine("Showing categories");
+
             // If already modal mode, just return
             if (isModal) return;
 
@@ -945,8 +947,6 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="folderName">Name of the folder</param>
         public void ShowWindow(CCSprite currentSprite, string folderName)
         {
-            Console.WriteLine("Creating window");
-
             // If already modal mode, just return
             if (isModal) return;
 
@@ -997,7 +997,7 @@ namespace SGDWithCocos.Shared.Layers
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
                 // Blur background, to focus the listener
-                //var maskBackground = new CCCallFunc(MaskBackground);
+                // var maskBackground = new CCCallFunc(MaskBackground);
 
                 // Reveal the icons after scaling
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
@@ -1005,10 +1005,10 @@ namespace SGDWithCocos.Shared.Layers
                 // Execute actions
                 windowFrame.AddActions(false, moveAction, scaleAction);
 
-                ShowStoredSprites(folderName, storedList, backingSpriteFrame, windowFrame, scaling, this, mListener);
-
                 isModal = true;
             }, 0);
+
+            ShowStoredSprites(folderName, storedList, backingSpriteFrame, windowFrame, scaling, this, mListener);
         }
 
         /// <summary>
@@ -1051,7 +1051,10 @@ namespace SGDWithCocos.Shared.Layers
 
                 if (mSprite != null)
                 {
-                    windowFrame.AddChild(mSprite, 1001, SpriteTypes.IconTag);
+                    gameLayer.ScheduleOnce((dt) => 
+                    {
+                        windowFrame.AddChild(mSprite, 1001, SpriteTypes.IconTag);
+                    }, 0);                    
                 }
             }
 
