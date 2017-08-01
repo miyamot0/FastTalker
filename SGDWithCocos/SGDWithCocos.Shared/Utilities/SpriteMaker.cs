@@ -27,6 +27,7 @@
 
 using CocosSharp;
 using SGDWithCocos.Tags;
+using System.Threading.Tasks;
 
 namespace SGDWithCocos.Utilities
 {
@@ -209,6 +210,15 @@ namespace SGDWithCocos.Utilities
             return parentSprite;
         }
 
+        public Task<CCSprite> AsyncCreateBase64Sprite(CCSpriteFrame backing, string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        {
+            TaskCompletionSource<CCSprite> tcs = new TaskCompletionSource<CCSprite>();
+
+            tcs.SetResult(MakeIconBase64(backing, base64string, iconSpeechText, positionX, positionY, scale, textScale, textVisible));
+
+            return tcs.Task;
+        }
+
         /// <summary>
         /// Construct and return icon sprite with image from base64 string
         /// </summary>
@@ -220,7 +230,7 @@ namespace SGDWithCocos.Utilities
         /// <param name="textScale">text set</param>
         /// <param name="textVisible">text visible?</param>
         /// <returns></returns>
-        public CCSprite MakeIconBase64(CCSpriteFrame backing, string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
+        private CCSprite MakeIconBase64(CCSpriteFrame backing, string base64string, string iconSpeechText, float positionX, float positionY, float scale, float textScale, bool textVisible)
         {
             scale = (scale == -1) ? 1 : scale;
 

@@ -204,7 +204,7 @@ namespace SGDWithCocos.Shared.Layers
         /// Load sprites from the saved JSON object
         /// </summary>
         /// <param name="json">Saved object</param>
-        public void LoadSprites(IconStorageObject json)
+        public async void LoadSprites(IconStorageObject json)
         {
             iconList2 = new List<IconReference>();
             storedList = new List<StoredIconReference>();
@@ -217,7 +217,8 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         // if IconTag matches, add to field at saved location
 
-                        var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                        //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
 
                         iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
                         AddEventListener(mListener.Copy(), newIcon);
@@ -252,12 +253,13 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     // add stored icons to the saved/cached field icons
 
-                    var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                    //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                    var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                     var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
 
                     storedList.Add(storedIconRef);
                 }
-                
+
                 // Set the display mode
 
                 SetSingleMode(json.SingleMode);
@@ -372,9 +374,10 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         /// <param name="mContentTag"></param>
         /// <param name="base64string2"></param>
-        public void CallBackIconStored(string base64, string text, string folderTag)
+        public async void CallBackIconStored(string base64, string text, string folderTag)
         {
-            var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
+            //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
+            var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
             var newItem = new StoredIconReference(newIcon, base64, folderTag, 1f, 1f, true);
 
             storedList.Add(newItem);
@@ -388,7 +391,8 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="extension">file extension</param>
         public void CallBackIcon(string base64, string text, string extension, string name)
         {
-            ScheduleOnce((dt) => {
+            ScheduleOnce(async (dt) =>
+            {
                 // Loop into main game thread
 
                 if (extension == "Embedded")
@@ -421,7 +425,8 @@ namespace SGDWithCocos.Shared.Layers
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                    var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    //var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
 
                     if (name != null)
                     {
@@ -450,7 +455,8 @@ namespace SGDWithCocos.Shared.Layers
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                    var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    //var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
 
                     if (name != null)
                     {
@@ -1741,10 +1747,12 @@ namespace SGDWithCocos.Shared.Layers
                                             var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                                             var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                                            ScheduleOnce((dt) =>
+                                            ScheduleOnce(async (dt) =>
                                             {
-                                                var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, storedRef.Base64, mLoopContent.Text,
-                                                     xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
+                                                var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, storedRef.Base64, mLoopContent.Text, xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
+
+                                                //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, storedRef.Base64, mLoopContent.Text,
+                                                //     xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
 
                                                 var mIconRef = new IconReference(newIcon, storedRef.Base64, 1f, true);
 
