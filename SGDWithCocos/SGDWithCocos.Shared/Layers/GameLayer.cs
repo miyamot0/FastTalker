@@ -823,20 +823,10 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="mMatchingIcons"></param>
         public void ShowCategoryWindow(List<Storage> mMatchingIcons)
         {
-            Console.WriteLine("Showing categories");
-
             // If already modal mode, just return
             if (isModal) return;
 
             MaskBackground();
-
-            Storage[] mMatchingIconsCloned;
-
-            lock (mMatchingIcons)
-            {
-                mMatchingIconsCloned = new Storage[mMatchingIcons.Count];
-                mMatchingIcons.CopyTo(mMatchingIconsCloned);
-            }
 
             ScheduleOnce(async (dt) =>
             {
@@ -868,61 +858,6 @@ namespace SGDWithCocos.Shared.Layers
                 // Add close window
                 windowFrame.AddChild(closeButton, 9999, SpriteTypes.CloseWindowTag);
 
-                for (var i = 0; i < mMatchingIconsCloned.Length; i++)
-                {
-                    CCSprite parentSprite = await BuildCategorySpriteTask(i, mMatchingIconsCloned[i], backingSpriteFrame, windowFrame, scaling, this, mListener);
-
-                    /*
-                    // The referenced icon, as retrieved from the list
-                    var mStoredIconRef = mMatchingIconsCloned[i];
-
-                    // The sprite from the reference
-                    var parentSprite = new CCSprite(backingSpriteFrame);
-
-                    parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
-
-                    var pSpacing = parentSprite.ContentSize.Width * 0.15f;
-                    var xSpacing = parentSprite.ContentSize.Width * ((i % 3)) + pSpacing * ((i % 3) + 1);
-                    var ySpacing = parentSprite.ContentSize.Height * ((i / 3)) + pSpacing * ((i / 3) + 1);
-
-                    parentSprite.PositionX = (parentSprite.ContentSize.Width * 0.5f) + xSpacing;
-                    parentSprite.PositionY = windowFrame.ContentSize.Height - (parentSprite.ContentSize.Height * 0.5f) - ySpacing;
-
-                    parentSprite.Tag = SpriteTypes.IconTag;
-
-                    var subIconFrame = new CCSprite("Stored/" + mStoredIconRef.Name)
-                    {
-                        AnchorPoint = CCPoint.AnchorMiddle,
-                        ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.75f, parentSprite.ContentSize.Height * 0.75f),
-                        PositionX = parentSprite.ContentSize.Width * 0.5f,
-                        PositionY = parentSprite.ContentSize.Height * 0.5f + parentSprite.ContentSize.Height * 0.075f,
-                        Tag = SpriteTypes.ImageTag
-                    };
-
-                    var label = new CCLabel(mStoredIconRef.Name, "Arial", 22, CCLabelFormat.SystemFont)
-                    {
-                        Scale = 0.25f * scaling,
-                        AnchorPoint = CCPoint.AnchorMiddle,
-                        HorizontalAlignment = CCTextAlignment.Center,
-                        VerticalAlignment = CCVerticalTextAlignment.Center,
-                        PositionX = parentSprite.ContentSize.Width * 0.5f,
-                        PositionY = parentSprite.ContentSize.Height * 0.075f,
-                        Color = CCColor3B.Black,
-                        Visible = true,
-                        Tag = SpriteTypes.ContentTag
-                    };
-
-                    parentSprite.AddChild(subIconFrame);
-                    AddEventListener(mListener.Copy(), parentSprite);
-
-                    parentSprite.Visible = false;
-                    */
-
-                    windowFrame.AddChild(parentSprite, 1001, SpriteTypes.EmbeddedIconTag);
-                    //parentSprite.AddChild(label);
-
-                }
-
                 AddEventListener(mListener.Copy(), windowFrame);
                 tempWindow = new IconReference(windowFrame, "Window", 1f, true);
                 iconList2.Add(tempWindow);
@@ -936,84 +871,32 @@ namespace SGDWithCocos.Shared.Layers
                 // Scale to center, 90% of screen or so
                 var scaleAction = new CCScaleTo(0.2f, scale);
 
-                // Reveal the icons after scaling
-                var revealIcons = new CCCallFunc(ShowIconsInModal);
-
                 AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
 
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, scaleAction, revealIcons);
+                windowFrame.AddActions(false, moveAction, scaleAction);
 
                 isModal = true;
-            }, 0);
 
-            
-
-            //Console.WriteLine(scaling);
-
-            //ScheduleOnce((dt) => 
-            //{
-                // !important: lock for concurrency issues
-                /*
-                lock (mMatchingIcons)
+                for (var i = 0; i < mMatchingIcons.Count; i++)
                 {
-                    for (var i = 0; i < mMatchingIcons.Count; i++)
-                    {
-                        ScheduleOnce((dt) => 
-                        {
-                            // The referenced icon, as retrieved from the list
-                            var mStoredIconRef = mMatchingIcons[i];
-
-                            // The sprite from the reference
-                            var parentSprite = new CCSprite(backingSpriteFrame);
-
-                            parentSprite.ContentSize = new CCSize(windowFrame.ContentSize.Width * 0.25f, windowFrame.ContentSize.Height * 0.25f);
-
-                            var pSpacing = parentSprite.ContentSize.Width * 0.15f;
-                            var xSpacing = parentSprite.ContentSize.Width * ((i % 3)) + pSpacing * ((i % 3) + 1);
-                            var ySpacing = parentSprite.ContentSize.Height * ((i / 3)) + pSpacing * ((i / 3) + 1);
-
-                            parentSprite.PositionX = (parentSprite.ContentSize.Width * 0.5f) + xSpacing;
-                            parentSprite.PositionY = windowFrame.ContentSize.Height - (parentSprite.ContentSize.Height * 0.5f) - ySpacing;
-
-                            parentSprite.Tag = SpriteTypes.IconTag;
-
-                            var subIconFrame = new CCSprite("Stored/" + mStoredIconRef.Name)
-                            {
-                                AnchorPoint = CCPoint.AnchorMiddle,
-                                ContentSize = new CCSize(parentSprite.ContentSize.Width * 0.75f, parentSprite.ContentSize.Height * 0.75f),
-                                PositionX = parentSprite.ContentSize.Width * 0.5f,
-                                PositionY = parentSprite.ContentSize.Height * 0.5f + parentSprite.ContentSize.Height * 0.075f,
-                                Tag = SpriteTypes.ImageTag
-                            };
-
-                            var label = new CCLabel(mStoredIconRef.Name, "Arial", 22, CCLabelFormat.SystemFont)
-                            {
-                                Scale = 0.25f * scaling,
-                                AnchorPoint = CCPoint.AnchorMiddle,
-                                HorizontalAlignment = CCTextAlignment.Center,
-                                VerticalAlignment = CCVerticalTextAlignment.Center,
-                                PositionX = parentSprite.ContentSize.Width * 0.5f,
-                                PositionY = parentSprite.ContentSize.Height * 0.075f,
-                                Color = CCColor3B.Black,
-                                Visible = true,
-                                Tag = SpriteTypes.ContentTag
-                            };
-
-                            parentSprite.AddChild(subIconFrame);
-                            AddEventListener(mListener.Copy(), parentSprite);
-
-                            parentSprite.Visible = false;
-
-                            windowFrame.AddChild(parentSprite, 1001, SpriteTypes.EmbeddedIconTag);
-                            parentSprite.AddChild(label);
-
-                        }, 0);
-                    }
-                }*/
-            //}, 0);
+                    CCSprite parentSprite = await BuildCategorySpriteTask(i, mMatchingIcons[i], backingSpriteFrame, windowFrame, scaling, this, mListener);
+                    windowFrame.AddChild(parentSprite, 1001, SpriteTypes.EmbeddedIconTag);
+                }
+            }, 0);
         }
 
+        /// <summary>
+        /// Build sprite task from memory
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="mCategoryIconRef"></param>
+        /// <param name="backingSpriteFrame"></param>
+        /// <param name="windowFrame"></param>
+        /// <param name="scaling"></param>
+        /// <param name="gameLayer"></param>
+        /// <param name="mListener"></param>
+        /// <returns></returns>
         public static Task<CCSprite> BuildCategorySpriteTask(int i, Storage mCategoryIconRef, CCSpriteFrame backingSpriteFrame, CCSprite windowFrame, float scaling, GameLayer gameLayer, CCEventListenerTouchOneByOne mListener)
         {
             TaskCompletionSource<CCSprite> tcs = new TaskCompletionSource<CCSprite>();
@@ -1023,6 +906,17 @@ namespace SGDWithCocos.Shared.Layers
             return tcs.Task;
         }
 
+        /// <summary>
+        /// Build sprite from memory
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="mStoredIconRef"></param>
+        /// <param name="backingSpriteFrame"></param>
+        /// <param name="windowFrame"></param>
+        /// <param name="scaling"></param>
+        /// <param name="gameLayer"></param>
+        /// <param name="mListener"></param>
+        /// <returns></returns>
         public static CCSprite BuildCategorySprite(int i, Storage mStoredIconRef, CCSpriteFrame backingSpriteFrame, CCSprite windowFrame, float scaling, GameLayer gameLayer, CCEventListenerTouchOneByOne mListener)
         {
             // The sprite from the reference
@@ -1064,9 +958,6 @@ namespace SGDWithCocos.Shared.Layers
             parentSprite.AddChild(subIconFrame);
             gameLayer.AddEventListener(mListener.Copy(), parentSprite);
 
-            parentSprite.Visible = false;
-
-            //windowFrame.AddChild(parentSprite, 1001, SpriteTypes.EmbeddedIconTag);
             parentSprite.AddChild(label);
 
             return parentSprite;
