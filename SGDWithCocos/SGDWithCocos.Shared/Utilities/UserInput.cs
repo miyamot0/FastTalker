@@ -663,7 +663,8 @@ namespace SGDWithCocos.Utilities
                     return;
                 }
 
-                var matches = await GetMatchingTasks(result);
+                List<Storage> matches = await GetMatchingTasks(result);
+
                 mLayer.ShowCategoryWindow(matches);
             }
             catch (Exception e)
