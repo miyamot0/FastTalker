@@ -47,6 +47,16 @@ namespace SGDWithCocos.Scenes
         private CCLabel iconsLabel, launcherLabel;
         private CCSpriteSheet spriteSheet;
 
+        private CCSpriteFrame ccSpriteFrameB;
+        private CCScale9Sprite blueBackground;
+
+        private CCSpriteFrame ccSpriteFrameR;
+        private CCScale9Sprite startGameButton;
+
+        CCLabel startGameLabel;
+
+        List<string> mLetters = new List<string>() { "Ftitle", "Atitle", "Stitle", "Ttitle", "", "Ttitle", "Atitle", "Ltitle", "Ktitle", "Etitle", "Rtitle" };
+
         /// <summary>
         /// Scene constructor for game start
         /// </summary>
@@ -76,8 +86,8 @@ namespace SGDWithCocos.Scenes
         {
             mainLayer = new StartLayer();
 
-            var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("blueButton"));
-            var blueBackground = new CCScale9Sprite(ccSpriteFrame);
+            ccSpriteFrameB = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("blueButton"));
+            blueBackground = new CCScale9Sprite(ccSpriteFrameB);
             
             blueBackground.AnchorPoint = CCPoint.AnchorMiddle;
             blueBackground.CapInsets = new CCRect(20, 20, 42, 42);
@@ -109,14 +119,14 @@ namespace SGDWithCocos.Scenes
         {
             var bounds = mainLayer.VisibleBoundsWorldspace;
             var center = bounds.Center;
-            
-            var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("redButton"));
-            var startGameButton = new CCScale9Sprite(ccSpriteFrame);
+
+            ccSpriteFrameR = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("redButton"));
+            startGameButton = new CCScale9Sprite(ccSpriteFrameR);
             startGameButton.AnchorPoint = CCPoint.AnchorMiddle;
             startGameButton.CapInsets = new CCRect(20, 20, 42, 42);
             startGameButton.ContentSize = new CCSize((mWidth * 0.4f), (mHeight * 0.2f));
 
-            var startGameLabel = new CCLabel("Load Icon Board", "Arial", 72, CCLabelFormat.SystemFont);
+            startGameLabel = new CCLabel("Load Icon Board", "Arial", 72, CCLabelFormat.SystemFont);
 
             buttonControl = new CCControlButton(startGameLabel, startGameButton);
 
@@ -137,8 +147,6 @@ namespace SGDWithCocos.Scenes
             var spacer = 1;
 
             var mRandom = new Random();
-
-            var mLetters = new List<string>() { "Ftitle", "Atitle", "Stitle", "Ttitle", "", "Ttitle", "Atitle", "Ltitle", "Ktitle", "Etitle", "Rtitle" };
 
             for (var i = 1; i <= mLetters.Count; i++)
             {
@@ -175,6 +183,8 @@ namespace SGDWithCocos.Scenes
         private void ShowLogos()
         {
             var widthClamp = (mWidth * 0.3f > 225f) ? 225 : mWidth * 0.3f;
+
+            // TODO more cleanup
 
             var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("respect_logo"));
             var respectSprite = new CCSprite(ccSpriteFrame);
@@ -235,7 +245,49 @@ namespace SGDWithCocos.Scenes
         {
             spriteSheet.Frames.Clear();
 
+            buttonControl.RemoveAllChildren(true);
+            buttonControl.RemoveAllListeners();
+
+            CleanupMemory(ccSpriteFrameB);
+            CleanupMemory(ccSpriteFrameR);
+
+            CleanupMemory(startGameLabel);
+
+            //for (int i=0; i<mLetters.Count; i++)
+            //{
+            //    CleanupMemory(spriteSheet.Frames.Find((x) => x.TextureFilename.Contains(mLetters[i])));
+            //}
+
+            //RemoveChild(buttonControl);
+            //CCTextureCache.SharedTextureCache.RemoveTexture(buttonControl.)
+
+            /*
+                    private CCScale9Sprite blueBackground;
+
+                    private CCSpriteFrame ;
+                    private CCScale9Sprite startGameButton; 
+                         */
+
+
+            //CCTextureCache.SharedTextureCache.Dispose();
+
+            /*
+            private CCControlButton buttonControl;
+            private CCLabel iconsLabel, launcherLabel;
+            private CCSpriteSheet spriteSheet; 
+            */
+
             GameView.Director.ReplaceScene(mGamePage.gameScene);
+        }
+
+        private void CleanupMemory(CCSpriteFrame ccframe)
+        {
+            CCTextureCache.SharedTextureCache.RemoveTexture(ccframe.Texture);
+        }
+
+        private void CleanupMemory(CCLabel cclabel)
+        {
+            CCTextureCache.SharedTextureCache.RemoveTexture(cclabel.Texture);
         }
     }
 }

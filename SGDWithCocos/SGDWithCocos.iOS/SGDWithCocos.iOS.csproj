@@ -48,9 +48,9 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>true</MtouchProfiling>
-    <CodesignKey>iPhone Developer: shawnpgilroy@gmail.com (8F466XTP7N)</CodesignKey>
+    <CodesignKey>iPhone Developer: Shawn Gilroy (8F466XTP7N)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <CodesignProvision>d1b696fc-f0b7-4dcc-bb83-3810b276c52a</CodesignProvision>
+    <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
