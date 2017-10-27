@@ -39,7 +39,7 @@ namespace SGDWithCocos.Droid
     [Activity (Label = "FastTalker",
         AlwaysRetainTaskState = true,
         Icon = "@drawable/icon",
-        ScreenOrientation = ScreenOrientation.ReverseLandscape,
+        ScreenOrientation = ScreenOrientation.SensorLandscape,
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleInstance,
         ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden)]
