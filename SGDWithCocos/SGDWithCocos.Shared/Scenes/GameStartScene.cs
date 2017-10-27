@@ -64,6 +64,7 @@ namespace SGDWithCocos.Scenes
 
         private CCSpriteFrame nuiLogo;
         private CCSprite nuiSprite;
+
         /// <summary>
         /// Scene constructor for game start
         /// </summary>
@@ -244,7 +245,6 @@ namespace SGDWithCocos.Scenes
         /// </summary>
         public void CleanUpAndDispose()
         {
-
             spriteSheet.Frames.Clear();
 
             RemoveChild(blueBackground);
@@ -262,6 +262,8 @@ namespace SGDWithCocos.Scenes
             }
 
             mFrames.Clear();
+
+            mLetters.Clear();
 
             foreach (CCSprite sprite in mSprites)
             {
