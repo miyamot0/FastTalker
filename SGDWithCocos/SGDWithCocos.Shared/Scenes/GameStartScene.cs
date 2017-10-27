@@ -53,10 +53,17 @@ namespace SGDWithCocos.Scenes
         private CCSpriteFrame ccSpriteFrameR;
         private CCScale9Sprite startGameButton;
 
-        CCLabel startGameLabel;
+        private CCLabel startGameLabel;
 
         List<string> mLetters = new List<string>() { "Ftitle", "Atitle", "Stitle", "Ttitle", "", "Ttitle", "Atitle", "Ltitle", "Ktitle", "Etitle", "Rtitle" };
+        List<CCSpriteFrame> mFrames = new List<CCSpriteFrame>();
+        List<CCSprite> mSprites = new List<CCSprite>();
 
+        private CCSpriteFrame respectLogo;
+        private CCSprite respectSprite;
+
+        private CCSpriteFrame nuiLogo;
+        private CCSprite nuiSprite;
         /// <summary>
         /// Scene constructor for game start
         /// </summary>
@@ -74,8 +81,6 @@ namespace SGDWithCocos.Scenes
 
             CreateLayers();
 
-            LoadStartLabels();
-
             LoadMenu();
         }
 
@@ -88,7 +93,7 @@ namespace SGDWithCocos.Scenes
 
             ccSpriteFrameB = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("blueButton"));
             blueBackground = new CCScale9Sprite(ccSpriteFrameB);
-            
+
             blueBackground.AnchorPoint = CCPoint.AnchorMiddle;
             blueBackground.CapInsets = new CCRect(20, 20, 42, 42);
             blueBackground.ContentSize = new CCSize(mWidth, mHeight);
@@ -98,18 +103,6 @@ namespace SGDWithCocos.Scenes
             mainLayer.AddChild(blueBackground, 0);
 
             AddLayer(mainLayer);
-        }
-
-        /// <summary>
-        /// Construct actions and necessary bounds/locations
-        /// </summary>
-        void LoadStartLabels()
-        {
-            var bounds = mainLayer.VisibleBoundsWorldspace;
-            var center = bounds.Center;
-
-            var scaleAction = new CCScaleBy(0.5f, 1.0f, 1.5f);
-            var fadeAction = new CCFadeIn(0.5f);
         }
 
         /// <summary>
@@ -160,19 +153,18 @@ namespace SGDWithCocos.Scenes
                     continue;
                 }
 
-                var mRotation = (float)(mRandom.Next(0, 28) - 14);
+                mFrames.Add(spriteSheet.Frames.Find((x) => x.TextureFilename.Contains(mLetter)));
+                mSprites.Add(spriteMaker.MakeTitleIcon(mFrames[mFrames.Count - 1], mWidth / 2f, mHeight / 2f));
+                mSprites[mSprites.Count - 1].Rotation = (float)(mRandom.Next(0, 28) - 14);
+                mainLayer.AddChild(mSprites[mSprites.Count - 1], 10 + i);
 
-                var move = new CCMoveTo(1f, new CCPoint(mX, mY));
-
-                var mSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains(mLetter));
-                var mIcon = spriteMaker.MakeTitleIcon(mSpriteFrame, mWidth / 2f, mHeight / 2f);
-
-                mIcon.Rotation = mRotation;
-
-                mainLayer.AddChild(mIcon, 10 + i);
-
-                mIcon.RunActionsAsync(new CCDelayTime(i / 10f), new CCFadeIn(0.5f), new CCMoveTo((i / 10f), new CCPoint(mX, mY)));
+                mSprites[mSprites.Count - 1].RunActionsAsync(new CCDelayTime(i / 10f),
+                                                             new CCFadeIn(0.5f),
+                                                             new CCMoveTo((i / 10f), new CCPoint(mX, mY)));
             }
+
+            spriteMaker = null;
+            mRandom = null;
 
             ShowLogos();
         }
@@ -184,21 +176,17 @@ namespace SGDWithCocos.Scenes
         {
             var widthClamp = (mWidth * 0.3f > 225f) ? 225 : mWidth * 0.3f;
 
-            // TODO more cleanup
-
-            var ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("respect_logo"));
-            var respectSprite = new CCSprite(ccSpriteFrame);
-            var respectScale = widthClamp / respectSprite.ContentSize.Width;
-            respectSprite.Scale = respectScale;
+            respectLogo = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("respect_logo"));
+            respectSprite = new CCSprite(respectLogo);
+            respectSprite.Scale = widthClamp / respectSprite.ContentSize.Width;
             respectSprite.PositionX = respectSprite.ScaledContentSize.Width / 2f + (mWidth * 0.02f);
             respectSprite.PositionY = respectSprite.ScaledContentSize.Height / 2f + (mHeight * 0.01f);
 
             mainLayer.AddChild(respectSprite);
 
-            ccSpriteFrame = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("nuig_logo"));
-            var nuiSprite = new CCSprite(ccSpriteFrame);
-            var nuiScale = widthClamp / nuiSprite.ContentSize.Width;
-            nuiSprite.Scale = nuiScale;
+            nuiLogo = spriteSheet.Frames.Find((x) => x.TextureFilename.Contains("nuig_logo"));
+            nuiSprite = new CCSprite(nuiLogo);
+            nuiSprite.Scale = widthClamp / nuiSprite.ContentSize.Width;
             nuiSprite.PositionX = mWidth - nuiSprite.ScaledContentSize.Width / 2f - (mWidth * 0.01f);
             nuiSprite.PositionY = respectSprite.PositionY;
 
@@ -213,8 +201,7 @@ namespace SGDWithCocos.Scenes
                 Tag = SpriteTypes.IconLicenseTag
             };
 
-            var labelScale = (mWidth * 0.75f) / iconsLabel.ContentSize.Width;
-            iconsLabel.Scale = labelScale;
+            iconsLabel.Scale = (mWidth * 0.75f) / iconsLabel.ContentSize.Width;
             iconsLabel.PositionX = mainLayer.VisibleBoundsWorldspace.Center.X;
             iconsLabel.PositionY = mHeight - iconsLabel.ScaledContentSize.Height / 2f - (mHeight * 0.02f);
 
@@ -229,7 +216,7 @@ namespace SGDWithCocos.Scenes
                 Tag = SpriteTypes.LauncherLicenseTag
             };
 
-            launcherLabel.Scale = labelScale;
+            launcherLabel.Scale = (mWidth * 0.75f) / iconsLabel.ContentSize.Width;
             launcherLabel.PositionX = mainLayer.VisibleBoundsWorldspace.Center.X;
             launcherLabel.PositionY = iconsLabel.PositionY - launcherLabel.ScaledContentSize.Height / 2f - (mHeight * 0.03f);
 
@@ -243,48 +230,81 @@ namespace SGDWithCocos.Scenes
         /// <param name="e"></param>
         private void PressedButton(object sender, EventArgs e)
         {
+            RunActions(new CCSequence(
+                new CCCallFunc(() => {
+                    GameView.Director.ReplaceScene(mGamePage.gameScene);
+                }),
+                new CCCallFunc(() => {
+                    CleanUpAndDispose();
+                })));
+        }
+
+        /// <summary>
+        /// Cleans up and dispose.
+        /// </summary>
+        public void CleanUpAndDispose()
+        {
+
             spriteSheet.Frames.Clear();
 
-            buttonControl.RemoveAllChildren(true);
-            buttonControl.RemoveAllListeners();
-
+            RemoveChild(blueBackground);
             CleanupMemory(ccSpriteFrameB);
+
+            RemoveChild(buttonControl);
+            RemoveChild(startGameButton);
             CleanupMemory(ccSpriteFrameR);
 
             CleanupMemory(startGameLabel);
 
-            //for (int i=0; i<mLetters.Count; i++)
-            //{
-            //    CleanupMemory(spriteSheet.Frames.Find((x) => x.TextureFilename.Contains(mLetters[i])));
-            //}
+            foreach (CCSpriteFrame frame in mFrames)
+            {
+                CleanupMemory(frame);
+            }
 
-            //RemoveChild(buttonControl);
-            //CCTextureCache.SharedTextureCache.RemoveTexture(buttonControl.)
+            mFrames.Clear();
 
-            /*
-                    private CCScale9Sprite blueBackground;
+            foreach (CCSprite sprite in mSprites)
+            {
+                CCTextureCache.SharedTextureCache.RemoveTexture(sprite.Texture);
+                sprite.RemoveAllListeners();
+                RemoveChild(sprite);
+            }
 
-                    private CCSpriteFrame ;
-                    private CCScale9Sprite startGameButton; 
-                         */
+            mSprites.Clear();
 
+            RemoveChild(respectSprite);
+            CleanupMemory(respectLogo);
 
-            //CCTextureCache.SharedTextureCache.Dispose();
+            RemoveChild(nuiSprite);
+            CleanupMemory(nuiLogo);
 
-            /*
-            private CCControlButton buttonControl;
-            private CCLabel iconsLabel, launcherLabel;
-            private CCSpriteSheet spriteSheet; 
-            */
+            RemoveChild(iconsLabel);
 
-            GameView.Director.ReplaceScene(mGamePage.gameScene);
+            RemoveChild(launcherLabel);
+
+            RemoveChild(buttonControl);
+
+            buttonControl.RemoveAllChildren(true);
+            buttonControl.RemoveAllListeners();
+
+            Dispose();
+
+            CCTextureCache.SharedTextureCache.RemoveUnusedTextures();
         }
 
+        /// <summary>
+        /// Clean up the memory.
+        /// </summary>
+        /// <param name="ccframe">Ccframe.</param>
         private void CleanupMemory(CCSpriteFrame ccframe)
         {
             CCTextureCache.SharedTextureCache.RemoveTexture(ccframe.Texture);
         }
 
+        /// <summary>
+        /// Clean up the memory.
+        /// </summary>
+        /// <param name="cclabel">Cclabel.</param>
         private void CleanupMemory(CCLabel cclabel)
         {
             CCTextureCache.SharedTextureCache.RemoveTexture(cclabel.Texture);
