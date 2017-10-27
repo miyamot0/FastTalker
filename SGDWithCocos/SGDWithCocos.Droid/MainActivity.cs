@@ -42,12 +42,24 @@ namespace SGDWithCocos.Droid
         ScreenOrientation = ScreenOrientation.SensorLandscape,
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleInstance,
-        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden)]
-    [IntentFilter(new[] { Intent.ActionMain }, Categories = new[] { Intent.CategoryHome, Android.Content.Intent.CategoryDefault })]
+        ConfigurationChanges = ConfigChanges.Orientation | 
+                               ConfigChanges.ScreenSize | 
+                               ConfigChanges.Keyboard | 
+                               ConfigChanges.KeyboardHidden)]
+    [IntentFilter(new[] { Intent.ActionMain }, 
+        Categories = new[] 
+        {
+            Intent.CategoryHome,
+            Android.Content.Intent.CategoryDefault
+        })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
 	{
         public static Activity MainApplicationActivity;
 
+        /// <summary>
+        /// Base startup, max up volume at start and attempt to take up full screen
+        /// </summary>
+        /// <param name="bundle"></param>
         protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -63,6 +75,9 @@ namespace SGDWithCocos.Droid
             audioManager.SetStreamVolume(Stream.System, audioManager.GetStreamMaxVolume(Stream.System), 0);
         }
 
+        /// <summary>
+        /// Resume, crank up volume just in case
+        /// </summary>
         protected override void OnResume()
         {
             base.OnResume();
