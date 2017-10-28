@@ -20,6 +20,8 @@
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>The library is used to make icons</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to the photo gallery.</string>
 	<key>MinimumOSVersion</key>
 	<string>8.1</string>
 	<key>UIDeviceFamily</key>

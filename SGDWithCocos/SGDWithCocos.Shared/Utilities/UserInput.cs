@@ -42,6 +42,7 @@ using SGDWithCocos.Tags;
 using SGDWithCocos.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -973,18 +974,39 @@ namespace SGDWithCocos.Utilities
                     // If permissions granted, query selection and call back
 
                     var results = await GetImageCamera();
+
                     mLayer.CallBackIcon(results[0], results[1], results[2], null);
                 }
                 else if (status != PermissionStatus.Unknown)
                 {
                     // If permissions not granted, report back to user
 
-                    await App.Current.MainPage.DisplayAlert("Location Denied", "Can not continue, try again.", "OK");
+                    string statusLabel = "";
+
+                    if (status == PermissionStatus.Denied)
+                    {
+                        statusLabel = "Please approve camera permissions in Settings";
+                    }
+                    else if (status == PermissionStatus.Disabled)
+                    {
+                        statusLabel = "PermissionStatus.Disabled";
+                    }
+                    else if (status == PermissionStatus.Restricted)
+                    {
+                        statusLabel = "PermissionStatus.Restricted";
+                    }
+                    else if (status == PermissionStatus.Granted)
+                    {
+                        statusLabel = "PermissionStatus.Granted";
+                    }
+
+                    await App.Current.MainPage.DisplayAlert("Location Denied", statusLabel, "OK");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Debug.WriteLine(ex.ToString());
+                //Console.WriteLine(ex.ToString());
             }
         }
 
@@ -1003,6 +1025,7 @@ namespace SGDWithCocos.Utilities
                     // If photo taking isn't supported, return with blank array
 
                     await App.Current.MainPage.DisplayAlert("Photos Not Supported", ":( Permission not granted to photos.", "OK");
+
                     tcs.SetResult(new string[] { "", "", "" });
                 }
 
@@ -1018,6 +1041,7 @@ namespace SGDWithCocos.Utilities
                 };
 
                 var file = await CrossMedia.Current.TakePhotoAsync(mediaOptions);
+
                 string newPath = "";
 
                 if (file == null || file.Path == null)
@@ -1304,7 +1328,6 @@ namespace SGDWithCocos.Utilities
             if (mList.Contains(folderName.Trim().ToLower()))
             {
                 // return if the existing name already exists
-
                 return;
             }
             else if (folderName.Trim().Length > 0)
@@ -1343,7 +1366,6 @@ namespace SGDWithCocos.Utilities
                 if (folderColor.Trim().Length > 0)
                 {
                     // if a color was supplied, create the necessary folder in the field
-
                     mLayer.MakeIconFolder(assetName, folderName, null, null);
                 }
             }

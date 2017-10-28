@@ -43,45 +43,60 @@ namespace SGDWithCocos.iOS.Implementation
 
         void IResizer.ResizeBitmaps(string photoPath, string newPhotoPath)
         {
-            var sourceImage = UIImage.FromFile(photoPath);
-            var imgSize = sourceImage.Size;
+            UIImage sourceImage = UIImage.FromFile(photoPath);
+            CGSize imgSize = sourceImage.Size;
 
             if (imgSize.Width >= imgSize.Height)
             {
-                var x = imgSize.Width / 2 - imgSize.Height / 2;
-                var y = 0;
-                var height = imgSize.Height;
-                var width = imgSize.Height;
+                System.nfloat x = imgSize.Width / 2 - imgSize.Height / 2;
+                System.nfloat y = 0;
+                System.nfloat height = imgSize.Height;
+                System.nfloat width = imgSize.Height;
 
                 UIGraphics.BeginImageContext(new CGSize(width, height));
-                var context = UIGraphics.GetCurrentContext();
-                var clippedRect = new CGRect(0, 0, width, height);
-                context.ClipToRect(clippedRect);
-                var drawRect = new CGRect(-x, -y, imgSize.Width, imgSize.Height);
-                sourceImage.Draw(drawRect);
-                var modifiedImage = UIGraphics.GetImageFromCurrentImageContext();
+                CGContext context = UIGraphics.GetCurrentContext();
+
+                //CGRect clippedRect = new CGRect(0, 0, width, height);
+                //context.ClipToRect(clippedRect);
+                context.ClipToRect(new CGRect(0, 0, width, height));
+
+                //var drawRect = new CGRect(-x, -y, imgSize.Width, imgSize.Height);
+                //sourceImage.Draw(drawRect);
+                sourceImage.Draw(new CGRect(-x, -y, imgSize.Width, imgSize.Height));
+
+                UIImage modifiedImage = UIGraphics.GetImageFromCurrentImageContext();
                 UIGraphics.EndImageContext();
                 
                 modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
 
+                //sourceImage.Dispose();
+                //modifiedImage.Dispose();
             }
             else
             {
-                var x = 0;
-                var y = imgSize.Height / 2 - imgSize.Width / 2;
-                var height = imgSize.Width;
-                var width = imgSize.Width;
+                System.nfloat x = 0;
+                System.nfloat y = imgSize.Height / 2 - imgSize.Width / 2;
+                System.nfloat height = imgSize.Width;
+                System.nfloat width = imgSize.Width;
 
                 UIGraphics.BeginImageContext(new CGSize(width, height));
-                var context = UIGraphics.GetCurrentContext();
-                var clippedRect = new CGRect(0, 0, width, height);
-                context.ClipToRect(clippedRect);
-                var drawRect = new CGRect(-x, -y, imgSize.Width, imgSize.Height);
-                sourceImage.Draw(drawRect);
-                var modifiedImage = UIGraphics.GetImageFromCurrentImageContext();
+                CGContext context = UIGraphics.GetCurrentContext();
+
+                //CGRect clippedRect = new CGRect(0, 0, width, height);
+                //context.ClipToRect(clippedRect);
+                context.ClipToRect(new CGRect(0, 0, width, height));
+                
+                //CGRect drawRect = new CGRect(-x, -y, imgSize.Width, imgSize.Height);
+                //sourceImage.Draw(drawRect);
+                sourceImage.Draw(new CGRect(-x, -y, imgSize.Width, imgSize.Height));
+
+                UIImage modifiedImage = UIGraphics.GetImageFromCurrentImageContext();
                 UIGraphics.EndImageContext();
 
                 modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
+
+                //sourceImage.Dispose();
+                //modifiedImage.Dispose();
             }
         }
     }

@@ -73,9 +73,9 @@ namespace SGDWithCocos.Droid.Implementation
                 //croppedBitmap = ModifyOrientation(photoPath, croppedBitmap);
                 croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
             }
-            catch (System.Exception e)
+            catch
             {
-                Console.WriteLine("Failed to write: " + e.ToString());
+                //Console.WriteLine("Failed to write: " + e.ToString());
             }
             finally
             {
@@ -85,10 +85,18 @@ namespace SGDWithCocos.Droid.Implementation
                     {
                         stream.Close();
                     }
+
+                    croppedBitmap.Recycle();
+                    croppedBitmap.Dispose();
+                    croppedBitmap = null;
+
+                    bitmap.Recycle();
+                    bitmap.Dispose();
+                    bitmap = null;
                 }
-                catch (IOException e)
+                catch
                 {
-                    Console.WriteLine("Failed to close: " + e.ToString());
+                    //Console.WriteLine("Failed to close: " + e.ToString());
                 }
             }
         }
@@ -104,8 +112,8 @@ namespace SGDWithCocos.Droid.Implementation
                 ExifInterface exifInterface = new ExifInterface(photoPath);
                 int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, (int)Android.Media.Orientation.Normal);
 
-                System.Diagnostics.Debug.WriteLine("Orientation of image" + orientation.ToString());
-                Console.WriteLine("Orientation of image" + orientation.ToString());
+                //System.Diagnostics.Debug.WriteLine("Orientation of image" + orientation.ToString());
+                //Console.WriteLine("Orientation of image" + orientation.ToString());
 
                 int rotate = 0;
 
@@ -164,10 +172,24 @@ namespace SGDWithCocos.Droid.Implementation
                                         
                     croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, ms);
 
+                    croppedBitmap.Recycle();
+                    croppedBitmap.Dispose();
+                    croppedBitmap = null;
+
+                    mtx.Dispose();
+                    mtx = null;
+
+                    bitmap.Recycle();
+                    bitmap.Dispose();
+                    bitmap = null;
+
                     return ms.ToArray();
                 }
             }
-            catch { }
+            catch
+            {
+                // <!-- Fail out -->
+            }
 
             return null;
         }
