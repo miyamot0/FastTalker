@@ -135,10 +135,11 @@ namespace SGDWithCocos.Shared.Pages
 
             if (nativeGameView != null)
             {
-                var contentSearchPaths = new List<string>() { "Stored" };
-                nativeGameView.ContentManager.SearchPaths = contentSearchPaths;
+                nativeGameView.ContentManager.SearchPaths = new List<string>() { "Stored" };
 
-                nativeGameView.Stats.Enabled = false;
+                // Launch stats
+                nativeGameView.Stats.Enabled = true;
+                nativeGameView.Stats.Scale = 2;
 
                 // Show the start screen
                 nativeGameView.RunWithScene(new GameStartScene(nativeGameView, App.Width, App.Height, this));

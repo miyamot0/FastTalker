@@ -40,6 +40,7 @@ using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Data;
 using System.IO;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace SGDWithCocos.Shared.Layers
 {
@@ -217,9 +218,7 @@ namespace SGDWithCocos.Shared.Layers
                     if (icon.Tag == SpriteTypes.IconTag)
                     {
                         // if IconTag matches, add to field at saved location
-
                         var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
-                        //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
 
                         iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
                         AddEventListener(mListener.Copy(), newIcon);
@@ -231,7 +230,6 @@ namespace SGDWithCocos.Shared.Layers
                     if (icon.Tag == SpriteTypes.FolderTag)
                     {
                         // if IconTag matches, add to field at saved location
-
                         CCSpriteFrame content = null;
 
                         if (icon.AssetName != null)
@@ -239,7 +237,6 @@ namespace SGDWithCocos.Shared.Layers
                             content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName));
                         }
 
-                        //var newIcon = spriteModelFactory.MakeFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                         var newIcon = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                         newIcon.Tag = SpriteTypes.FolderTag;
 
@@ -255,7 +252,6 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     // add stored icons to the saved/cached field icons
 
-                    //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                     var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
                     var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
 
@@ -263,7 +259,6 @@ namespace SGDWithCocos.Shared.Layers
                 }
 
                 // Set the display mode
-
                 SetSingleMode(json.SingleMode);
                 UnselectAuto = json.AutoUnselectSingleMode;
             }
@@ -278,7 +273,6 @@ namespace SGDWithCocos.Shared.Layers
             foreach (IconReference icon in iconList2)
             {
                 // Add all designated sprites to the field as saved/stored
-
                 AddChild(icon.Sprite, counter, icon.Sprite.Tag);
                 counter++;
             }
@@ -378,7 +372,6 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="base64string2"></param>
         public async void CallBackIconStored(string base64, string text, string folderTag)
         {
-            //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
             var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
             var newItem = new StoredIconReference(newIcon, base64, folderTag, 1f, 1f, true);
 
@@ -414,6 +407,12 @@ namespace SGDWithCocos.Shared.Layers
                     }
 
                     sprite.RemoveAllChildren();
+
+                    CCTextureCache.SharedTextureCache.RemoveTexture(sprite.Texture);
+
+                    sprite.Texture.Dispose();
+                    sprite.RemoveFromParent(true);
+
                     sprite.Cleanup();
                     sprite.Dispose();
 
@@ -423,12 +422,10 @@ namespace SGDWithCocos.Shared.Layers
                 else if (base64 != "" && text != "")
                 {
                     // Introduce some jitter into the positioning of the icon
-
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
                     var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
-                    //var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
 
                     if (name != null)
                     {
@@ -458,7 +455,6 @@ namespace SGDWithCocos.Shared.Layers
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
                     var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
-                    //var newIcons = spriteModelFactory.MakeIconBase64(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
 
                     if (name != null)
                     {
@@ -480,9 +476,7 @@ namespace SGDWithCocos.Shared.Layers
                     // Add salient animation to icons added back to field
                     mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
                 }
-
             }, 0);
-
         }
 
         /// <summary>
@@ -495,7 +489,6 @@ namespace SGDWithCocos.Shared.Layers
             ScheduleOnce(async (dt) =>
             {
                 // Introduce some jitter into the positioning of the icon
-
                 var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
                 var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
 
@@ -780,9 +773,38 @@ namespace SGDWithCocos.Shared.Layers
         /// <summary>
         /// Remove current icon
         /// </summary>
-        public void RemoveCurrentIcon()
+        public void RemoveIconFromFieldAndCache(CCSprite sprite)
         {
-            RemoveChild(CurrentSpriteTouched);
+            sprite.RemoveFromParent(true);
+
+            CCSprite temp = sprite.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
+
+            if (temp != null)
+            {
+                CCTextureCache.SharedTextureCache.RemoveTexture(temp.Texture);
+                temp.Texture.Dispose();
+                temp.RemoveFromParent();
+            }
+
+            CCLabel temp2 = sprite.GetChildByTag(Tags.SpriteTypes.ContentTag) as CCLabel;
+
+            if (temp2 != null)
+            {
+                CCTextureCache.SharedTextureCache.RemoveTexture(temp2.Texture);
+                temp2.Texture.Dispose();
+                temp2.RemoveFromParent();
+            }
+
+            sprite.RemoveAllChildren(true);
+
+            CCTextureCache.SharedTextureCache.RemoveTexture(sprite.Texture);
+            sprite.Texture.Dispose();
+
+            CCTextureCache.SharedTextureCache.RemoveUnusedTextures();
+
+            temp = null;
+            temp2 = null;
+            sprite = null;
         }
 
         /// <summary>
@@ -792,15 +814,41 @@ namespace SGDWithCocos.Shared.Layers
         {
             var mIcons = windowFrame.Children.Where(t => t.Tag == SpriteTypes.IconTag || t.Tag == SpriteTypes.EmbeddedIconTag).ToList();
 
+            CCSprite temp;
+
             for (var i = 0; i < mIcons.Count; i++)
             {
-                var fade = new CCFadeOut((mIcons.Count / 20f) - i / 20f);
-                var clean = new CCCallFuncN(node => node.RemoveFromParent());
-                var unlisten = new CCCallFuncN(node => node.RemoveAllListeners());
-                var cleanup = new CCCallFuncN(node => node.Cleanup());
-                var dispose = new CCCallFuncN(node => node.Dispose());
-                mIcons[i].AddActions(false, fade, unlisten, clean, cleanup, dispose);
+                temp = mIcons[i] as CCSprite;
+
+                // If null, pass on
+                if (temp == null)
+                {
+                    continue;
+                }
+
+                // If this matches, pass on
+                if (temp.GetHashCode() == CurrentSpriteTouched.GetHashCode())
+                {
+                    continue;
+                }
+
+                if (temp.Texture.Equals(backingSpriteFrame.Texture))
+                {
+                    continue;
+                }
+
+                // If eligible, chuck this one out
+                temp.RemoveFromParent(true);
+                temp.RemoveEventListeners(false);
+                CCTextureCache.SharedTextureCache.RemoveTexture(temp.Texture);
+
+                temp.Texture.Dispose();
             }
+
+            temp = null;
+            mIcons.Clear();
+
+            mIcons = null;
         }
 
         /// <summary>
@@ -862,19 +910,15 @@ namespace SGDWithCocos.Shared.Layers
                 tempWindow = new IconReference(windowFrame, "Window", 1f, true);
                 iconList2.Add(tempWindow);
 
-                // Moves window to center
-                var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
-
                 var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
                 var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
-
-                // Scale to center, 90% of screen or so
-                var scaleAction = new CCScaleTo(0.2f, scale);
 
                 AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
 
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, scaleAction);
+                windowFrame.AddActions(false,
+                    new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f)),
+                    new CCScaleTo(0.2f, scale));
 
                 isModal = true;
 
@@ -1010,14 +1054,8 @@ namespace SGDWithCocos.Shared.Layers
                 iconList2.Add(tempWindow);
                 AddChild(windowFrame, 1000, SpriteTypes.WindowTag);
 
-                // Moves window to center
-                var moveAction = new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f));
-
                 var dimension = Math.Min(spriteModelFactory.DynamicHeight, spriteModelFactory.DynamicWidth);
                 var scale = (dimension / (windowFrame.ContentSize.Width)) * 1f;
-
-                // Scale to center, 90% of screen or so
-                var scaleAction = new CCScaleTo(0.2f, scale);
 
                 // Blur background, to focus the listener
                 // var maskBackground = new CCCallFunc(MaskBackground);
@@ -1026,7 +1064,9 @@ namespace SGDWithCocos.Shared.Layers
                 var revealIcons = new CCCallFunc(ShowIconsInModal);
 
                 // Execute actions
-                windowFrame.AddActions(false, moveAction, scaleAction);
+                windowFrame.AddActions(false,
+                    new CCMoveTo(0.2f, new CCPoint(spriteModelFactory.DynamicWidth / 2f, spriteModelFactory.DynamicHeight / 2f)),
+                    new CCScaleTo(0.2f, scale));
 
                 isModal = true;
             }, 0);
@@ -1599,7 +1639,23 @@ namespace SGDWithCocos.Shared.Layers
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
 
                         ScheduleOnce((dt) => {
-                            RemoveChild(target);
+                            //RemoveChild(target);
+
+                            // <!-- Note: Edited Cleanup Here 
+
+                            var temp = target.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
+
+                            if (temp != null)
+                            {
+                                CCTextureCache.SharedTextureCache.RemoveTexture(temp.Texture);
+                                temp.Texture.Dispose();
+                            }
+
+                            target.RemoveAllChildren();
+                            target.RemoveEventListeners(false);
+                            target.RemoveFromParent();
+
+                            // -->
                         }, 0);
 
                         iconList2.Remove(mSprite);
@@ -1794,11 +1850,19 @@ namespace SGDWithCocos.Shared.Layers
                         }
                         else
                         {
+                            // TODO: this is the reference that is preventing cleanup
+
                             GamePageParent.mInputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
                             
                             isModal = false;
+
                             ClearIconsInModal();
+
+                            // Remove Window
                             RemoveAllChildrenByTag(windowFrame.Tag, true);
+                            windowFrame.RemoveEventListeners(false);
+
+                            // Remove Mask
                             RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
 
                             var windowRef = iconList2.Where(t => t.Sprite.Tag == windowFrame.Tag).FirstOrDefault();
@@ -1882,6 +1946,8 @@ namespace SGDWithCocos.Shared.Layers
                                     }
                                 }
                             }
+
+                            // TODO same here, ref to CurrentIconSelected throws off texture removals
 
                             isModal = false;
                             ClearIconsInModal();
@@ -2045,6 +2111,9 @@ namespace SGDWithCocos.Shared.Layers
                 SaveJsonContent();
 
                 totalDuration = 0f;
+
+                CCTextureCache.SharedTextureCache.DumpCachedTextureInfo();
+                CCTextureCache.SharedTextureCache.RemoveUnusedTextures();
             }
 
             #endregion 
