@@ -960,7 +960,11 @@ namespace SGDWithCocos.Utilities
                         await App.Current.MainPage.DisplayAlert("Need camera", "Will need it take pictures", "OK");
                     }
 
-                    var results = await CrossPermissions.Current.RequestPermissionsAsync(new[] { Permission.Camera });
+                    var results = await CrossPermissions.Current.RequestPermissionsAsync(new[] 
+                    {
+                        Permission.Camera
+                    });
+
                     status = results[Permission.Camera];
                 }
 
@@ -1024,6 +1028,7 @@ namespace SGDWithCocos.Utilities
                     var fName = Path.GetFileNameWithoutExtension(@file.Path);
                     fName = fName + "crop.jpg";
                     newPath = Path.Combine(path, fName);
+
                     DependencyService.Get<IResizer>().ResizeBitmaps(@file.Path, @newPath);
 
                     // If the photo can be found, query user for icon label
@@ -1038,6 +1043,11 @@ namespace SGDWithCocos.Utilities
                             byte[] imageArray = File.ReadAllBytes(@newPath);
                             string base64ImageRepresentation = Convert.ToBase64String(imageArray);
                             var extension = Path.GetExtension(@newPath);
+
+                            // <!-- Remove the reference 
+                            imageArray = null;
+                            GC.Collect();
+                            // -->
 
                             tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
                         }
