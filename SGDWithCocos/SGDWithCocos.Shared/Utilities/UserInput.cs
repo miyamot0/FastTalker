@@ -1013,53 +1013,71 @@ namespace SGDWithCocos.Utilities
                     Name = $"{DateTime.UtcNow}.jpg",
                     SaveToAlbum = true,
                     AllowCropping = true,
+                    PhotoSize = Plugin.Media.Abstractions.PhotoSize.Small,
+                    CompressionQuality = 50,                    
                 };
 
                 var file = await CrossMedia.Current.TakePhotoAsync(mediaOptions);
                 string newPath = "";
 
-                if (file == null || file.Path == null) return;
-
-                if (File.Exists(@file.Path))
+                if (file == null || file.Path == null)
                 {
-                    // To accomodate varying camera sizes, crop center-square for uniform display
-
-                    var path = Path.GetDirectoryName(@file.Path);
-                    var fName = Path.GetFileNameWithoutExtension(@file.Path);
-                    fName = fName + "crop.jpg";
-                    newPath = Path.Combine(path, fName);
-
-                    DependencyService.Get<IResizer>().ResizeBitmaps(@file.Path, @newPath);
-
-                    // If the photo can be found, query user for icon label
-
-                    var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
-                    popup.PopupClosed += (o, closedArgs) =>
-                    {
-                        if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
-                        {
-                            // If user provides valid name, convert image file to base64 and return
-
-                            byte[] imageArray = File.ReadAllBytes(@newPath);
-                            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-                            var extension = Path.GetExtension(@newPath);
-
-                            // <!-- Remove the reference 
-                            imageArray = null;
-                            GC.Collect();
-                            // -->
-
-                            tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
-                        }
-                        else
-                        {
-                            tcs.SetResult(new string[] { "", "", "" });
-                        }
-                    };
-
-                    popup.Show();
+                    tcs.SetResult(new string[] { "", "", "" });
                 }
-                else
+
+                try
+                {
+                    if (File.Exists(@file.Path))
+                    {
+                        // To accomodate varying camera sizes, crop center-square for uniform display
+
+                        var path = Path.GetDirectoryName(@file.Path);
+                        var fName = Path.GetFileNameWithoutExtension(@file.Path);
+                        fName = fName + "crop.jpg";
+                        newPath = Path.Combine(path, fName);
+
+                        DependencyService.Get<IResizer>().ResizeBitmaps(@file.Path, @newPath);
+
+                        // If the photo can be found, query user for icon label
+
+                        var popup = new PopUpWindow("Please name the Icon", string.Empty, "OK", "Cancel");
+                        popup.PopupClosed += (o, closedArgs) =>
+                        {
+                            if (closedArgs.Button == "OK" && closedArgs.Text.Trim().Length > 0)
+                            {
+                                // If user provides valid name, convert image file to base64 and return
+                                byte[] imageArray = File.ReadAllBytes(@newPath);
+                                string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+                                var extension = Path.GetExtension(@newPath);
+
+                                // <!-- Remove the reference 
+                                imageArray = null;
+                                GC.Collect();
+                                // -->
+
+                                tcs.SetResult(new string[] 
+                                {
+                                    base64ImageRepresentation,
+                                    closedArgs.Text,
+                                    extension
+                                });
+                            }
+                            else
+                            {
+                                tcs.SetResult(new string[] { "", "", "" });
+                            }
+                        };
+
+                        file.Dispose();
+
+                        popup.Show();
+                    }
+                    else
+                    {
+                        tcs.SetResult(new string[] { "", "", "" });
+                    }
+                }
+                catch
                 {
                     tcs.SetResult(new string[] { "", "", "" });
                 }
