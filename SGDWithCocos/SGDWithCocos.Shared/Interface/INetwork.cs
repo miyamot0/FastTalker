@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Interface for hosting device server, linked to native fx
+    /// </summary>
     public interface INetwork
     {
         string GetIP();

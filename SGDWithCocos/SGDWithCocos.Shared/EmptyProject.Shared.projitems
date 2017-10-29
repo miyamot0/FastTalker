@@ -20,7 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Interface\IAdmin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\IDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\INetwork.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Interface\IPermissionManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\IPopUpWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\IResizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interface\ISaveAndLoad.cs" />

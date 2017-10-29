@@ -27,6 +27,9 @@
 
 namespace SGDWithCocos.Interface
 {
+    /// <summary>
+    /// Interface for accessing native administrator options
+    /// </summary>
     public interface IAdmin
     {
         void RequestAdmin(bool status);

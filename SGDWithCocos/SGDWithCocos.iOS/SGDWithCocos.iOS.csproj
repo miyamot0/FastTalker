@@ -76,7 +76,6 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Implementation\DisplayImplementation.cs" />
     <Compile Include="Implementation\NetworkImplementation.cs" />
-    <Compile Include="Implementation\PermissionManagerImplementation.cs" />
     <Compile Include="Implementation\PopUpWindowImplementation.cs" />
     <Compile Include="Implementation\ResizerImplementation.cs" />
     <Compile Include="Implementation\SaveAndLoadImplementation.cs" />
