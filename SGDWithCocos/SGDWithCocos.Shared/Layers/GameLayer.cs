@@ -480,7 +480,7 @@ namespace SGDWithCocos.Shared.Layers
                     // Add salient animation to icons added back to field
                     mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
                 }
-            }, 0);
+            }, 0.1f);
         }
 
         /// <summary>
@@ -1287,6 +1287,7 @@ namespace SGDWithCocos.Shared.Layers
                 ReorderChild(caller, 999);
 
                 // TODO: the focused icon is thrown to back
+                // TODO: listener priority?
             }
 
             #endregion
@@ -2187,6 +2188,8 @@ namespace SGDWithCocos.Shared.Layers
                 lock (storedList)
                 {
                     FileTools.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
+
+                    // TODO: check if listeners assigned?
                 }
             }
         }

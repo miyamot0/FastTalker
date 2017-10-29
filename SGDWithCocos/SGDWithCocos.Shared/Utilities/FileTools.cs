@@ -31,6 +31,7 @@ using SGDWithCocos.Models;
 using SGDWithCocos.Tags;
 using System.Collections.Generic;
 using Xamarin.Forms;
+using CocosSharp;
 
 namespace SGDWithCocos.Utilities
 {
@@ -67,14 +68,20 @@ namespace SGDWithCocos.Utilities
                 // List of icons stored in folders
                 List<StoredIconModel> mJsonStoredIconArray = new List<StoredIconModel>();
 
+                // Temp models
+                IconModel mModel;
+                FolderModel fModel;
+
+                CCLabel spriteLabel;
+
                 // For active icons, save in respective lists
                 foreach (IconReference iconRef in icons)
                 {
                     if (iconRef.Sprite.Tag == SpriteTypes.IconTag)
                     {
-                        var mModel = new IconModel("", "", 0, 0, -1, iconRef.Sprite.ScaleX);
+                        mModel = new IconModel("", "", 0, 0, -1, iconRef.Sprite.ScaleX);
 
-                        var spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CocosSharp.CCLabel;
+                        spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                         if (spriteLabel != null)
                         {
@@ -82,8 +89,8 @@ namespace SGDWithCocos.Utilities
                         }
 
                         mModel.Base64 = iconRef.Base64;
-                        mModel.X = (int)iconRef.Sprite.PositionX;
-                        mModel.Y = (int)iconRef.Sprite.PositionY;
+                        mModel.X = (int) iconRef.Sprite.PositionX;
+                        mModel.Y = (int) iconRef.Sprite.PositionY;
                         mModel.Tag = iconRef.Sprite.Tag;
                         mModel.TextScale = spriteLabel.ScaleX;
                         mModel.TextVisible = spriteLabel.Visible;
@@ -92,56 +99,59 @@ namespace SGDWithCocos.Utilities
                     }
                     else if (iconRef.Sprite.Tag == SpriteTypes.FolderTag)
                     {
-                        var spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CocosSharp.CCLabel;
+                        spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                        var mModel = new FolderModel("", "", "", 0, 0, -1, iconRef.Sprite.ScaleX, spriteLabel.Color);
+                        fModel = new FolderModel("", "", "", 0, 0, -1, iconRef.Sprite.ScaleX, spriteLabel.Color);
 
                         if (spriteLabel != null)
                         {
-                            mModel.Text = spriteLabel.Text;
+                            fModel.Text = spriteLabel.Text;
                         }
 
                         if (iconRef.Base64.Contains("FolderOpen"))
                         {
-                            mModel.AssetName = iconRef.Base64;
-                            mModel.Base64 = null;
+                            fModel.AssetName = iconRef.Base64;
+                            fModel.Base64 = null;
                         }
                         else
                         {
-                            mModel.AssetName = null;
-                            mModel.Base64 = iconRef.Base64;
+                            fModel.AssetName = null;
+                            fModel.Base64 = iconRef.Base64;
                         }
 
-                        mModel.X = (int)iconRef.Sprite.PositionX;
-                        mModel.Y = (int)iconRef.Sprite.PositionY;
-                        mModel.Tag = iconRef.Sprite.Tag;
-                        mModel.TextScale = spriteLabel.ScaleX;
-                        mModel.TextVisible = spriteLabel.Visible;
+                        fModel.X = (int) iconRef.Sprite.PositionX;
+                        fModel.Y = (int) iconRef.Sprite.PositionY;
+                        fModel.Tag = iconRef.Sprite.Tag;
+                        fModel.TextScale = spriteLabel.ScaleX;
+                        fModel.TextVisible = spriteLabel.Visible;
 
-                        mJsonFolderArray.Add(mModel);
+                        mJsonFolderArray.Add(fModel);
                     }
                 }
 
+                // Temp model
+                StoredIconModel sModel;
+
                 foreach (StoredIconReference mStoredRef in storedIcons)
                 {
-                    var mModel = new StoredIconModel("", "", 0, 0, -1, mStoredRef.Base64, mStoredRef.Sprite.ScaleX);
+                    sModel = new StoredIconModel("", "", 0, 0, -1, mStoredRef.Base64, mStoredRef.Sprite.ScaleX);
 
-                    var spriteLabel = mStoredRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CocosSharp.CCLabel;
+                    spriteLabel = mStoredRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CocosSharp.CCLabel;
 
                     if (spriteLabel != null)
                     {
-                        mModel.Text = spriteLabel.Text;
+                        sModel.Text = spriteLabel.Text;
                     }
 
-                    mModel.Base64 = mStoredRef.Base64;
-                    mModel.Folder = mStoredRef.FolderName;
-                    mModel.X = (int)mStoredRef.Sprite.PositionX;
-                    mModel.Y = (int)mStoredRef.Sprite.PositionY;
-                    mModel.Tag = mStoredRef.Sprite.Tag;
-                    mModel.TextScale = spriteLabel.ScaleX;
-                    mModel.TextVisible = spriteLabel.Visible;
+                    sModel.Base64 = mStoredRef.Base64;
+                    sModel.Folder = mStoredRef.FolderName;
+                    sModel.X = (int) mStoredRef.Sprite.PositionX;
+                    sModel.Y = (int) mStoredRef.Sprite.PositionY;
+                    sModel.Tag = mStoredRef.Sprite.Tag;
+                    sModel.TextScale = spriteLabel.ScaleX;
+                    sModel.TextVisible = spriteLabel.Visible;
 
-                    mJsonStoredIconArray.Add(mModel);
+                    mJsonStoredIconArray.Add(sModel);
                 }
 
                 // Json storage object
@@ -159,7 +169,6 @@ namespace SGDWithCocos.Utilities
                 DependencyService.Get<ISaveAndLoad>().SaveJSON("IconBoard", mJsonString);
 
                 // <!-- Note: clear up lingering refs
-
                 mIconStorage = null;
                 mJsonString = null;
 

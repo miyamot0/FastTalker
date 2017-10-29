@@ -1036,9 +1036,9 @@ namespace SGDWithCocos.Utilities
                 Plugin.Media.Abstractions.StoreCameraMediaOptions mediaOptions = new Plugin.Media.Abstractions.StoreCameraMediaOptions
                 {
                     Directory = "SGDPhotos",
-                    Name = $"{DateTime.UtcNow}.png",
+                    Name = $"{DateTime.UtcNow}.jpg",
                     PhotoSize = Plugin.Media.Abstractions.PhotoSize.Small,
-                    CompressionQuality = 70,
+                    CompressionQuality = 50,
 
                     // <!-- These below largely have to be handled explicitly in Android
                     SaveToAlbum = true,
