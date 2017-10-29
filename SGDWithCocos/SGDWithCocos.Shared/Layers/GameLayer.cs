@@ -1196,6 +1196,8 @@ namespace SGDWithCocos.Shared.Layers
                     Tag = SpriteTypes.ImageTag
                 };
 
+                bytes = null;
+
                 var label = new CCLabel(mContent.Text, "Arial", 22, CCLabelFormat.SystemFont)
                 {
                     Scale = 0.25f * scaling,
@@ -1275,7 +1277,14 @@ namespace SGDWithCocos.Shared.Layers
 
             if (caller.Tag == SpriteTypes.IconTag)
             {
+                foreach (IconReference iconRef in iconList2)
+                {
+                    ReorderChild(iconRef.Sprite, 10);
+                }
+
                 ReorderChild(caller, 999);
+
+                // TODO: the focused icon is thrown to back
             }
 
             #endregion
