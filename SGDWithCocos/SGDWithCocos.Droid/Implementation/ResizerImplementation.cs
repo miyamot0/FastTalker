@@ -71,7 +71,7 @@ namespace SGDWithCocos.Droid.Implementation
             {
                 stream = new FileStream(newPhotoPath, FileMode.Create);
                 //croppedBitmap = ModifyOrientation(photoPath, croppedBitmap);
-                croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
+                croppedBitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
             }
             catch
             {
@@ -170,7 +170,7 @@ namespace SGDWithCocos.Droid.Implementation
                            false);
                     }
                                         
-                    croppedBitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, ms);
+                    croppedBitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
 
                     croppedBitmap.Recycle();
                     croppedBitmap.Dispose();

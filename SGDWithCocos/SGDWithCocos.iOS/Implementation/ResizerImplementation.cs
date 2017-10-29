@@ -25,10 +25,8 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
-using CoreGraphics;
 using SGDWithCocos.Interface;
 using SGDWithCocos.iOS.Implementation;
-using UIKit;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(ResizerImplementation))]
@@ -36,68 +34,8 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class ResizerImplementation : IResizer
     {
-        public byte[] RotateImage(string photoPath)
-        {
-            return null;
-        }
+        public byte[] RotateImage(string photoPath) { return null; }
 
-        void IResizer.ResizeBitmaps(string photoPath, string newPhotoPath)
-        {
-            UIImage sourceImage = UIImage.FromFile(photoPath);
-            CGSize imgSize = sourceImage.Size;
-
-            if (imgSize.Width >= imgSize.Height)
-            {
-                System.nfloat x = imgSize.Width / 2 - imgSize.Height / 2;
-                System.nfloat y = 0;
-                System.nfloat height = imgSize.Height;
-                System.nfloat width = imgSize.Height;
-
-                UIGraphics.BeginImageContext(new CGSize(width, height));
-                CGContext context = UIGraphics.GetCurrentContext();
-
-                //CGRect clippedRect = new CGRect(0, 0, width, height);
-                //context.ClipToRect(clippedRect);
-                context.ClipToRect(new CGRect(0, 0, width, height));
-
-                //var drawRect = new CGRect(-x, -y, imgSize.Width, imgSize.Height);
-                //sourceImage.Draw(drawRect);
-                sourceImage.Draw(new CGRect(-x, -y, imgSize.Width, imgSize.Height));
-
-                UIImage modifiedImage = UIGraphics.GetImageFromCurrentImageContext();
-                UIGraphics.EndImageContext();
-                
-                modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
-
-                sourceImage.Dispose();
-                modifiedImage.Dispose();
-            }
-            else
-            {
-                System.nfloat x = 0;
-                System.nfloat y = imgSize.Height / 2 - imgSize.Width / 2;
-                System.nfloat height = imgSize.Width;
-                System.nfloat width = imgSize.Width;
-
-                UIGraphics.BeginImageContext(new CGSize(width, height));
-                CGContext context = UIGraphics.GetCurrentContext();
-
-                //CGRect clippedRect = new CGRect(0, 0, width, height);
-                //context.ClipToRect(clippedRect);
-                context.ClipToRect(new CGRect(0, 0, width, height));
-                
-                //CGRect drawRect = new CGRect(-x, -y, imgSize.Width, imgSize.Height);
-                //sourceImage.Draw(drawRect);
-                sourceImage.Draw(new CGRect(-x, -y, imgSize.Width, imgSize.Height));
-
-                UIImage modifiedImage = UIGraphics.GetImageFromCurrentImageContext();
-                UIGraphics.EndImageContext();
-
-                modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
-
-                sourceImage.Dispose();
-                modifiedImage.Dispose();
-            }
-        }
+        void IResizer.ResizeBitmaps(string photoPath, string newPhotoPath) { }
     }
 }

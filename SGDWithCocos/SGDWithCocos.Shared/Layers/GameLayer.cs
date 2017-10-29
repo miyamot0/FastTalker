@@ -406,6 +406,8 @@ namespace SGDWithCocos.Shared.Layers
                         ms.Position = 0;
                         byte[] imageArray = ms.ToArray();
                         base64ImageRepresentation = Convert.ToBase64String(imageArray);
+
+                        imageArray = null;
                     }
 
                     sprite.RemoveAllChildren();
