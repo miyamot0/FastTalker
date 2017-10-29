@@ -33,6 +33,8 @@ using SGDWithCocos.Droid.Implementation;
 using Xamarin.Forms;
 using Android.Media;
 using Java.Lang;
+using SGDWithCocos.Shared;
+using System.Diagnostics;
 
 [assembly: Dependency(typeof(ResizerImplementation))]
 namespace SGDWithCocos.Droid.Implementation
@@ -70,12 +72,11 @@ namespace SGDWithCocos.Droid.Implementation
             try
             {
                 stream = new FileStream(newPhotoPath, FileMode.Create);
-                //croppedBitmap = ModifyOrientation(photoPath, croppedBitmap);
                 croppedBitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
             }
-            catch
+            catch (System.Exception ex)
             {
-                //Console.WriteLine("Failed to write: " + e.ToString());
+                Debug.WriteLineIf(App.Debugging, "Failed to close: " + ex.ToString());
             }
             finally
             {
@@ -94,9 +95,9 @@ namespace SGDWithCocos.Droid.Implementation
                     bitmap.Dispose();
                     bitmap = null;
                 }
-                catch
+                catch (System.Exception ex)
                 {
-                    //Console.WriteLine("Failed to close: " + e.ToString());
+                    Debug.WriteLineIf(App.Debugging, "Failed to close: " + ex.ToString());
                 }
             }
         }
@@ -111,9 +112,6 @@ namespace SGDWithCocos.Droid.Implementation
             {
                 ExifInterface exifInterface = new ExifInterface(photoPath);
                 int orientation = exifInterface.GetAttributeInt(ExifInterface.TagOrientation, (int)Android.Media.Orientation.Normal);
-
-                //System.Diagnostics.Debug.WriteLine("Orientation of image" + orientation.ToString());
-                //Console.WriteLine("Orientation of image" + orientation.ToString());
 
                 int rotate = 0;
 

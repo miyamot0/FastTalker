@@ -38,6 +38,8 @@ namespace SGDWithCocos.Shared
         public static bool HasAdmin;
         public static int Height = -1, Width = -1;
 
+        public static bool Debugging = true;
+
         /// <summary>
         /// Segmented categories for less clunky selections
         /// </summary>
