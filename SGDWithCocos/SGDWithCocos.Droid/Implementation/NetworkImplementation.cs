@@ -8,6 +8,10 @@ namespace SGDWithCocos.Droid.Implementation
 {
     public class NetworkImplementation : INetwork
     {
+        /// <summary>
+        /// Gets the ip.
+        /// </summary>
+        /// <returns>The ip.</returns>
         public string GetIP()
         {
             IPAddress[] adresses = Dns.GetHostAddresses(Dns.GetHostName());

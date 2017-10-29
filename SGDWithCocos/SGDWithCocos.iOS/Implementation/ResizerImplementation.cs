@@ -34,8 +34,18 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class ResizerImplementation : IResizer
     {
+        /// <summary>
+        /// Empty method
+        /// </summary>
+        /// <returns>The image.</returns>
+        /// <param name="photoPath">Photo path.</param>
         public byte[] RotateImage(string photoPath) { return null; }
 
+        /// <summary>
+        /// Empty method
+        /// </summary>
+        /// <param name="photoPath">Photo path.</param>
+        /// <param name="newPhotoPath">New photo path.</param>
         void IResizer.ResizeBitmaps(string photoPath, string newPhotoPath) { }
     }
 }

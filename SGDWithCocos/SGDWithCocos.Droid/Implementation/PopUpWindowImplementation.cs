@@ -23,6 +23,10 @@ namespace SGDWithCocos.Droid.Implementation
 {
     public class PopUpWindowImplementation : PopUpWindowInterface
     {
+        /// <summary>
+        /// Shows the popup.
+        /// </summary>
+        /// <param name="popup">Popup.</param>
         public void ShowPopup(PopUpWindow popup)
         {
             var alert = new AlertDialog.Builder(Forms.Context);

@@ -19,8 +19,11 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class TextToSpeechImplementation : ITextToSpeech
     {
-        public TextToSpeechImplementation() { }
-
+        /// <summary>
+        /// Output written content
+        /// </summary>
+        /// <returns>The speak.</returns>
+        /// <param name="text">Text.</param>
         public void Speak(string text)
         {
             var speechSynthesizer = new AVSpeechSynthesizer();
@@ -29,7 +32,7 @@ namespace SGDWithCocos.iOS.Implementation
             {
                 Rate = AVSpeechUtterance.MaximumSpeechRate / 3,
                 Voice = AVSpeechSynthesisVoice.FromLanguage("en-US"),
-                Volume = 0.85f,
+                Volume = 0.9f,
                 PitchMultiplier = 1.0f
             };
 

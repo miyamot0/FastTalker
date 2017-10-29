@@ -41,6 +41,11 @@ namespace SGDWithCocos.Droid.Implementation
 {
     class ResizerImplementation : IResizer
     {
+        /// <summary>
+        /// Resizes bitmap to square dimensions
+        /// </summary>
+        /// <param name="photoPath">Photo path.</param>
+        /// <param name="newPhotoPath">New photo path.</param>
         void IResizer.ResizeBitmaps(string photoPath, string newPhotoPath)
         {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -102,6 +107,11 @@ namespace SGDWithCocos.Droid.Implementation
             }
         }
 
+        /// <summary>
+        /// Rotates the image.
+        /// </summary>
+        /// <returns>The image.</returns>
+        /// <param name="photoPath">Photo path.</param>
         public byte[] RotateImage(string photoPath)
         {
             BitmapFactory.Options options = new BitmapFactory.Options();

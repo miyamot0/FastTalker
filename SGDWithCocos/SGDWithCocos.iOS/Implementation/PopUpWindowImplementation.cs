@@ -24,6 +24,10 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class PopUpWindowImplementation : PopUpWindowInterface
     {
+        /// <summary>
+        /// Shows popup
+        /// </summary>
+        /// <param name="popup">Popup.</param>
         public void ShowPopup(PopUpWindow popup)
         {
             var alert = new UIAlertView

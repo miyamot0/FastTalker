@@ -34,8 +34,10 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class DisplayImplementation : IDisplay
     {
-        public DisplayImplementation() { }
-
+        /// <summary>
+        /// Height value
+        /// </summary>
+        /// <value></value>
         int IDisplay.Height
         {
             get
@@ -44,6 +46,10 @@ namespace SGDWithCocos.iOS.Implementation
             }
         }
 
+        /// <summary>
+        /// Width value
+        /// </summary>
+        /// <value></value>
         int IDisplay.Width
         {
             get

@@ -22,6 +22,11 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class SaveAndLoadImplementation : ISaveAndLoad
     {
+        /// <summary>
+        /// Save Json to disk
+        /// </summary>
+        /// <param name="boardName">Board name.</param>
+        /// <param name="text">Text.</param>
         public void SaveJSON(string boardName, string text)
         {
             var filename = boardName + ".json";
@@ -30,6 +35,11 @@ namespace SGDWithCocos.iOS.Implementation
             File.WriteAllText(filePath, text);
         }
 
+        /// <summary>
+        /// Load Json from disk
+        /// </summary>
+        /// <returns>The json.</returns>
+        /// <param name="boardName">Board name.</param>
         public string LoadJSON(string boardName)
         {
             var filename = boardName + ".json";
