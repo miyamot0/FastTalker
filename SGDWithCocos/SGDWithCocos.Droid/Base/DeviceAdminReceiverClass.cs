@@ -41,6 +41,9 @@ using Android.Util;
 
 namespace SGDWithCocos.Droid.Base
 {
+    /// <summary>
+    /// Device admin receiver class.
+    /// </summary>
     [BroadcastReceiver(Permission = "android.permission.BIND_DEVICE_ADMIN", Name = "com.smallnstats.fasttalker.Base.DeviceAdminReceiverClass")]
     [MetaData("android.app.device_admin",  Resource = "@xml/admin")]
     [IntentFilter(new[] { "android.app.action.DEVICE_ADMIN_ENABLED", Intent.ActionMain })]

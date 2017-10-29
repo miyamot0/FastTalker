@@ -21,6 +21,11 @@ namespace SGDWithCocos.Droid.Implementation
 {
     public class SaveAndLoadImplementation : ISaveAndLoad
     {
+        /// <summary>
+        /// Saves Json to disk
+        /// </summary>
+        /// <param name="boardName">Board name.</param>
+        /// <param name="text">Text.</param>
         public void SaveJSON(string boardName, string text)
         {
             var filename = boardName + ".json";
@@ -29,6 +34,11 @@ namespace SGDWithCocos.Droid.Implementation
             File.WriteAllText(filePath, text);
         }
 
+        /// <summary>
+        /// Loads Json from disks
+        /// </summary>
+        /// <returns>The json.</returns>
+        /// <param name="boardName">Board name.</param>
         public string LoadJSON(string boardName)
         {
             var filename = boardName + ".json";
