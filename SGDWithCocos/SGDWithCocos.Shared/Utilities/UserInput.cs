@@ -173,9 +173,9 @@ namespace SGDWithCocos.Utilities
 
                 #endregion
             }
-            catch //(Exception exception)
+            catch (Exception exception)
             {
-                //Console.WriteLine(exception.ToString());
+                Debug.WriteLine(exception.ToString());
             }
             finally
             {
@@ -668,9 +668,9 @@ namespace SGDWithCocos.Utilities
 
                 mLayer.ShowCategoryWindow(matches);
             }
-            catch //(Exception e)
+            catch (Exception e)
             {
-                //Console.WriteLine(e.ToString());
+                Debug.WriteLine(e.ToString());
             }
         }
 
@@ -771,9 +771,9 @@ namespace SGDWithCocos.Utilities
                     await Application.Current.MainPage.DisplayAlert("Permissions Denied", "Can not continue, try again.", "OK");
                 }
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
-                //Console.WriteLine(ex.ToString());
+                Debug.WriteLine(ex.ToString());
             }
         }
 
@@ -799,7 +799,7 @@ namespace SGDWithCocos.Utilities
 
                 try
                 {
-                    var file = await CrossMedia.Current.PickPhotoAsync();
+                    Plugin.Media.Abstractions.MediaFile file = await CrossMedia.Current.PickPhotoAsync();
 
                     if (file == null || file.Path == null) return;
 
@@ -828,10 +828,14 @@ namespace SGDWithCocos.Utilities
                                 string base64ImageRepresentation = Convert.ToBase64String(imageArray);
                                 var extension = Path.GetExtension(@file.Path);
 
+                                file.Dispose();
+
                                 tcs.SetResult(new string[] { base64ImageRepresentation, closedArgs.Text, extension });
                             }
                             else
                             {
+                                file.Dispose();
+
                                 tcs.SetResult(new string[] { "", "", "" });
                             }
                         };
@@ -843,9 +847,9 @@ namespace SGDWithCocos.Utilities
                         tcs.SetResult(new string[] { "", "", "" });
                     }
                 }
-                catch //(Exception e)
+                catch (Exception e)
                 {
-                    //Console.WriteLine(e.ToString());
+                    Debug.WriteLine(e.ToString());
                 }
             });
 
@@ -1238,14 +1242,14 @@ namespace SGDWithCocos.Utilities
                             });
                         }
                     }
-                    catch //(Exception exception)
+                    catch (Exception exception)
                     {
-                        //Console.WriteLine(exception.ToString());
+                        Debug.WriteLine(exception.ToString());
                     }
                 }
-                catch //(Exception ex)
+                catch (Exception ex)
                 {
-                    //Console.WriteLine(ex.ToString());
+                    Debug.WriteLine(ex.ToString());
                 }
             }
             else if (buttonSelect == StringTypes.ForceSave)
