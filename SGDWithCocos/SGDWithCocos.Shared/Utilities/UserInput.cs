@@ -42,7 +42,6 @@ using SGDWithCocos.Tags;
 using SGDWithCocos.Views;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -173,9 +172,9 @@ namespace SGDWithCocos.Utilities
 
                 #endregion
             }
-            catch (Exception exception)
+            catch //(Exception exception)
             {
-                Console.WriteLine(exception.ToString());
+                //Console.WriteLine(exception.ToString());
             }
             finally
             {
@@ -668,9 +667,9 @@ namespace SGDWithCocos.Utilities
 
                 mLayer.ShowCategoryWindow(matches);
             }
-            catch (Exception e)
+            catch //(Exception e)
             {
-                Console.WriteLine(e.ToString());
+                //Console.WriteLine(e.ToString());
             }
         }
 
@@ -770,9 +769,9 @@ namespace SGDWithCocos.Utilities
                     await App.Current.MainPage.DisplayAlert("Permissions Denied", "Can not continue, try again.", "OK");
                 }
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                //Console.WriteLine(ex.ToString());
             }
         }
 
@@ -842,9 +841,9 @@ namespace SGDWithCocos.Utilities
                         tcs.SetResult(new string[] { "", "", "" });
                     }
                 }
-                catch (Exception e)
+                catch //(Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    //Console.WriteLine(e.ToString());
                 }
             });
 
@@ -1003,9 +1002,9 @@ namespace SGDWithCocos.Utilities
                     await App.Current.MainPage.DisplayAlert("Location Denied", statusLabel, "OK");
                 }
             }
-            catch (Exception ex)
+            catch 
             {
-                Debug.WriteLine(ex.ToString());
+                //Debug.WriteLine(ex.ToString());
                 //Console.WriteLine(ex.ToString());
             }
         }
@@ -1230,14 +1229,14 @@ namespace SGDWithCocos.Utilities
                             });
                         }
                     }
-                    catch (Exception exception)
+                    catch //(Exception exception)
                     {
-                        Console.WriteLine(exception.ToString());
+                        //Console.WriteLine(exception.ToString());
                     }
                 }
-                catch (Exception ex)
+                catch //(Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    //Console.WriteLine(ex.ToString());
                 }
             }
             else if (buttonSelect == StringTypes.ForceSave)

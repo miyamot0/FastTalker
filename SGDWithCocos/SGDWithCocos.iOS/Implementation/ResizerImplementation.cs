@@ -69,8 +69,8 @@ namespace SGDWithCocos.iOS.Implementation
                 
                 modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
 
-                //sourceImage.Dispose();
-                //modifiedImage.Dispose();
+                sourceImage.Dispose();
+                modifiedImage.Dispose();
             }
             else
             {
@@ -95,8 +95,8 @@ namespace SGDWithCocos.iOS.Implementation
 
                 modifiedImage.AsJPEG(1).Save(newPhotoPath, true);
 
-                //sourceImage.Dispose();
-                //modifiedImage.Dispose();
+                sourceImage.Dispose();
+                modifiedImage.Dispose();
             }
         }
     }

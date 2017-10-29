@@ -40,7 +40,6 @@ using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Data;
 using System.IO;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace SGDWithCocos.Shared.Layers
 {
@@ -75,7 +74,7 @@ namespace SGDWithCocos.Shared.Layers
 
         Random mRandom;
 
-        DateTime startTime, endTime;
+        DateTime startTime;//, endTime;
 
         // Logicals for editing, frame state
         bool inEditMode = false,
@@ -104,9 +103,12 @@ namespace SGDWithCocos.Shared.Layers
 
         // Time metrics, for screen press and save intervals
         float totalDuration = 0f, saveInterval = 5f;
+        TimeSpan timeDiff;
 
         CCSpriteFrame backingSpriteFrame = null;
         CCSpriteSheet staticSpriteSheet;
+
+        CCLabel tempContentLabel;
 
         List<string> CategoryList;
         private string[] categories = null;
@@ -539,16 +541,16 @@ namespace SGDWithCocos.Shared.Layers
                     var mSprite = mIconRef.Sprite;
 
                     // The text sprite, from mSprite, cast to CCLabel
-                    var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                    tempContentLabel = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                    if (mContent != null)
+                    if (tempContentLabel != null)
                     {
                         if (mSprite.Tag == SpriteTypes.FolderTag)
                         {
                             // If the icon being renamed is a folder, change the storage references too
                             for (var i = storedList.Count - 1; i >= 0; i--)
                             {
-                                if (storedList[i].FolderName == mContent.Text)
+                                if (storedList[i].FolderName == tempContentLabel.Text)
                                 {
                                     var newStoredIconRef = new StoredIconReference(storedList[i].Sprite, 
                                         storedList[i].Base64, 
@@ -565,7 +567,7 @@ namespace SGDWithCocos.Shared.Layers
                         }
 
                         // Apply new text 
-                        mContent.Text = text;
+                        tempContentLabel.Text = text;
                     }
                 }
             }, 0);
@@ -587,9 +589,9 @@ namespace SGDWithCocos.Shared.Layers
                     var mSprite = mIconRef.Sprite;
 
                     // The text sprite, from mSprite, cast to CCLabel
-                    var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                    tempContentLabel = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                    mContent.Visible = !mSprite.Visible;
+                    tempContentLabel.Visible = !mSprite.Visible;
                 }
             }, 0);
         }
@@ -610,11 +612,11 @@ namespace SGDWithCocos.Shared.Layers
                     var mSprite = mIconRef.Sprite;
 
                     // The text sprite, from mSprite, cast to CCLabel
-                    var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                    tempContentLabel = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                    if (mContent != null)
+                    if (tempContentLabel != null)
                     {
-                        mContent.Visible = !mContent.Visible;
+                        tempContentLabel.Visible = !tempContentLabel.Visible;
                     }
                 }
             }, 0);
@@ -637,40 +639,40 @@ namespace SGDWithCocos.Shared.Layers
                     var mSprite = mIconRef.Sprite;
 
                     // The text sprite, from mSprite, cast to CCLabel
-                    var mContent = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                    tempContentLabel = mSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                    if (mContent != null)
+                    if (tempContentLabel != null)
                     {
                         switch(action)
                         {
                             case EditTypes.UpdateLabelSizeUp:
                                 // Relative scale 110%
 
-                                mContent.AddAction(new CCScaleBy(0.2f, 1.1f));
+                                tempContentLabel.AddAction(new CCScaleBy(0.2f, 1.1f));
                                 break;
 
                             case EditTypes.UpdateLabelSizeUp2:
                                 // Relative scale 150%
 
-                                mContent.AddAction(new CCScaleBy(0.2f, 1.5f));
+                                tempContentLabel.AddAction(new CCScaleBy(0.2f, 1.5f));
                                 break;
 
                             case EditTypes.UpdateLabelSizeDefault:
                                 // Absolute scale to 100%
 
-                                mContent.AddAction(new CCScaleTo(0.2f, 1f));
+                                tempContentLabel.AddAction(new CCScaleTo(0.2f, 1f));
                                 break;
 
                             case EditTypes.UpdateLabelSizeDown:
                                 // Relative scale to 90%
 
-                                mContent.AddAction(new CCScaleBy(0.2f, 0.9f));
+                                tempContentLabel.AddAction(new CCScaleBy(0.2f, 0.9f));
                                 break;
 
                             case EditTypes.UpdateLabelSizeDown2:
                                 // Relative scale to 50%
 
-                                mContent.AddAction(new CCScaleBy(0.2f, 0.5f));
+                                tempContentLabel.AddAction(new CCScaleBy(0.2f, 0.5f));
                                 break;
                         }
 
@@ -678,13 +680,13 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             for (var i = storedList.Count - 1; i >= 0; i--)
                             {
-                                if (storedList[i].FolderName == mContent.Text)
+                                if (storedList[i].FolderName == tempContentLabel.Text)
                                 {
                                     var newStoredIconRef = new StoredIconReference(storedList[i].Sprite,
                                         storedList[i].Base64,
                                         storedList[i].FolderName,
                                         storedList[i].Sprite.ScaleX,
-                                        mContent.ScaleX,
+                                        tempContentLabel.ScaleX,
                                         storedList[i].TextVisible);
 
                                     storedList.RemoveAt(i);
@@ -786,13 +788,13 @@ namespace SGDWithCocos.Shared.Layers
                 temp.RemoveFromParent();
             }
 
-            CCLabel temp2 = sprite.GetChildByTag(Tags.SpriteTypes.ContentTag) as CCLabel;
+            tempContentLabel = sprite.GetChildByTag(Tags.SpriteTypes.ContentTag) as CCLabel;
 
-            if (temp2 != null)
+            if (tempContentLabel != null)
             {
-                CCTextureCache.SharedTextureCache.RemoveTexture(temp2.Texture);
-                temp2.Texture.Dispose();
-                temp2.RemoveFromParent();
+                CCTextureCache.SharedTextureCache.RemoveTexture(tempContentLabel.Texture);
+                tempContentLabel.Texture.Dispose();
+                tempContentLabel.RemoveFromParent();
             }
 
             sprite.RemoveAllChildren(true);
@@ -803,7 +805,7 @@ namespace SGDWithCocos.Shared.Layers
             CCTextureCache.SharedTextureCache.RemoveUnusedTextures();
 
             temp = null;
-            temp2 = null;
+            tempContentLabel = null;
             sprite = null;
         }
 
@@ -1539,9 +1541,7 @@ namespace SGDWithCocos.Shared.Layers
         {
             if (CurrentSpriteTouched != null)
             {
-                endTime = DateTime.Now;
-
-                var timeDiff = endTime - startTime;
+                timeDiff = DateTime.Now - startTime;
 
                 #region Ended on Active Icon in Field
 
@@ -1564,14 +1564,14 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
 
-                            var spriteLabel = mCloneCopy.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                            tempContentLabel = mCloneCopy.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                            if (spriteLabel == null)
+                            if (tempContentLabel == null)
                             {
                                 return;
                             }
 
-                            var newItem = new StoredIconReference(mCloneCopy.Sprite, mCloneCopy.Base64, mContentTag, mCloneCopy.Sprite.ScaleX, spriteLabel.ScaleX, spriteLabel.Visible);
+                            var newItem = new StoredIconReference(mCloneCopy.Sprite, mCloneCopy.Base64, mContentTag, mCloneCopy.Sprite.ScaleX, tempContentLabel.ScaleX, tempContentLabel.Visible);
 
                             var savedScale = (float)mCloneCopy.Sprite.ScaleX;
 
@@ -1897,9 +1897,9 @@ namespace SGDWithCocos.Shared.Layers
                         }
                         else
                         {
-                            var mContent = CurrentSpriteTouched.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                            tempContentLabel = CurrentSpriteTouched.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                            if (mContent != null)
+                            if (tempContentLabel != null)
                             {
                                 StoredIconReference mStoredRef = null;
 
@@ -1910,7 +1910,7 @@ namespace SGDWithCocos.Shared.Layers
                                         var mLoopSprite = storedRef.Sprite;
                                         var mLoopContent = mLoopSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                                        if (mLoopContent != null && mLoopContent.Text == mContent.Text)
+                                        if (mLoopContent != null && mLoopContent.Text == tempContentLabel.Text)
                                         {
                                             var xMin = (spriteModelFactory.DynamicHeight * 0.1f) / 2;
                                             var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
