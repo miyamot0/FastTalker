@@ -158,11 +158,11 @@ namespace SGDWithCocos.Utilities
                 // Cross-platform call to save a JSON-based text file
                 DependencyService.Get<ISaveAndLoad>().SaveJSON("IconBoard", mJsonString);
 
-                mIconStorage = null;
+                // <!-- Note: clear up lingering refs
 
+                mIconStorage = null;
                 mJsonString = null;
 
-                // <!-- Note: clear up lingering refs
                 mJsonIconArray.Clear();
                 mJsonIconArray = null;
 
