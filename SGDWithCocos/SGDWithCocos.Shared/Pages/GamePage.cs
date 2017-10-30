@@ -158,26 +158,6 @@ namespace SGDWithCocos.Shared.Pages
         {
             gameScene = new GameSGDScene(nativeGameView);
 
-            //string json = FileTools.GetBoards("IconBoard");
-
-            /*
-            TODO: remove json stuff
-            IconStorageObject jsonObject = null;
-
-            if (json != "")
-            {
-                try
-                {
-                    // Attempt to deserialize icons
-                    jsonObject = JsonConvert.DeserializeObject<IconStorageObject>(json);
-                }
-                catch
-                {
-                    jsonObject = null;
-                }
-            }
-            */
-
             IconStorageObject savedBoard = new IconStorageObject();
 
             Device.BeginInvokeOnMainThread(async () =>

@@ -2120,7 +2120,7 @@ namespace SGDWithCocos.Shared.Layers
 
             if (totalDuration > saveInterval)
             {
-                SaveJsonContent();
+                SaveContent();
 
                 totalDuration = 0f;
 
@@ -2181,15 +2181,12 @@ namespace SGDWithCocos.Shared.Layers
         /// <summary>
         /// Call to save json, made public to enable force saving
         /// </summary>
-        public void SaveJsonContent()
+        public void SaveContent()
         {
             lock (iconList2)
             {
                 lock (storedList)
                 {
-                    // <!-- TODO: remove all json-based storage after final checks -->
-                    //FileTools.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
-
                     FileTools.SaveToDatabase(iconList2, storedList, inSingleMode, unselectAuto);
 
                     // TODO: check if listeners assigned?

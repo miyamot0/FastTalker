@@ -611,16 +611,6 @@ namespace SGDWithCocos.Utilities
         }
 
         /// <summary>
-        /// Cross-platform call to get JSON-saved boards from local storage
-        /// </summary>
-        /// <param name="boardName">name for JSON file</param>
-        /// <returns>JSON string</returns>
-        public string GetBoards(string boardName)
-        {
-            return DependencyService.Get<ISaveAndLoad>().LoadJSON(boardName);
-        }
-
-        /// <summary>
         /// Async-able task related to naming an icon
         /// </summary>
         /// <param name="mQuestion">Query text for user</param>
@@ -1253,7 +1243,7 @@ namespace SGDWithCocos.Utilities
             }
             else if (buttonSelect == StringTypes.ForceSave)
             {
-                mLayer.SaveJsonContent();
+                mLayer.SaveContent();
             }
 
             #endregion
@@ -1486,7 +1476,11 @@ namespace SGDWithCocos.Utilities
         /// </summary>
         public void StartServer()
         {
-            mLayer.SaveJsonContent();
+            mLayer.SaveContent();
+
+            /*
+            
+            TODO: migrate server to sql
 
             mServer = new SimpleIconServer(GetBoards("IconBoard"));
             mLayer.ServerActive = true;
@@ -1495,6 +1489,7 @@ namespace SGDWithCocos.Utilities
             {
                 await Application.Current.MainPage.DisplayAlert("Server Active", string.Format("{0}:{1}", mServer.IP, mServer.Port), "Close Server");
             });
+            */
         }
 
         /// <summary>

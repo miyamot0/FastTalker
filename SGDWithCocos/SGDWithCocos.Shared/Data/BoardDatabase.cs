@@ -1,4 +1,31 @@
-﻿using SGDWithCocos.Models;
+﻿//----------------------------------------------------------------------------------------------
+// <copyright file="BoardDatabase.cs" 
+// Copyright November 6, 2016 Shawn Gilroy
+//
+// This file is part of Cross Platform Communication App
+//
+// Cross Platform Communication App is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, version 3.
+//
+// Cross Platform Communication App is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Cross Platform Communication App.  If not, see http://www.gnu.org/licenses/. 
+// </copyright>
+//
+// <summary>
+// The Cross Platform Communication App is a tool to assist clinicans and researchers in the treatment of communication disorders.
+// 
+// Email: shawn(dot)gilroy(at)temple.edu
+//
+// </summary>
+//----------------------------------------------------------------------------------------------
+
+using SGDWithCocos.Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -11,6 +38,10 @@ namespace SGDWithCocos.Data
     {
         private SQLiteAsyncConnection database;
 
+        /// <summary>
+        /// Construct database for icons
+        /// </summary>
+        /// <param name="dbFilePath"></param>
         public BoardDatabase(string dbFilePath)
         {
             database = new SQLiteAsyncConnection(dbFilePath);
@@ -20,26 +51,47 @@ namespace SGDWithCocos.Data
             database.CreateTableAsync<TableSettings>().Wait();
         }
 
+        /// <summary>
+        /// Get icons
+        /// </summary>
+        /// <returns></returns>
         public Task<List<TableIcons>> GetIconsAsync()
         {
             return database.Table<TableIcons>().ToListAsync();
         }
 
+        /// <summary>
+        /// Get stored icons
+        /// </summary>
+        /// <returns></returns>
         public Task<List<TableStoredIcons>> GetStoredIconsAsync()
         {
             return database.Table<TableStoredIcons>().ToListAsync();
         }
 
+        /// <summary>
+        /// Get folders
+        /// </summary>
+        /// <returns></returns>
         public Task<List<TableFolders>> GetFolderIconsAsync()
         {
             return database.Table<TableFolders>().ToListAsync();
         }
 
+        /// <summary>
+        /// Get settings
+        /// </summary>
+        /// <returns></returns>
         public Task<TableSettings> GetSettingsAsync()
         {
             return database.Table<TableSettings>().FirstAsync();
         }
 
+        /// <summary>
+        /// Save icons
+        /// </summary>
+        /// <param name="icons"></param>
+        /// <returns></returns>
         public Task<int> SaveIconsAsync(List<TableIcons> icons)
         {
             database.DropTableAsync<TableIcons>().Wait();
@@ -48,6 +100,11 @@ namespace SGDWithCocos.Data
             return database.InsertAllAsync(icons);
         }
 
+        /// <summary>
+        /// Save stored icons
+        /// </summary>
+        /// <param name="icons"></param>
+        /// <returns></returns>
         public Task<int> SaveStoredIconsAsync(List<TableStoredIcons> icons)
         {
             database.DropTableAsync<TableStoredIcons>().Wait();
@@ -56,6 +113,11 @@ namespace SGDWithCocos.Data
             return database.InsertAllAsync(icons);
         }
 
+        /// <summary>
+        /// Save folders
+        /// </summary>
+        /// <param name="icons"></param>
+        /// <returns></returns>
         public Task<int> SaveFoldersAsync(List<TableFolders> icons)
         {
             database.DropTableAsync<TableFolders>().Wait();
@@ -64,6 +126,11 @@ namespace SGDWithCocos.Data
             return database.InsertAllAsync(icons);
         }
 
+        /// <summary>
+        /// Save settings
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <returns></returns>
         public Task<int> SaveSettingsAsync(TableSettings settings)
         {
             database.DropTableAsync<TableSettings>().Wait();
@@ -71,22 +138,5 @@ namespace SGDWithCocos.Data
 
             return database.InsertAsync(settings);
         }
-
-        //public Task<int> SaveItemAsync(TodoItem item)
-        //{
-        //    if (item.ID != 0)
-        //    {
-        //        return database.UpdateAsync(item);
-        //    }
-        //    else
-        //    {
-        //        return database.InsertAsync(item);
-        //    }
-        //}
-
-        //public Task<int> DeleteItemAsync(TodoItem item)
-        //{
-        //    return database.DeleteAsync(item);
-        //}
     }
 }

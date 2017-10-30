@@ -18,9 +18,6 @@ namespace SGDWithCocos.Interface
     /// </summary>
     public interface ISaveAndLoad
     {
-        void SaveJSON(string boardName, string text);
-        string LoadJSON(string boardName);
-
         string GetDatabaseFilePath(string dbName);
     }
 }
