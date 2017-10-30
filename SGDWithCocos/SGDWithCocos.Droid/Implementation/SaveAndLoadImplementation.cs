@@ -15,6 +15,7 @@ using SGDWithCocos.Droid.Implementation;
 using SGDWithCocos.Interface;
 using System.IO;
 using Xamarin.Forms;
+using System;
 
 [assembly: Dependency(typeof(SaveAndLoadImplementation))]
 namespace SGDWithCocos.Droid.Implementation
@@ -46,6 +47,13 @@ namespace SGDWithCocos.Droid.Implementation
             var filePath = Path.Combine(documentsPath, filename);
 
             return (File.Exists(filePath)) ? File.ReadAllText(filePath) : "";
+        }
+
+        public string GetDatabaseFilePath(string dbName)
+        {
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            return Path.Combine(documentsPath, dbName);
+
         }
     }
 }

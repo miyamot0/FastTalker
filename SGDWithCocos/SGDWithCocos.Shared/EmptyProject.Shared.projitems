@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Data\BoardDatabase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\StoredJson.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlButton.cs" />
@@ -35,6 +36,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\IconModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\IconStorageObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StoredIconReference.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TableFolders.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TableIcons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TableSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TableStoredIcons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\GamePage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameSGDScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameStartScene.cs" />

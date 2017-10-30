@@ -20,5 +20,7 @@ namespace SGDWithCocos.Interface
     {
         void SaveJSON(string boardName, string text);
         string LoadJSON(string boardName);
+
+        string GetDatabaseFilePath(string dbName);
     }
 }

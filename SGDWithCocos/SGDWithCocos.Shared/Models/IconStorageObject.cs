@@ -34,9 +34,9 @@ namespace SGDWithCocos.Models
     /// </summary>
     public class IconStorageObject
     {
-        public List<IconModel> Icons { get; set; }
-        public List<StoredIconModel> StoredIcons { get; set; }
-        public List<FolderModel> Folders { get; set; }
+        public List<TableIcons> Icons { get; set; }
+        public List<TableStoredIcons> StoredIcons { get; set; }
+        public List<TableFolders> Folders { get; set; }
         public bool SingleMode { get; set; }
         public bool AutoUnselectSingleMode { get; set; }
 
@@ -45,9 +45,9 @@ namespace SGDWithCocos.Models
         /// </summary>
         public IconStorageObject()
         {
-            Icons = new List<IconModel>();
-            StoredIcons = new List<StoredIconModel>();
-            Folders = new List<FolderModel>();
+            Icons = new List<TableIcons>();
+            StoredIcons = new List<TableStoredIcons>();
+            Folders = new List<TableFolders>();
             SingleMode = true;
             AutoUnselectSingleMode = false;
         }

@@ -25,9 +25,12 @@
 // </summary>
 //----------------------------------------------------------------------------------------------
 
+using SGDWithCocos.Data;
 using SGDWithCocos.Interface;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
+using System;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace SGDWithCocos.Shared
@@ -57,6 +60,20 @@ namespace SGDWithCocos.Shared
             }
         }
 
+        private static BoardDatabase database;
+        public static BoardDatabase Database
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = new BoardDatabase(DependencyService.Get<ISaveAndLoad>().GetDatabaseFilePath("BoardDatabase.db3"));
+                }
+
+                return database;
+            }
+        }
+
         /// <summary>
         /// XF cross platform controls
         /// </summary>
@@ -77,7 +94,7 @@ namespace SGDWithCocos.Shared
         /// <summary>
         /// Lifecycle override: check for ownership if on android
         /// </summary>
-		protected override void OnStart () {}
+		protected override void OnStart() {}
 
         /// <summary>
         /// Lifecycle overrides

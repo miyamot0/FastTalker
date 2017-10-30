@@ -39,6 +39,7 @@ using SGDWithCocos.Tags;
 using SGDWithCocos.Scenes;
 using SGDWithCocos.Shared.Layers;
 using SGDWithCocos.Utilities;
+using System.Diagnostics;
 
 namespace SGDWithCocos.Shared.Pages
 {
@@ -157,8 +158,10 @@ namespace SGDWithCocos.Shared.Pages
         {
             gameScene = new GameSGDScene(nativeGameView);
 
-            string json = FileTools.GetBoards("IconBoard");
+            //string json = FileTools.GetBoards("IconBoard");
 
+            /*
+            TODO: remove json stuff
             IconStorageObject jsonObject = null;
 
             if (json != "")
@@ -173,9 +176,34 @@ namespace SGDWithCocos.Shared.Pages
                     jsonObject = null;
                 }
             }
-            
+            */
+
+            IconStorageObject savedBoard = new IconStorageObject();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    savedBoard.Icons = await App.Database.GetIconsAsync();
+                    savedBoard.Folders = await App.Database.GetFolderIconsAsync();
+                    savedBoard.StoredIcons = await App.Database.GetStoredIconsAsync();
+
+                    TableSettings mSavedSettings = await App.Database.GetSettingsAsync();
+
+                    savedBoard.SingleMode = mSavedSettings.SingleMode;
+                    savedBoard.AutoUnselectSingleMode = mSavedSettings.AutoUnselectSingleMode;
+
+                    mSavedSettings = null;
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteIf(App.Debugging, "FastTalker: " + ex.ToString());
+                }
+            });
+
             // Create layer for icon board scene
-            mLayer = new GameLayer(jsonObject, this);
+            mLayer = new GameLayer(savedBoard, this);
 
             mInputFactory = new UserInput
             {

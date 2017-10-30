@@ -215,7 +215,7 @@ namespace SGDWithCocos.Shared.Layers
 
             if (json != null)
             {
-                foreach (IconModel icon in json.Icons)
+                foreach (TableIcons icon in json.Icons)
                 {
                     if (icon.Tag == SpriteTypes.IconTag)
                     {
@@ -227,7 +227,7 @@ namespace SGDWithCocos.Shared.Layers
                     }
                 }
 
-                foreach (FolderModel icon in json.Folders)
+                foreach (TableFolders icon in json.Folders)
                 {
                     if (icon.Tag == SpriteTypes.FolderTag)
                     {
@@ -250,7 +250,7 @@ namespace SGDWithCocos.Shared.Layers
                     }
                 }
 
-                foreach (StoredIconModel icon in json.StoredIcons)
+                foreach (TableStoredIcons icon in json.StoredIcons)
                 {
                     // add stored icons to the saved/cached field icons
 
@@ -2187,7 +2187,10 @@ namespace SGDWithCocos.Shared.Layers
             {
                 lock (storedList)
                 {
-                    FileTools.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
+                    // <!-- TODO: remove all json-based storage after final checks -->
+                    //FileTools.SaveBoards(iconList2, storedList, inSingleMode, unselectAuto);
+
+                    FileTools.SaveToDatabase(iconList2, storedList, inSingleMode, unselectAuto);
 
                     // TODO: check if listeners assigned?
                 }
@@ -2207,6 +2210,5 @@ namespace SGDWithCocos.Shared.Layers
                 .Distinct()
                 .ToList();
         }
-
     }
 }

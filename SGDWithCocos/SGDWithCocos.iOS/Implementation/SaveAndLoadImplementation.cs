@@ -48,5 +48,18 @@ namespace SGDWithCocos.iOS.Implementation
 
             return (File.Exists(filePath)) ? File.ReadAllText(filePath) : "";
         }
+
+        public string GetDatabaseFilePath(string dbName)
+        {
+            string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string libFolder = Path.Combine(docFolder, "..", "Library", "Databases");
+
+            if (!Directory.Exists(libFolder))
+            {
+                Directory.CreateDirectory(libFolder);
+            }
+
+            return Path.Combine(libFolder, dbName);
+        }
     }
 }
