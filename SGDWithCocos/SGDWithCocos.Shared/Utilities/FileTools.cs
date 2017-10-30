@@ -33,6 +33,8 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using CocosSharp;
 using SGDWithCocos.Shared;
+using System;
+using System.Diagnostics;
 
 namespace SGDWithCocos.Utilities
 {
@@ -108,15 +110,24 @@ namespace SGDWithCocos.Utilities
                     }
                 }
 
-                await App.Database.SaveIconsAsync(mIconArray);
+                try
+                {
+                    await App.Database.SaveIconsAsync(mIconArray);
 
-                mIconArray.Clear();
-                mIconArray = null;
+                    //mIconArray.Clear();
+                    //mIconArray = null;
 
-                await App.Database.SaveFoldersAsync(mFolderArray);
+                    await App.Database.SaveFoldersAsync(mFolderArray);
 
-                mFolderArray.Clear();
-                mFolderArray = null;
+                    //mFolderArray.Clear();
+                    //mFolderArray = null;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLineIf(App.Debugging, ex.ToString());
+                    
+                }
+
 
                 List<TableStoredIcons> mStoredIconArray = new List<TableStoredIcons>();
                 TableStoredIcons storedIconModel;
@@ -146,8 +157,8 @@ namespace SGDWithCocos.Utilities
 
                 await App.Database.SaveStoredIconsAsync(mStoredIconArray);
 
-                mStoredIconArray.Clear();
-                mStoredIconArray = null;
+                //mStoredIconArray.Clear();
+                //mStoredIconArray = null;
 
                 TableSettings settings = new TableSettings();
                 settings.ID = 0;
@@ -156,7 +167,7 @@ namespace SGDWithCocos.Utilities
 
                 await App.Database.SaveSettingsAsync(settings);
 
-                settings = null;
+                //settings = null;
             });
         }        
     }

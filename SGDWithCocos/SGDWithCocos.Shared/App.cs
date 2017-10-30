@@ -79,6 +79,8 @@ namespace SGDWithCocos.Shared
         /// </summary>
 		public App ()
 		{
+            Database.Init();
+            
             MainGamePage = new GamePage();
 
             if (Device.RuntimePlatform == Device.Android)

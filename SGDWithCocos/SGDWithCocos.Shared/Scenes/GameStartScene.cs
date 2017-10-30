@@ -233,6 +233,7 @@ namespace SGDWithCocos.Scenes
         {
             RunActions(new CCSequence(
                 new CCCallFunc(() => {
+                    mGamePage.ConstructGameScene(mGamePage.nativeGameView, mGamePage.savedBoard);
                     GameView.Director.ReplaceScene(mGamePage.gameScene);
                 }),
                 new CCCallFunc(() => {

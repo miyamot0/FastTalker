@@ -102,7 +102,7 @@ namespace SGDWithCocos.Shared.Layers
         }
 
         // Time metrics, for screen press and save intervals
-        float totalDuration = 0f, saveInterval = 5f;
+        float totalDuration = 0f, saveInterval = 15f;
         TimeSpan timeDiff;
 
         CCSpriteFrame backingSpriteFrame = null;
@@ -212,6 +212,10 @@ namespace SGDWithCocos.Shared.Layers
         {
             iconList2 = new List<IconReference>();
             storedList = new List<StoredIconReference>();
+
+            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Loaded Icons Count: " + json.Icons.Count);
+            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Loaded Folders Count: " + json.Folders.Count);
+            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Loaded StoredIcons Count: " + json.StoredIcons.Count);
 
             if (json != null)
             {
@@ -2187,7 +2191,16 @@ namespace SGDWithCocos.Shared.Layers
             {
                 lock (storedList)
                 {
-                    FileTools.SaveToDatabase(iconList2, storedList, inSingleMode, unselectAuto);
+                    try 
+                    {
+                        System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Saving...");
+
+                        FileTools.SaveToDatabase(iconList2, storedList, inSingleMode, unselectAuto);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Ex: " + ex.ToString());
+                    }
 
                     // TODO: check if listeners assigned?
                 }

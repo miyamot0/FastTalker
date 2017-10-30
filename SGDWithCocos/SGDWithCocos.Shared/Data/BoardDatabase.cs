@@ -51,6 +51,9 @@ namespace SGDWithCocos.Data
             database.CreateTableAsync<TableSettings>().Wait();
         }
 
+        public void Init() { }
+
+
         /// <summary>
         /// Get icons
         /// </summary>

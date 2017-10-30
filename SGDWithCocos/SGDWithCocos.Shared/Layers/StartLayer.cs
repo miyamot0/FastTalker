@@ -37,7 +37,7 @@ namespace SGDWithCocos.Layers
         /// <summary>
         /// Constructor with custom base color
         /// </summary>
-        public StartLayer() :base(new CCColor4B(211, 211, 211))
+        public StartLayer() :base(new CCColor4B(0, 0, 0))
         {
 
         }

@@ -49,9 +49,13 @@ namespace SGDWithCocos.Shared.Pages
     public class GamePage : ContentPage
     {
         public CocosSharpView gameView;
+        public CCGameView nativeGameView;
         public CCScene gameScene;
         public UserInput mInputFactory;
+
         GameLayer mLayer;
+
+        public IconStorageObject savedBoard;
 
         /// <summary>
         /// NativeGame object
@@ -130,9 +134,11 @@ namespace SGDWithCocos.Shared.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void LoadGame(object sender, EventArgs e)
+        async void LoadGame(object sender, EventArgs e)
         {
-            var nativeGameView = sender as CCGameView;
+            savedBoard = await GetStoredData();
+
+            nativeGameView = sender as CCGameView;
 
             if (nativeGameView != null)
             {
@@ -142,11 +148,7 @@ namespace SGDWithCocos.Shared.Pages
                 nativeGameView.Stats.Enabled = true;
                 nativeGameView.Stats.Scale = 2;
 
-                // Show the start screen
                 nativeGameView.RunWithScene(new GameStartScene(nativeGameView, App.Width, App.Height, this));
-                
-                // Begin building the icon-based scene
-                ConstructGameScene(nativeGameView);
             }
         }
 
@@ -154,33 +156,9 @@ namespace SGDWithCocos.Shared.Pages
         /// Construct the icon communication board scene
         /// </summary>
         /// <param name="nativeGameView"></param>
-        public void ConstructGameScene(CCGameView nativeGameView)
+        public void ConstructGameScene(CCGameView nativeGameView, IconStorageObject savedBoard)
         {
             gameScene = new GameSGDScene(nativeGameView);
-
-            IconStorageObject savedBoard = new IconStorageObject();
-
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                try
-                {
-                    savedBoard.Icons = await App.Database.GetIconsAsync();
-                    savedBoard.Folders = await App.Database.GetFolderIconsAsync();
-                    savedBoard.StoredIcons = await App.Database.GetStoredIconsAsync();
-
-                    TableSettings mSavedSettings = await App.Database.GetSettingsAsync();
-
-                    savedBoard.SingleMode = mSavedSettings.SingleMode;
-                    savedBoard.AutoUnselectSingleMode = mSavedSettings.AutoUnselectSingleMode;
-
-                    mSavedSettings = null;
-
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteIf(App.Debugging, "FastTalker: " + ex.ToString());
-                }
-            });
 
             // Create layer for icon board scene
             mLayer = new GameLayer(savedBoard, this);
@@ -199,6 +177,49 @@ namespace SGDWithCocos.Shared.Pages
 
             // Add layer to icon board scene
             gameScene.AddLayer(mLayer);
+        }
+
+        private Task<IconStorageObject> GetStoredData()
+        {
+            TaskCompletionSource<IconStorageObject> tcs = new TaskCompletionSource<IconStorageObject>();
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                IconStorageObject savedBoard = new IconStorageObject();
+
+                try
+                {
+                    savedBoard.Icons = await App.Database.GetIconsAsync();
+
+                    Debug.WriteLineIf(App.Debugging, "FastTalker Icon count: " + savedBoard.Icons.Count.ToString());
+
+                    savedBoard.Folders = await App.Database.GetFolderIconsAsync();
+
+                    Debug.WriteLineIf(App.Debugging, "FastTalker Folders count: " + savedBoard.Folders.Count.ToString());
+
+                    savedBoard.StoredIcons = await App.Database.GetStoredIconsAsync();
+
+                    Debug.WriteLineIf(App.Debugging, "FastTalker StoredIcons count: " + savedBoard.StoredIcons.Count.ToString());
+
+                    TableSettings mSavedSettings = await App.Database.GetSettingsAsync();
+
+                    Debug.WriteLineIf(App.Debugging, "FastTalker TableSettings Single: " + mSavedSettings.SingleMode.ToString());
+                    Debug.WriteLineIf(App.Debugging, "FastTalker TableSettings Unselect: " + mSavedSettings.AutoUnselectSingleMode.ToString());
+
+                    savedBoard.SingleMode = mSavedSettings.SingleMode;
+                    savedBoard.AutoUnselectSingleMode = mSavedSettings.AutoUnselectSingleMode;
+
+                    tcs.SetResult(savedBoard);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLineIf(App.Debugging, "FastTalker: " + ex.ToString());
+
+                    tcs.SetResult(savedBoard);
+                }
+            });
+
+            return tcs.Task;
         }
     }
 }

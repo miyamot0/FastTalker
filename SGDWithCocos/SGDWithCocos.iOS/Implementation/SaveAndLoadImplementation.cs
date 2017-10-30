@@ -22,6 +22,7 @@ namespace SGDWithCocos.iOS.Implementation
 {
     public class SaveAndLoadImplementation : ISaveAndLoad
     {
+        /*
         /// <summary>
         /// Save Json to disk
         /// </summary>
@@ -48,18 +49,19 @@ namespace SGDWithCocos.iOS.Implementation
 
             return (File.Exists(filePath)) ? File.ReadAllText(filePath) : "";
         }
+        */
 
         public string GetDatabaseFilePath(string dbName)
         {
             string docFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            string libFolder = Path.Combine(docFolder, "..", "Library", "Databases");
+            //string libFolder = Path.Combine(docFolder, "..", "Library", "Databases");
+            //
+            //if (!Directory.Exists(libFolder))
+            //{
+            //    Directory.CreateDirectory(libFolder);
+            //}
 
-            if (!Directory.Exists(libFolder))
-            {
-                Directory.CreateDirectory(libFolder);
-            }
-
-            return Path.Combine(libFolder, dbName);
+            return Path.Combine(docFolder, dbName);
         }
     }
 }
