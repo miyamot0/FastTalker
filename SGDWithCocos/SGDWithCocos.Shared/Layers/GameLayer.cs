@@ -81,7 +81,7 @@ namespace SGDWithCocos.Shared.Layers
              inSingleMode = true,
              isModal = false;
 
-        private bool unselectAuto = false;
+        bool unselectAuto = false;
         public bool UnselectAuto
         {
             get { return unselectAuto; }
@@ -91,7 +91,7 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
-        private bool isServerUp = false;
+        bool isServerUp = false;
         public bool ServerActive
         {
             get { return isServerUp; }
@@ -111,7 +111,7 @@ namespace SGDWithCocos.Shared.Layers
         CCLabel tempContentLabel;
 
         List<string> CategoryList;
-        private string[] categories = null;
+        string[] categories = null;
         public string[] Categories
         {
             get
@@ -205,8 +205,6 @@ namespace SGDWithCocos.Shared.Layers
         /// <summary>
         /// Load sprites
         /// </summary>
-        /// <param name="json"></param>
-        //public async void LoadSprites(IconStorageObject json)
         public async void LoadSprites()
         {
             iconList2 = new List<IconReference>();
@@ -219,7 +217,14 @@ namespace SGDWithCocos.Shared.Layers
                 if (icon.Tag == SpriteTypes.IconTag)
                 {
                     // if IconTag matches, add to field at saved location
-                    var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                    var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, 
+                                                                                   icon.Base64, 
+                                                                                   icon.Text, 
+                                                                                   icon.X, 
+                                                                                   icon.Y, 
+                                                                                   icon.Scale, 
+                                                                                   icon.TextScale, 
+                                                                                   icon.TextVisible);
 
                     iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
                     AddEventListener(mListener.Copy(), newIcon);
@@ -240,10 +245,22 @@ namespace SGDWithCocos.Shared.Layers
                         content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName));
                     }
 
-                    var newIcon = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                    var newIcon = await spriteModelFactory.AsyncCreateFolder(content, 
+                                                                             backingSpriteFrame, 
+                                                                             icon.Base64, 
+                                                                             icon.Text, 
+                                                                             icon.X, 
+                                                                             icon.Y, 
+                                                                             icon.Scale, 
+                                                                             icon.TextScale, 
+                                                                             icon.TextVisible);
                     newIcon.Tag = SpriteTypes.FolderTag;
 
-                    var newIconRef = new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible);
+                    var newIconRef = new IconReference(newIcon, 
+                                                       icon.AssetName, 
+                                                       icon.TextScale, 
+                                                       icon.TextVisible);
+                    
                     newIconRef.Base64 = (icon.AssetName == null) ? icon.Base64 : icon.AssetName;
 
                     iconList2.Add(newIconRef);
@@ -257,8 +274,21 @@ namespace SGDWithCocos.Shared.Layers
             {
                 // add stored icons to the saved/cached field icons
 
-                var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
-                var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
+                var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, 
+                                                                               icon.Base64, 
+                                                                               icon.Text, 
+                                                                               icon.X, 
+                                                                               icon.Y, 
+                                                                               icon.Scale,
+                                                                               icon.TextScale, 
+                                                                               icon.TextVisible);
+                
+                var storedIconRef = new StoredIconReference(newIcon, 
+                                                            icon.Base64,
+                                                            icon.Folder, 
+                                                            icon.Scale, 
+                                                            icon.TextScale,
+                                                            icon.TextVisible);
 
                 storedList.Add(storedIconRef);
             }
@@ -312,7 +342,6 @@ namespace SGDWithCocos.Shared.Layers
             if (edit)
             {
                 // Orange background = edit mode
-
                 Color = CCColor3B.Orange;
                 addFrame.Visible = true;
                 deleteFrame.Visible = true;
@@ -322,7 +351,6 @@ namespace SGDWithCocos.Shared.Layers
             else
             {
                 // Gray background = active mode
-
                 Color = CCColor3B.Gray;
                 addFrame.Visible = false;
                 deleteFrame.Visible = false;
@@ -379,8 +407,21 @@ namespace SGDWithCocos.Shared.Layers
         /// <param name="base64string2"></param>
         public async void CallBackIconStored(string base64, string text, string folderTag)
         {
-            var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, -1, -1, 1f, 1f, true);
-            var newItem = new StoredIconReference(newIcon, base64, folderTag, 1f, 1f, true);
+            var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, 
+                                                                           base64, 
+                                                                           text, 
+                                                                           -1, 
+                                                                           -1,
+                                                                           1f, 
+                                                                           1f, 
+                                                                           true);
+            
+            var newItem = new StoredIconReference(newIcon, 
+                                                  base64, 
+                                                  folderTag,
+                                                  1f,
+                                                  1f, 
+                                                  true);
 
             storedList.Add(newItem);
         }
@@ -401,6 +442,7 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     string assetName = base64;
                     string contentName = "Stored/" + assetName;
+
                     var sprite = new CCSprite(contentName);
 
                     string base64ImageRepresentation = "";
@@ -434,7 +476,14 @@ namespace SGDWithCocos.Shared.Layers
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                    var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, 
+                                                                                    base64, 
+                                                                                    text, 
+                                                                                    xLocation, 
+                                                                                    yLocation, 
+                                                                                    1f, 
+                                                                                    1f, 
+                                                                                    true);
 
                     if (name != null)
                     {
@@ -463,7 +512,14 @@ namespace SGDWithCocos.Shared.Layers
                     var yLocation = mRandom.Next((int)(spriteModelFactory.DynamicHeight * 0.3f), (int)(spriteModelFactory.DynamicHeight - (spriteModelFactory.DynamicHeight * 0.3f)));
                     var xLocation = mRandom.Next((int)(spriteModelFactory.DynamicWidth * 0.3f), (int)(spriteModelFactory.DynamicWidth - (spriteModelFactory.DynamicWidth * 0.3f)));
 
-                    var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, base64, text, xLocation, yLocation, 1f, 1f, true);
+                    var newIcons = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, 
+                                                                                    base64, 
+                                                                                    text, 
+                                                                                    xLocation, 
+                                                                                    yLocation, 
+                                                                                    1f, 
+                                                                                    1f,
+                                                                                    true);
 
                     if (name != null)
                     {
@@ -508,8 +564,15 @@ namespace SGDWithCocos.Shared.Layers
                     content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(assetName));
                 }
 
-                //var parentSprite = spriteModelFactory.MakeFolder(content, backingSpriteFrame, base64, folderName, xLocation, yLocation, 1f, 1f, true);
-                var parentSprite = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, base64, folderName, xLocation, yLocation, 1f, 1f, true);
+                var parentSprite = await spriteModelFactory.AsyncCreateFolder(content, 
+                                                                              backingSpriteFrame, 
+                                                                              base64, 
+                                                                              folderName,
+                                                                              xLocation, 
+                                                                              yLocation,
+                                                                              1f,
+                                                                              1f, 
+                                                                              true);
 
                 var mIconRef = new IconReference(parentSprite, assetName, 1f, true);
 
@@ -1284,14 +1347,13 @@ namespace SGDWithCocos.Shared.Layers
 
             if (caller.Tag == SpriteTypes.IconTag)
             {
-                foreach (IconReference iconRef in iconList2)
+                foreach (IconReference iconRef in iconList2.Where(i => i.Sprite.Tag == SpriteTypes.IconTag))
                 {
                     ReorderChild(iconRef.Sprite, 10);
                 }
 
                 ReorderChild(caller, 999);
 
-                // TODO: the focused icon is thrown to back
                 // TODO: listener priority?
             }
 
