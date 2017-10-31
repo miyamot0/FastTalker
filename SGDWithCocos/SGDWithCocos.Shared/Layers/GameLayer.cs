@@ -315,12 +315,21 @@ namespace SGDWithCocos.Shared.Layers
                 UnselectAuto = false;
             }
 
-            var counter = 1;
+            var counter = 2;
             foreach (IconReference icon in iconList2)
             {
-                // Add all designated sprites to the field as saved/stored
-                AddChild(icon.Sprite, counter, icon.Sprite.Tag);
-                counter++;
+                if (icon.Sprite.Tag == SpriteTypes.FolderTag)
+                {
+                    // Add all designated sprites to the field as saved/stored
+                    AddChild(icon.Sprite, 1, icon.Sprite.Tag);
+                    counter++;                    
+                }
+                else
+                {
+                    // Add all designated sprites to the field as saved/stored
+                    AddChild(icon.Sprite, counter, icon.Sprite.Tag);
+                    counter++;
+                }
             }
         }
 
@@ -1355,13 +1364,17 @@ namespace SGDWithCocos.Shared.Layers
             #region Pull selected sprite to forefront, for clarity
 
             iconsOverlapping = iconList2.Where(i => i.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location)).OrderByDescending(i => i.Sprite.ZOrder).ToList();
-            highSprite = iconsOverlapping.First().Sprite;
 
-            ReorderChild(highSprite, zIndexTop);
-
-            foreach (IconReference iconRef in iconList2.Where(i => i.Sprite.Tag == SpriteTypes.IconTag && i.Sprite.GetHashCode() != highSprite.GetHashCode()))
+            if (iconsOverlapping.Any())
             {
-                ReorderChild(iconRef.Sprite, zIndexBack);
+                highSprite = iconsOverlapping.First().Sprite;
+
+                ReorderChild(highSprite, zIndexTop);
+
+                foreach (IconReference iconRef in iconList2.Where(i => i.Sprite.Tag == SpriteTypes.IconTag && i.Sprite.GetHashCode() != highSprite.GetHashCode()))
+                {
+                    ReorderChild(iconRef.Sprite, zIndexBack);
+                }
             }
 
             #endregion
@@ -1442,10 +1455,8 @@ namespace SGDWithCocos.Shared.Layers
 
                 foreach (IconReference iconRef in iconList2)
                 {
-                    var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
-
                     // If Icon is overlapping, prevent fire
-                    if (speakerFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
+                    if (speakerFrame.BoundingBoxTransformedToParent.IntersectsRect(iconRef.Sprite.BoundingBoxTransformedToWorld))
                     {
                         return false;
                     }
@@ -1477,9 +1488,7 @@ namespace SGDWithCocos.Shared.Layers
                 // Prevent calling add event, if icon overlaps
                 foreach (IconReference iconRef in iconList2)
                 {
-                    var rect = iconRef.Sprite.BoundingBoxTransformedToWorld;
-
-                    if (addFrame.BoundingBoxTransformedToParent.IntersectsRect(rect))
+                    if (addFrame.BoundingBoxTransformedToParent.IntersectsRect(iconRef.Sprite.BoundingBoxTransformedToWorld))
                     {
                         return false;
                     }
@@ -1638,15 +1647,14 @@ namespace SGDWithCocos.Shared.Layers
 
                 if (touchType == Tags.Tag.Icon)
                 {
-                    var target = (CCSprite)touchEvent.CurrentTarget;
+                    caller = (CCSprite)touchEvent.CurrentTarget;
                     CurrentSpriteTouched.Opacity = 255;
                     CurrentSpriteTouched.ZOrder = 999;
-                    CCRect rect = target.BoundingBoxTransformedToWorld;
 
                     #region Check if icon over a folder
 
                     List<IconReference> mFolders = iconList2.Where(t => t.Sprite.Tag == SpriteTypes.FolderTag).ToList();
-                    var mIntersect = mFolders.Where(t => t.Sprite.BoundingBoxTransformedToParent.IntersectsRect(rect)).ToList();
+                    var mIntersect = mFolders.Where(t => t.Sprite.BoundingBoxTransformedToParent.IntersectsRect(caller.BoundingBoxTransformedToWorld)).ToList();
 
                     if (mIntersect.Count == 1)
                     {
@@ -1654,7 +1662,7 @@ namespace SGDWithCocos.Shared.Layers
 
                         if (mContentTag != "")
                         {
-                            var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
+                            var mCloneCopy = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
 
                             tempContentLabel = mCloneCopy.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
@@ -1665,8 +1673,6 @@ namespace SGDWithCocos.Shared.Layers
 
                             var newItem = new StoredIconReference(mCloneCopy.Sprite, mCloneCopy.Base64, mContentTag, mCloneCopy.Sprite.ScaleX, tempContentLabel.ScaleX, tempContentLabel.Visible);
 
-                            var savedScale = (float)mCloneCopy.Sprite.ScaleX;
-
                             CurrentSpriteTouched = null;
 
                             ScheduleOnce((dt) =>
@@ -1675,7 +1681,7 @@ namespace SGDWithCocos.Shared.Layers
                                 var scaleAction = new CCScaleTo(0.2f, 0.1f);
                                 var clearColor = new CCCallFuncN(node => node.Color = ColorTools.White);
                                 var setInvisible = new CCCallFuncN(node => node.Visible = false);
-                                var scaleAction2 = new CCScaleTo(0.01f, savedScale);
+                                var scaleAction2 = new CCScaleTo(0.01f, (float)mCloneCopy.Sprite.ScaleX);
 
                                 // Animation to make identified folder target salient
                                 var danceAction = new CCCallFunc(() => {
@@ -1684,7 +1690,7 @@ namespace SGDWithCocos.Shared.Layers
 
                                 var endAction = new CCCallFuncN(node => node.RemoveFromParent(true));
 
-                                target.AddActions(false,
+                                caller.AddActions(false,
                                     moveAction,
                                     scaleAction,
                                     clearColor,
@@ -1705,20 +1711,20 @@ namespace SGDWithCocos.Shared.Layers
 
                     #region Check if icon over frame
 
-                    if (!inEditMode && sentenceFrame.BoundingBoxTransformedToWorld.IntersectsRect(target.BoundingBoxTransformedToWorld))
+                    if (!inEditMode && sentenceFrame.BoundingBoxTransformedToWorld.IntersectsRect(caller.BoundingBoxTransformedToWorld))
                     {
-                        float xScale = target.ScaleX,
-                              yScale = target.ScaleX;
+                        float xScale = caller.ScaleX,
+                        yScale = caller.ScaleX;
 
                         // Catch for potentially overlapping rescaling
-                        if (target.NumberOfRunningActions == 0)
+                        if (caller.NumberOfRunningActions == 0)
                         {
                             CCSequence iconAnimationFocus = new CCSequence(
                                 new CCDelayTime(0.1f),
                                 new CCScaleTo(0.1f, xScale * 1.1f, yScale * 1.1f),
                                 new CCScaleTo(0.1f, xScale, yScale));
 
-                            target.AddAction(iconAnimationFocus);
+                            caller.AddAction(iconAnimationFocus);
                         }
                     }
 
@@ -1726,16 +1732,16 @@ namespace SGDWithCocos.Shared.Layers
 
                     #region Check if over delete field
 
-                    if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(rect) && inEditMode)
+                    if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(caller.BoundingBoxTransformedToWorld) && inEditMode)
                     {
-                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
+                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
 
                         ScheduleOnce((dt) => {
                             //RemoveChild(target);
 
                             // <!-- Note: Edited Cleanup Here 
 
-                            var temp = target.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
+                            CCSprite temp = caller.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
 
                             if (temp != null)
                             {
@@ -1743,9 +1749,9 @@ namespace SGDWithCocos.Shared.Layers
                                 temp.Texture.Dispose();
                             }
 
-                            target.RemoveAllChildren();
-                            target.RemoveEventListeners(false);
-                            target.RemoveFromParent();
+                            caller.RemoveAllChildren();
+                            caller.RemoveEventListeners(false);
+                            caller.RemoveFromParent();
 
                             // -->
                         }, 0);
@@ -1759,7 +1765,7 @@ namespace SGDWithCocos.Shared.Layers
 
                     else if (inEditMode && timeDiff.TotalSeconds < 0.25)
                     {
-                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
+                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
                         var mCounter = iconList2.IndexOf(mSprite);
 
                         GamePageParent.mInputFactory.CallActionSheet(mCounter);
@@ -1774,10 +1780,12 @@ namespace SGDWithCocos.Shared.Layers
 
                 else if (touchType == Tags.Tag.FolderIcon && inEditMode && timeDiff.TotalSeconds < 0.25)
                 {
-                    var target = touchEvent.CurrentTarget;
                     CurrentSpriteTouched.Opacity = 255;
-                    var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
+
+                    var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == touchEvent.CurrentTarget.GetHashCode()).FirstOrDefault();
                     var mCounter = iconList2.IndexOf(mSprite);
+
+                    mSprite = null;
 
                     GamePageParent.mInputFactory.CallActionSheet(mCounter);
                 }
@@ -1789,6 +1797,7 @@ namespace SGDWithCocos.Shared.Layers
                 else if (touchType == Tags.Tag.FolderIcon && !inEditMode)
                 {
                     CurrentSpriteTouched.Opacity = 255;
+
                     string contentTag = SpriteTools.SpriteHasLabel(CurrentSpriteTouched);
 
                     if (contentTag != "")
@@ -1814,26 +1823,29 @@ namespace SGDWithCocos.Shared.Layers
 
                 else if (touchType == Tags.Tag.FolderIcon && inEditMode)
                 {
-                    var target = (CCSprite)touchEvent.CurrentTarget;
+                    caller = (CCSprite)touchEvent.CurrentTarget;
                     CurrentSpriteTouched.Opacity = 255;
 
-                    CCRect rect = target.BoundingBoxTransformedToWorld;
-
-                    if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(rect) && inEditMode)
+                    if (deleteFrame.BoundingBoxTransformedToParent.IntersectsRect(caller.BoundingBoxTransformedToWorld) && inEditMode)
                     {
-                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
+                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
 
                         ScheduleOnce((dt) => {
-                            RemoveChild(target);
+                            RemoveChild(caller);
                         }, 0);
 
                         iconList2.Remove(mSprite);
+
+                        mSprite = null;
                     }
                     else if (timeDiff.TotalSeconds < 0.25f)
                     {
-                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == target.GetHashCode()).FirstOrDefault();
+                        var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
                         var mCounter = iconList2.IndexOf(mSprite);
+
                         GamePageParent.mInputFactory.CallActionSheet(mCounter);
+
+                        mSprite = null;
                     }
                 }
 
@@ -1863,9 +1875,11 @@ namespace SGDWithCocos.Shared.Layers
 
                     List<string> labelList = new List<string>();
 
+                    string contentTag;
+
                     foreach (IconReference mIcon in mList)
                     {
-                        string contentTag = SpriteTools.SpriteHasLabel(mIcon.Sprite);
+                        contentTag = SpriteTools.SpriteHasLabel(mIcon.Sprite);
 
                         if (contentTag != "")
                         {
@@ -1934,6 +1948,7 @@ namespace SGDWithCocos.Shared.Layers
                     {
                         loopIcon.Opacity = 255;
                     }
+
                     if (CurrentSpriteTouched.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location) && timeDiff.TotalSeconds < 0.25)
                     {
                         if (!isAlreadySelected)
@@ -1999,8 +2014,8 @@ namespace SGDWithCocos.Shared.Layers
                                 {
                                     foreach (StoredIconReference storedRef in storedList)
                                     {
-                                        var mLoopSprite = storedRef.Sprite;
-                                        var mLoopContent = mLoopSprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
+                                        caller = storedRef.Sprite;
+                                        var mLoopContent = caller.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
                                         if (mLoopContent != null && mLoopContent.Text == tempContentLabel.Text)
                                         {
@@ -2010,23 +2025,29 @@ namespace SGDWithCocos.Shared.Layers
 
                                             ScheduleOnce(async (dt) =>
                                             {
-                                                var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, storedRef.Base64, mLoopContent.Text, xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
+                                                var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, 
+                                                                                                               storedRef.Base64, 
+                                                                                                               mLoopContent.Text, 
+                                                                                                               xLocation, 
+                                                                                                               yLocation, 
+                                                                                                               storedRef.Scale, 
+                                                                                                               storedRef.TextScale, 
+                                                                                                               storedRef.TextVisible);
 
-                                                //var newIcon = spriteModelFactory.MakeIconBase64(backingSpriteFrame, storedRef.Base64, mLoopContent.Text,
-                                                //     xLocation, yLocation, storedRef.Scale, storedRef.TextScale, storedRef.TextVisible);
-
-                                                var mIconRef = new IconReference(newIcon, storedRef.Base64, 1f, true);
+                                                var mIconRef = new IconReference(newIcon, 
+                                                                                 storedRef.Base64, 
+                                                                                 1f, 
+                                                                                 true);
 
                                                 AddEventListener(mListener.Copy(), mIconRef.Sprite);
+
                                                 iconList2.Add(mIconRef);
 
                                                 AddChild(mIconRef.Sprite);
 
                                                 // Add salient animation to icons added back to field
                                                 mIconRef.Sprite.AddAction(AnimationTools.iconAnimationRotate);
-
                                             }, 0.01f);
-
 
                                             mStoredRef = storedRef;
                                         }
@@ -2042,7 +2063,9 @@ namespace SGDWithCocos.Shared.Layers
                             // TODO same here, ref to CurrentIconSelected throws off texture removals
 
                             isModal = false;
+
                             ClearIconsInModal();
+
                             RemoveAllChildrenByTag(windowFrame.Tag, true);
                             RemoveAllChildrenByTag(SpriteTypes.ColorLayerTag, true);
 
