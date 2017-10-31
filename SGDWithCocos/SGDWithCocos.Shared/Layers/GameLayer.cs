@@ -139,11 +139,9 @@ namespace SGDWithCocos.Shared.Layers
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="_dynamicWidth">Device width</param>
-        /// <param name="_dynamicHeight">Device height</param>
         /// <param name="json">JSON string for icons, nullable</param>
         /// <param name="_gamePage">Page reference</param>
-        public GameLayer(IconStorageObject json, GamePage _gamePage) : base(CCColor4B.Gray)
+        public GameLayer(GamePage _gamePage) : base(CCColor4B.Gray)
         {
             Color = CCColor3B.Gray;
             GamePageParent = _gamePage;
@@ -158,7 +156,7 @@ namespace SGDWithCocos.Shared.Layers
 
             MakeStaticSprites();
 
-            LoadSprites(json);
+            LoadSprites();
 
             Schedule(RunGameLogic);
         }
@@ -208,65 +206,69 @@ namespace SGDWithCocos.Shared.Layers
         /// Load sprites
         /// </summary>
         /// <param name="json"></param>
-        public async void LoadSprites(IconStorageObject json)
+        //public async void LoadSprites(IconStorageObject json)
+        public async void LoadSprites()
         {
             iconList2 = new List<IconReference>();
             storedList = new List<StoredIconReference>();
 
-            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Loaded Icons Count: " + json.Icons.Count);
-            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Loaded Folders Count: " + json.Folders.Count);
-            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Loaded StoredIcons Count: " + json.StoredIcons.Count);
+            var icons = await App.Database.GetIconsAsync();
 
-            if (json != null)
+            foreach (TableIcons icon in icons)
             {
-                foreach (TableIcons icon in json.Icons)
+                if (icon.Tag == SpriteTypes.IconTag)
                 {
-                    if (icon.Tag == SpriteTypes.IconTag)
-                    {
-                        // if IconTag matches, add to field at saved location
-                        var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
-
-                        iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
-                        AddEventListener(mListener.Copy(), newIcon);
-                    }
-                }
-
-                foreach (TableFolders icon in json.Folders)
-                {
-                    if (icon.Tag == SpriteTypes.FolderTag)
-                    {
-                        // if IconTag matches, add to field at saved location
-                        CCSpriteFrame content = null;
-
-                        if (icon.AssetName != null)
-                        {
-                            content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName));
-                        }
-
-                        var newIcon = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
-                        newIcon.Tag = SpriteTypes.FolderTag;
-
-                        var newIconRef = new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible);
-                        newIconRef.Base64 = (icon.AssetName == null) ? icon.Base64 : icon.AssetName;
-
-                        iconList2.Add(newIconRef);
-                        AddEventListener(mListener.Copy(), newIcon);
-                    }
-                }
-
-                foreach (TableStoredIcons icon in json.StoredIcons)
-                {
-                    // add stored icons to the saved/cached field icons
-
+                    // if IconTag matches, add to field at saved location
                     var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
-                    var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
 
-                    storedList.Add(storedIconRef);
+                    iconList2.Add(new IconReference(newIcon, icon.Base64, 1f, true));
+                    AddEventListener(mListener.Copy(), newIcon);
                 }
+            }
 
-                // Set the display mode
-                SetSingleMode(json.SingleMode);
-                UnselectAuto = json.AutoUnselectSingleMode;
+            var folders = await App.Database.GetFolderIconsAsync();
+
+            foreach (TableFolders icon in folders)
+            {
+                if (icon.Tag == SpriteTypes.FolderTag)
+                {
+                    // if IconTag matches, add to field at saved location
+                    CCSpriteFrame content = null;
+
+                    if (icon.AssetName != null)
+                    {
+                        content = staticSpriteSheet.Frames.Find((x) => x.TextureFilename.Contains(icon.AssetName));
+                    }
+
+                    var newIcon = await spriteModelFactory.AsyncCreateFolder(content, backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                    newIcon.Tag = SpriteTypes.FolderTag;
+
+                    var newIconRef = new IconReference(newIcon, icon.AssetName, icon.TextScale, icon.TextVisible);
+                    newIconRef.Base64 = (icon.AssetName == null) ? icon.Base64 : icon.AssetName;
+
+                    iconList2.Add(newIconRef);
+                    AddEventListener(mListener.Copy(), newIcon);
+                }
+            }
+
+            var storedIcons = await App.Database.GetStoredIconsAsync();
+
+            foreach (TableStoredIcons icon in storedIcons)
+            {
+                // add stored icons to the saved/cached field icons
+
+                var newIcon = await spriteModelFactory.AsyncCreateBase64Sprite(backingSpriteFrame, icon.Base64, icon.Text, icon.X, icon.Y, icon.Scale, icon.TextScale, icon.TextVisible);
+                var storedIconRef = new StoredIconReference(newIcon, icon.Base64, icon.Folder, icon.Scale, icon.TextScale, icon.TextVisible);
+
+                storedList.Add(storedIconRef);
+            }
+
+            var settings = await App.Database.GetSettingsAsync();
+
+            if (settings != null)
+            {
+                SetSingleMode(settings.SingleMode);
+                UnselectAuto = settings.AutoUnselectSingleMode;
             }
             else
             {
@@ -275,7 +277,6 @@ namespace SGDWithCocos.Shared.Layers
             }
 
             var counter = 1;
-
             foreach (IconReference icon in iconList2)
             {
                 // Add all designated sprites to the field as saved/stored

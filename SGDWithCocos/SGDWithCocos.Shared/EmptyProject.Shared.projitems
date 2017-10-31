@@ -31,7 +31,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\OpenBoardManifestModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\OpenBoardModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Storage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\IconStorageObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StoredIconReference.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TableFolders.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TableIcons.cs" />

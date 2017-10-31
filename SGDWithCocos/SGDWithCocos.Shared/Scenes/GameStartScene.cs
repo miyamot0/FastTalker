@@ -56,7 +56,21 @@ namespace SGDWithCocos.Scenes
 
         private CCLabel startGameLabel;
 
-        List<string> mLetters = new List<string>() { "Ftitle", "Atitle", "Stitle", "Ttitle", "", "Ttitle", "Atitle", "Ltitle", "Ktitle", "Etitle", "Rtitle" };
+        List<string> mLetters = new List<string>() 
+        { 
+            "Ftitle", 
+            "Atitle", 
+            "Stitle", 
+            "Ttitle", 
+            "", 
+            "Ttitle", 
+            "Atitle", 
+            "Ltitle", 
+            "Ktitle", 
+            "Etitle", 
+            "Rtitle" 
+        };
+
         List<CCSpriteFrame> mFrames = new List<CCSpriteFrame>();
         List<CCSprite> mSprites = new List<CCSprite>();
 
@@ -234,8 +248,7 @@ namespace SGDWithCocos.Scenes
         {
             RunActions(new CCSequence(
                 new CCCallFunc(() => {
-                    mGamePage.ConstructGameScene(mGamePage.nativeGameView, mGamePage.savedBoard);
-
+                    mGamePage.ConstructGameScene(App.GameView);
                     GameView.Director.ReplaceScene(mGamePage.gameScene);
 
                 }),

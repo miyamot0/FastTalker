@@ -27,12 +27,10 @@
 
 using SGDWithCocos.Data;
 using SGDWithCocos.Interface;
-using SGDWithCocos.Models;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
-using System;
-using System.Diagnostics;
 using Xamarin.Forms;
+using CocosSharp;
 
 namespace SGDWithCocos.Shared
 {
@@ -47,7 +45,7 @@ namespace SGDWithCocos.Shared
         /// <summary>
         /// Segmented categories for less clunky selections
         /// </summary>
-        private static string[] _categoryChunks;
+        static string[] _categoryChunks;
         public static string[] CategoryChunks
         {
             get
@@ -61,7 +59,7 @@ namespace SGDWithCocos.Shared
             }
         }
 
-        private static BoardDatabase database;
+        static BoardDatabase database;
         public static BoardDatabase Database
         {
             get
@@ -74,6 +72,8 @@ namespace SGDWithCocos.Shared
                 return database;
             }
         }
+
+        public static CCGameView GameView;
 
         /// <summary>
         /// XF cross platform controls
@@ -108,6 +108,5 @@ namespace SGDWithCocos.Shared
         /// Lifecycle overrides
         /// </summary>
         protected override void OnResume () {}
-
 	}
 }

@@ -32,8 +32,6 @@ namespace SGDWithCocos.Scenes
 {
     class GameSGDScene : CCScene
     {
-        private IconStorageObject savedBoard;
-
         /// <summary>
         /// Base SGD Scene
         /// </summary>
