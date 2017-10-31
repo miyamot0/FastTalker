@@ -40,6 +40,7 @@ using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Data;
 using System.IO;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace SGDWithCocos.Shared.Layers
 {
@@ -135,6 +136,14 @@ namespace SGDWithCocos.Shared.Layers
                 return storageInformation;
             }
         }
+
+        int zIndexTop = 999;
+        int zIndexBack = 10;
+
+        // Top holder
+        List<IconReference> iconsOverlapping;
+        CCSprite highSprite;
+        CCSprite caller;
 
         /// <summary>
         /// Constructor
@@ -1341,20 +1350,18 @@ namespace SGDWithCocos.Shared.Layers
 
             startTime = DateTime.Now;
 
-            CCSprite caller = touchEvent.CurrentTarget as CCSprite;
+            caller = touchEvent.CurrentTarget as CCSprite;
 
             #region Pull selected sprite to forefront, for clarity
 
-            if (caller.Tag == SpriteTypes.IconTag)
+            iconsOverlapping = iconList2.Where(i => i.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location)).OrderByDescending(i => i.Sprite.ZOrder).ToList();
+            highSprite = iconsOverlapping.First().Sprite;
+
+            ReorderChild(highSprite, zIndexTop);
+
+            foreach (IconReference iconRef in iconList2.Where(i => i.Sprite.Tag == SpriteTypes.IconTag && i.Sprite.GetHashCode() != highSprite.GetHashCode()))
             {
-                foreach (IconReference iconRef in iconList2.Where(i => i.Sprite.Tag == SpriteTypes.IconTag))
-                {
-                    ReorderChild(iconRef.Sprite, 10);
-                }
-
-                ReorderChild(caller, 999);
-
-                // TODO: listener priority?
+                ReorderChild(iconRef.Sprite, zIndexBack);
             }
 
             #endregion
@@ -1509,17 +1516,20 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             if (iconRef.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location))
                             {
-                                var iconsTouched = iconList2.Where(i => i.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location)).OrderByDescending(i => i.Sprite.ZOrder);
+                                var iconsTouched = iconList2.Where(i => i.Sprite.BoundingBoxTransformedToWorld.ContainsPoint(touch.Location)).OrderBy(i => i.Sprite.ZOrder).ToList();
 
                                 if (iconsTouched != null && iconsTouched.Count() > 1)
                                 {
                                     var highestIcon = iconsTouched.Last();
 
                                     touchType = Tags.Tag.Icon;
+
                                     CurrentSpriteTouched = highestIcon.Sprite;
                                     highestIcon.Sprite.Opacity = 155;
 
                                     DeSelectIcons();
+
+                                    ReorderChild(highestIcon.Sprite, zIndexTop);
 
                                     highestIcon.Sprite.Color = ColorTools.Green;
                                 }
@@ -1531,6 +1541,8 @@ namespace SGDWithCocos.Shared.Layers
                                     caller.Opacity = 155;
 
                                     DeSelectIcons();
+
+                                    ReorderChild(caller, zIndexTop);
 
                                     caller.Color = ColorTools.Green;
                                 }
@@ -1628,6 +1640,7 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     var target = (CCSprite)touchEvent.CurrentTarget;
                     CurrentSpriteTouched.Opacity = 255;
+                    CurrentSpriteTouched.ZOrder = 999;
                     CCRect rect = target.BoundingBoxTransformedToWorld;
 
                     #region Check if icon over a folder
