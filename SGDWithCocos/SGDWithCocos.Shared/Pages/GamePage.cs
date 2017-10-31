@@ -91,6 +91,11 @@ namespace SGDWithCocos.Shared.Pages
             };
 
             Content = gameView;
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                savedBoard = await GetStoredData();
+            });
         }
 
         /// <summary>
@@ -134,10 +139,8 @@ namespace SGDWithCocos.Shared.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        async void LoadGame(object sender, EventArgs e)
+        void LoadGame(object sender, EventArgs e)
         {
-            savedBoard = await GetStoredData();
-
             nativeGameView = sender as CCGameView;
 
             if (nativeGameView != null)
@@ -179,6 +182,10 @@ namespace SGDWithCocos.Shared.Pages
             gameScene.AddLayer(mLayer);
         }
 
+        /// <summary>
+        /// Load existing icons
+        /// </summary>
+        /// <returns></returns>
         private Task<IconStorageObject> GetStoredData()
         {
             TaskCompletionSource<IconStorageObject> tcs = new TaskCompletionSource<IconStorageObject>();

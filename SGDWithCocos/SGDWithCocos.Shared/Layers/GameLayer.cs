@@ -205,9 +205,9 @@ namespace SGDWithCocos.Shared.Layers
         }
 
         /// <summary>
-        /// Load sprites from the saved JSON object
+        /// Load sprites
         /// </summary>
-        /// <param name="json">Saved object</param>
+        /// <param name="json"></param>
         public async void LoadSprites(IconStorageObject json)
         {
             iconList2 = new List<IconReference>();

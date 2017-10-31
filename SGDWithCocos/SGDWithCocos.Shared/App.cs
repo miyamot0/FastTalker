@@ -27,6 +27,7 @@
 
 using SGDWithCocos.Data;
 using SGDWithCocos.Interface;
+using SGDWithCocos.Models;
 using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
 using System;
@@ -80,7 +81,7 @@ namespace SGDWithCocos.Shared
 		public App ()
 		{
             Database.Init();
-            
+           
             MainGamePage = new GamePage();
 
             if (Device.RuntimePlatform == Device.Android)
