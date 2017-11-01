@@ -75,7 +75,7 @@ namespace SGDWithCocos.Shared.Layers
 
         Random mRandom;
 
-        DateTime startTime;//, endTime;
+        DateTime startTime;
 
         // Logicals for editing, frame state
         bool inEditMode = false,
@@ -2231,10 +2231,11 @@ namespace SGDWithCocos.Shared.Layers
                 ScheduleOnce((dt) =>
                 {
                     Device.BeginInvokeOnMainThread(() => {
-                        App.StartScene = null;
-                        App.Loaded = false;
+                        App.StartScene = null;                       
                     });
                 }, 1f);
+
+                App.Loaded = false;
             }
 
             #endregion

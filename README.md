@@ -19,9 +19,11 @@ Features include:
 ![Alt text](FT-Folders.gif?raw=true "Open Folders")
 
 ### Version
-1.3.0.0
+1.5.0.0
 
 ### Changelog
+ * 1.5.0.0 - Restructured load sequence, new resource management, move to SQL databases, and overall cleanup for wave II
+ * 1.4.0.0 - Internal release for reliability
  * 1.3.1.0 - Revert server support for now. Launcher mode with optional service (aggressive launcher mode)
  * 1.3.0.0 - Initial server support, remote operation and setup
  * 1.2.0.0 - Support for the Open Book Format, embedded and web-based tags
@@ -41,6 +43,7 @@ Fast Talker uses a number of open source projects to work properly:
 * [LauncherHijack](https://github.com/parrotgeek1/LauncherHijack) - Permissively Licensed - Copyright (c) 2017 Ethan Nelson-Moore
 * [SimpleHTTPServer](https://gist.github.com/aksakalli/9191056) - MIT License - Copyright (c) 2016 Can Güney Aksakalli
 * [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) - MIT Licensed. Copyright (c) 2007 James Newton-King 
+* [sqlite-net-pcl](https://github.com/praeclarum/sqlite-net) - MIT Licensed. Copyright (c) 2009-2016 Krueger Systems, Inc.
 * [Xamarin.Plugin.Permissions](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
 * [Xamarin.Plugin.Media](https://github.com/jamesmontemagno/Xamarin.Plugins) - MIT Licensed. Copyright (c) 2016 James Montemagno / Refractored LLC
 * [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms) - MIT Licensed. Copyright (c) 2016 Microsoft
@@ -77,7 +80,6 @@ This is currently under active development and evaluation.
 * ~~Launcher mode to keep children/patients away from games~~
 * Backup and import of Open Board Format (OBF) files
 * Web-based portal for quick setup and remote operation
-* Support for embedded data collection
 
 ### License
 ----
