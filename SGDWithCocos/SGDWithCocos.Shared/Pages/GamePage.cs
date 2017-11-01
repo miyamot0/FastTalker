@@ -45,11 +45,6 @@ namespace SGDWithCocos.Shared.Pages
         CocosSharpView gameView;
 
         /// <summary>
-        /// NativeGame object
-        /// </summary>
-        public CocosSharpView GameView { get; private set; }
-
-        /// <summary>
         /// Constructor, with DependencyService calls to native display metrics
         /// </summary>
         public GamePage()
@@ -127,10 +122,10 @@ namespace SGDWithCocos.Shared.Pages
                     "Stored" 
                 };
 
-                App.GamingLayer = new GameLayer(this);
+                App.GamingLayer = new GameLayer();
                 App.GamingLayer.LoadJsonContent();
 
-                App.GameScene = new GameSGDScene(App.GameView);
+                App.GameScene = new GameSGDScene();
                 App.GameScene.AddLayer(App.GamingLayer);
 
                 App.InputFactory = new UserInput
@@ -146,7 +141,7 @@ namespace SGDWithCocos.Shared.Pages
                 App.GameView.Stats.Enabled = true;
                 App.GameView.Stats.Scale = 2;
 
-                App.StartScene = new GameStartScene(App.GameView, App.Width, App.Height, this);
+                App.StartScene = new GameStartScene();
 
                 App.GameView.RunWithScene(App.StartScene);
             }

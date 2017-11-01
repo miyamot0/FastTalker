@@ -41,6 +41,7 @@ namespace SGDWithCocos.Shared
     public class App : Application
 	{
         public static GamePage MainGamePage;
+        public static CCGameView GameView;
 
         public static GameStartScene StartScene;
 
@@ -50,7 +51,11 @@ namespace SGDWithCocos.Shared
         public static UserInput InputFactory;
 
         public static bool HasAdmin;
-        public static int Height = -1, Width = -1;
+
+        public static bool Loaded = false;
+
+        public static int Height = -1, 
+                          Width = -1;
 
         public static bool Debugging = true;
 
@@ -84,8 +89,6 @@ namespace SGDWithCocos.Shared
                 return database;
             }
         }
-
-        public static CCGameView GameView;
 
         /// <summary>
         /// XF cross platform controls

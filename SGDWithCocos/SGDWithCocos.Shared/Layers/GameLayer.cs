@@ -150,10 +150,10 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         /// <param name="json">JSON string for icons, nullable</param>
         /// <param name="_gamePage">Page reference</param>
-        public GameLayer(GamePage _gamePage) : base(CCColor4B.Gray)
+        public GameLayer() : base(CCColor4B.Gray)
         {
             Color = CCColor3B.Gray;
-            GamePageParent = _gamePage;
+            GamePageParent = App.MainGamePage;
             mRandom = new Random(DateTime.Now.Millisecond);
             
             spriteModelFactory = new SpriteMaker(App.Width, App.Height);
@@ -2223,6 +2223,21 @@ namespace SGDWithCocos.Shared.Layers
         void RunGameLogic(float frameTimeInSeconds)
         {
             totalDuration += frameTimeInSeconds;
+
+            #region Manually null out the older scene
+
+            if (App.Loaded)
+            {
+                ScheduleOnce((dt) =>
+                {
+                    Device.BeginInvokeOnMainThread(() => {
+                        App.StartScene = null;
+                        App.Loaded = false;
+                    });
+                }, 1f);
+            }
+
+            #endregion
 
             #region Save Interval
 

@@ -27,6 +27,7 @@
 
 using CocosSharp;
 using SGDWithCocos.Models;
+using SGDWithCocos.Shared;
 
 namespace SGDWithCocos.Scenes
 {
@@ -36,7 +37,7 @@ namespace SGDWithCocos.Scenes
         /// Base SGD Scene
         /// </summary>
         /// <param name="gameView"></param>
-        public GameSGDScene(CCGameView gameView) : base(gameView)
+        public GameSGDScene() : base(App.GameView)
         {
 
         }
