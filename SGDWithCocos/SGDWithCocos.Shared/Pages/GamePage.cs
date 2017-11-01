@@ -44,9 +44,9 @@ namespace SGDWithCocos.Shared.Pages
     {
         public CocosSharpView gameView;
         public CCScene gameScene;
-        public UserInput mInputFactory;
+       
 
-        GameLayer mLayer;
+        //GameLayer mLayer;
 
         /// <summary>
         /// NativeGame object
@@ -82,6 +82,8 @@ namespace SGDWithCocos.Shared.Pages
             };
 
             Content = gameView;
+
+
         }
 
         /// <summary>
@@ -136,11 +138,16 @@ namespace SGDWithCocos.Shared.Pages
                     "Stored" 
                 };
 
+                App.GamingLayer = new GameLayer(this);
+                App.GamingLayer.LoadJsonContent();
+
                 // Launch stats
                 App.GameView.Stats.Enabled = true;
                 App.GameView.Stats.Scale = 2;
 
-                App.GameView.RunWithScene(new GameStartScene(App.GameView, App.Width, App.Height, this));
+                App.StartScene = new GameStartScene(App.GameView, App.Width, App.Height, this);
+
+                App.GameView.RunWithScene(App.StartScene);
             }
         }
 
@@ -152,23 +159,17 @@ namespace SGDWithCocos.Shared.Pages
         {
             gameScene = new GameSGDScene(nativeGameView);
 
-            // Create layer for icon board scene
-            mLayer = new GameLayer(this);
-
-            mInputFactory = new UserInput
+            App.InputFactory = new UserInput
             {
-                mLayer = mLayer,
+                //mLayer = mLayer,
+                mLayer = App.GamingLayer,
                 hasScreenLock = true,
                 hasAdmin = false,
                 height = App.Height,
                 width = App.Width
             };
 
-            // Do JSON parsing AOT
-            mLayer.LoadJsonContent();
-
-            // Add layer to icon board scene
-            gameScene.AddLayer(mLayer);
+            gameScene.AddLayer(App.GamingLayer);
         }
     }
 }

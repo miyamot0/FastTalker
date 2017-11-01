@@ -31,12 +31,21 @@ using SGDWithCocos.Shared.Pages;
 using SGDWithCocos.Tags;
 using Xamarin.Forms;
 using CocosSharp;
+using SGDWithCocos.Layers;
+using SGDWithCocos.Shared.Layers;
+using SGDWithCocos.Scenes;
+using SGDWithCocos.Utilities;
 
 namespace SGDWithCocos.Shared
 {
     public class App : Application
 	{
         public static GamePage MainGamePage;
+        public static GameStartScene StartScene;
+        public static GameLayer GamingLayer;
+
+        public static UserInput InputFactory;
+
         public static bool HasAdmin;
         public static int Height = -1, Width = -1;
 
@@ -80,9 +89,10 @@ namespace SGDWithCocos.Shared
         /// </summary>
 		public App ()
 		{
-            Database.Init();
-           
+            Database.Init();           
+
             MainGamePage = new GamePage();
+
 
             if (Device.RuntimePlatform == Device.Android)
             {

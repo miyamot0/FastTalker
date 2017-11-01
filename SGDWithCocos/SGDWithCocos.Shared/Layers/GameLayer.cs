@@ -1768,7 +1768,8 @@ namespace SGDWithCocos.Shared.Layers
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
                         var mCounter = iconList2.IndexOf(mSprite);
 
-                        GamePageParent.mInputFactory.CallActionSheet(mCounter);
+                        //GamePageParent.mInputFactory.CallActionSheet(mCounter);
+                        App.InputFactory.CallActionSheet(mCounter);
                     }
 
                     #endregion
@@ -1787,7 +1788,8 @@ namespace SGDWithCocos.Shared.Layers
 
                     mSprite = null;
 
-                    GamePageParent.mInputFactory.CallActionSheet(mCounter);
+                    //GamePageParent.mInputFactory.CallActionSheet(mCounter);
+                    App.InputFactory.CallActionSheet(mCounter);               
                 }
 
                 #endregion
@@ -1814,7 +1816,8 @@ namespace SGDWithCocos.Shared.Layers
                 {
                     CurrentSpriteTouched.Opacity = 255;
 
-                    GamePageParent.mInputFactory.CallActionSheetChoice(new List<IconReference>(iconList2));
+                    //GamePageParent.mInputFactory.CallActionSheetChoice(new List<IconReference>(iconList2));
+                    App.InputFactory.CallActionSheetChoice(new List<IconReference>(iconList2));
                 }
 
                 #endregion
@@ -1843,7 +1846,8 @@ namespace SGDWithCocos.Shared.Layers
                         var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
                         var mCounter = iconList2.IndexOf(mSprite);
 
-                        GamePageParent.mInputFactory.CallActionSheet(mCounter);
+                        //GamePageParent.mInputFactory.CallActionSheet(mCounter);
+                        App.InputFactory.CallActionSheet(mCounter);
 
                         mSprite = null;
                     }
@@ -1959,7 +1963,9 @@ namespace SGDWithCocos.Shared.Layers
                         {
                             // TODO: this is the reference that is preventing cleanup
 
-                            GamePageParent.mInputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
+                            //GamePageParent.mInputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
+                            App.InputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
+                           
                             
                             isModal = false;
 
