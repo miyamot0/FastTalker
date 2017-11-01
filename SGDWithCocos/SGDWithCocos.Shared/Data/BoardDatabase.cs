@@ -108,12 +108,12 @@ namespace SGDWithCocos.Data
         /// </summary>
         /// <param name="icons"></param>
         /// <returns></returns>
-        public Task<int> SaveStoredIconsAsync(List<TableStoredIcons> icons)
+        public Task<int> SaveStoredIconsAsync(List<TableStoredIcons> storedIcons)
         {
             database.DropTableAsync<TableStoredIcons>().Wait();
             database.CreateTableAsync<TableStoredIcons>().Wait();
 
-            return database.InsertAllAsync(icons);
+            return database.InsertAllAsync(storedIcons);
         }
 
         /// <summary>
@@ -121,12 +121,12 @@ namespace SGDWithCocos.Data
         /// </summary>
         /// <param name="icons"></param>
         /// <returns></returns>
-        public Task<int> SaveFoldersAsync(List<TableFolders> icons)
+        public Task<int> SaveFoldersAsync(List<TableFolders> folders)
         {
             database.DropTableAsync<TableFolders>().Wait();
             database.CreateTableAsync<TableFolders>().Wait();
 
-            return database.InsertAllAsync(icons);
+            return database.InsertAllAsync(folders);
         }
 
         /// <summary>
