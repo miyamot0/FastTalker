@@ -30,7 +30,7 @@ using SGDWithCocos.Models;
 
 namespace SGDWithCocos.Scenes
 {
-    class GameSGDScene : CCScene
+    public class GameSGDScene : CCScene
     {
         /// <summary>
         /// Base SGD Scene

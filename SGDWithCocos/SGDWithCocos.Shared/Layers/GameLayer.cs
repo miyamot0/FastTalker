@@ -1966,7 +1966,6 @@ namespace SGDWithCocos.Shared.Layers
                             //GamePageParent.mInputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
                             App.InputFactory.NameEmbeddedIcon(CurrentSpriteTouched);
                            
-                            
                             isModal = false;
 
                             ClearIconsInModal();

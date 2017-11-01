@@ -41,7 +41,10 @@ namespace SGDWithCocos.Shared
     public class App : Application
 	{
         public static GamePage MainGamePage;
+
         public static GameStartScene StartScene;
+
+        public static GameSGDScene GameScene;
         public static GameLayer GamingLayer;
 
         public static UserInput InputFactory;
@@ -93,11 +96,9 @@ namespace SGDWithCocos.Shared
 
             MainGamePage = new GamePage();
 
-
             if (Device.RuntimePlatform == Device.Android)
             {
                 HasAdmin = DependencyService.Get<IAdmin>().IsAdmin();
-
                 DependencyService.Get<IAdmin>().RequestAdmin(HasAdmin);
             }
 

@@ -42,11 +42,7 @@ namespace SGDWithCocos.Shared.Pages
     /// </summary>
     public class GamePage : ContentPage
     {
-        public CocosSharpView gameView;
-        public CCScene gameScene;
-       
-
-        //GameLayer mLayer;
+        CocosSharpView gameView;
 
         /// <summary>
         /// NativeGame object
@@ -61,12 +57,7 @@ namespace SGDWithCocos.Shared.Pages
             App.Width = DependencyService.Get<IDisplay>().Width;
             App.Height = DependencyService.Get<IDisplay>().Height;
 
-            if (App.Width > App.Height)
-            {
-                App.Width = DependencyService.Get<IDisplay>().Width;
-                App.Height = DependencyService.Get<IDisplay>().Height;
-            }
-            else
+            if (App.Width < App.Height)
             {
                 App.Height = DependencyService.Get<IDisplay>().Width;
                 App.Width = DependencyService.Get<IDisplay>().Height;
@@ -82,8 +73,6 @@ namespace SGDWithCocos.Shared.Pages
             };
 
             Content = gameView;
-
-
         }
 
         /// <summary>
@@ -141,6 +130,18 @@ namespace SGDWithCocos.Shared.Pages
                 App.GamingLayer = new GameLayer(this);
                 App.GamingLayer.LoadJsonContent();
 
+                App.GameScene = new GameSGDScene(App.GameView);
+                App.GameScene.AddLayer(App.GamingLayer);
+
+                App.InputFactory = new UserInput
+                {
+                    mLayer = App.GamingLayer,
+                    hasScreenLock = true,
+                    hasAdmin = false,
+                    height = App.Height,
+                    width = App.Width
+                };
+
                 // Launch stats
                 App.GameView.Stats.Enabled = true;
                 App.GameView.Stats.Scale = 2;
@@ -149,27 +150,6 @@ namespace SGDWithCocos.Shared.Pages
 
                 App.GameView.RunWithScene(App.StartScene);
             }
-        }
-
-        /// <summary>
-        /// Construct the icon communication board scene
-        /// </summary>
-        /// <param name="nativeGameView"></param>
-        public void ConstructGameScene(CCGameView nativeGameView)
-        {
-            gameScene = new GameSGDScene(nativeGameView);
-
-            App.InputFactory = new UserInput
-            {
-                //mLayer = mLayer,
-                mLayer = App.GamingLayer,
-                hasScreenLock = true,
-                hasAdmin = false,
-                height = App.Height,
-                width = App.Width
-            };
-
-            gameScene.AddLayer(App.GamingLayer);
         }
     }
 }

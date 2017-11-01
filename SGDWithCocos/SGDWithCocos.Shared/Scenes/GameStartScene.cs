@@ -248,13 +248,10 @@ namespace SGDWithCocos.Scenes
         {
             RunActions(new CCSequence(
                 new CCCallFunc(() => {
-                    mGamePage.ConstructGameScene(App.GameView);
-                    GameView.Director.ReplaceScene(mGamePage.gameScene);
-
+                    GameView.Director.ReplaceScene(App.GameScene);
                 }),
                 new CCCallFunc(() => {
                     CleanUpAndDispose();
-
                 })));
         }
 
