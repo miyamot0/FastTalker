@@ -134,6 +134,8 @@ namespace SGDWithCocos.Utilities
 
                 foreach (StoredIconReference mStoredRef in storedIcons)
                 {
+                    Debug.WriteLineIf(App.Debugging, mStoredRef.FolderName);
+
                     storedIconModel = new TableStoredIcons("", "", 0, 0, -1, mStoredRef.Base64, mStoredRef.Sprite.ScaleX);
 
                     spriteLabel = mStoredRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CocosSharp.CCLabel;

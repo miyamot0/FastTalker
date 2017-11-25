@@ -860,8 +860,8 @@ namespace SGDWithCocos.Utilities
             {
                 mOptions = new string[] {
                     StringTypes.ResumeOperation,
-                    // Stub out server code
-                    //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
+                    // TODO: Stub out server code
+                    !mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
                     StringTypes.ForceSave,
                     // Stub out board import
                     //StringTypes.ImportBoard,
@@ -876,8 +876,8 @@ namespace SGDWithCocos.Utilities
             {
                 mOptions = new string[] {
                     StringTypes.ResumeOperation,
-                    // Stub out server code
-                    //!mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
+                    // TODO: Stub out server code
+                    !mLayer.ServerActive ? StringTypes.ServerStart : StringTypes.ServerShutdown,
                     StringTypes.ForceSave,
                     // Stub out board import
                     //StringTypes.ImportBoard,                    
@@ -1478,17 +1478,18 @@ namespace SGDWithCocos.Utilities
         {
             mLayer.SaveContent();
 
-            /*
-            
-            TODO: migrate server to sql
+            // TODO: migrate server to sql
 
-            mServer = new SimpleIconServer(GetBoards("IconBoard"));
+            mServer = new SimpleIconServer();
             mLayer.ServerActive = true;
 
             Device.BeginInvokeOnMainThread(async () =>
             {
                 await Application.Current.MainPage.DisplayAlert("Server Active", string.Format("{0}:{1}", mServer.IP, mServer.Port), "Close Server");
             });
+
+            /*
+            
             */
         }
 

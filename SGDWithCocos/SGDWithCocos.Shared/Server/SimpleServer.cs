@@ -41,6 +41,10 @@ using System.Threading;
 using Xamarin.Forms;
 using SGDWithCocos.Interface;
 using SGDWithCocos.Server.Pages;
+using System.Diagnostics;
+using SGDWithCocos.Shared;
+using SGDWithCocos.Models;
+using System.Collections.Generic;
 
 namespace SGDWithCocos.Server
 {
@@ -56,9 +60,8 @@ namespace SGDWithCocos.Server
         /// <summary>
         /// Initialize server, polling for an open port along the way
         /// </summary>
-        public SimpleIconServer(string iconJson)
+        public SimpleIconServer()
         {
-            IconJSON = iconJson;
             IP = IPAddress.Parse(DependencyService.Get<INetwork>().GetIP());
 
             TcpListener tcpListener = new TcpListener(IP, 0);
@@ -94,6 +97,10 @@ namespace SGDWithCocos.Server
                 try
                 {
                     HttpListenerContext context = httpListener.GetContext();
+
+                    // Important: Kill these off ASAP
+                    context.Response.KeepAlive = false;
+
                     Process(context);
                 }
                 catch { }
@@ -128,14 +135,96 @@ namespace SGDWithCocos.Server
             {
                 OutputContent(context, Index.Html);
             }
+            else if (fullpath == "/Testing")
+            {
+                OutputContent(context, OutputFieldQuery());
+            }
             else if (fullpath == "/LoadBoard")
             {
-                OutputContent(context, IconJSON);
+                OutputContent(context, OutputFieldQuery());
             }
             else
             {
                 OutputContent(context, HttpStatusCode.InternalServerError.ToString());
             }            
+        }
+
+        private string OutputFieldQuery()
+        {
+            List<TableIcons> icons = App.Database.GetIconsAsync().Result;
+            List<TableStoredIcons> iconsSaved = App.Database.GetStoredIconsAsync().Result;
+            List<TableFolders> folders = App.Database.GetFolderIconsAsync().Result;
+            TableSettings settings = App.Database.GetSettingsAsync().Result;
+
+            bool comma = false;
+
+            string mResponse = "{";
+
+            mResponse += "\"TableIcons\": [";
+            foreach (TableIcons icon in icons)
+            {
+                if (comma)
+                {
+                    mResponse += ",";
+                }
+
+                mResponse += "{\"Text\": \"" + icon.Text + "\",";
+                mResponse += "\"X\": " + icon.X + ",";
+                mResponse += "\"Y\": " + icon.Y + ",";
+                mResponse += "\"Base64\": \"" + icon.Base64 + "\",";
+                mResponse += "\"Scale\": " + icon.Scale + "}";
+
+                comma = true;
+            }
+
+            mResponse += "],";
+            mResponse += "\"TableStoredIcons\": [";
+
+            comma = false;
+
+            foreach (TableStoredIcons icon in iconsSaved)
+            {
+                if (comma)
+                {
+                    mResponse += ",";
+                }
+
+                mResponse += "{\"Text\": \"" + icon.Text + "\",";
+                mResponse += "\"Folder\": ," + icon.Folder + "',";
+                mResponse += "\"X\": " + icon.X + ",";
+                mResponse += "\"Y\": " + icon.Y + ",";
+                mResponse += "\"Base64\": \"" + icon.Base64 + "\",";
+                mResponse += "\"Scale\": " + icon.Scale + "}";
+
+                comma = true;
+            }
+
+            mResponse += "],";
+            mResponse += "\"TableFolders\": [";
+
+            comma = false;
+
+            foreach (TableFolders icon in folders)
+            {
+                if (comma)
+                {
+                    mResponse += ",";
+                }
+
+                mResponse += "{\"Text\": \"" + icon.Text + "\",";
+                mResponse += "\"X\": " + icon.X + ",";
+                mResponse += "\"Y\": " + icon.Y + ",";
+                mResponse += "\"Base64\": \"" + icon.Base64 + "\",";
+                mResponse += "\"Scale\": " + icon.Scale + "}";
+
+                comma = true;
+            }
+            mResponse += "],";
+            mResponse += "\"SingleModel\": ";
+            mResponse += (settings.SingleMode) ? "true" : "false";
+            mResponse += "}";
+
+            return mResponse;
         }
 
         /// <summary>
@@ -149,13 +238,18 @@ namespace SGDWithCocos.Server
             {
                 using (Stream s = GenerateStreamFromString(content))
                 {
+                    context.Response.ContentType = "text/html";
                     context.Response.ContentLength64 = s.Length;
                     context.Response.AddHeader("Date", DateTime.Now.ToString("r"));
 
                     byte[] buffer = new byte[1024 * 16];
+
                     int nbytes;
-                    while ((nbytes = s.Read(buffer, 0, buffer.Length)) > 0)
+
+                    while ((nbytes = s.Read(buffer, 0, buffer.Length)) > 0) 
+                    {
                         context.Response.OutputStream.Write(buffer, 0, nbytes);
+                    }
 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.OutputStream.Flush();
@@ -163,8 +257,14 @@ namespace SGDWithCocos.Server
                 }
 
                 context.Response.OutputStream.Close();
+                context.Response.Close();
             }
-            catch { }
+            catch (Exception e) 
+            { 
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                Debug.WriteLineIf(App.Debugging, e.ToString());
+            }
         }
 
         /// <summary>
