@@ -39,7 +39,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Pages\GamePage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameSGDScene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\GameStartScene.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Server\Pages\Index.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\SimpleServer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\CategoryTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tags\EditTypes.cs" />
@@ -53,5 +52,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserInput.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\PopUpWindow.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)ServerPages\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)ServerPages\Index.html" />
   </ItemGroup>
 </Project>

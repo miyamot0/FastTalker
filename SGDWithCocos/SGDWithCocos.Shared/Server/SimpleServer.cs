@@ -40,11 +40,13 @@ using System.IO;
 using System.Threading;
 using Xamarin.Forms;
 using SGDWithCocos.Interface;
-using SGDWithCocos.Server.Pages;
 using System.Diagnostics;
 using SGDWithCocos.Shared;
 using SGDWithCocos.Models;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using HttpMultipartParser;
 
 namespace SGDWithCocos.Server
 {
@@ -131,25 +133,52 @@ namespace SGDWithCocos.Server
         {
             string fullpath = context.Request.Url.AbsolutePath.Trim();
 
-            if (fullpath == "/")
+            Debug.WriteLineIf(App.Debugging, "Method: " + context.Request.HttpMethod);
+
+            if (context.Request.HttpMethod == "GET")
             {
-                OutputContent(context, Index.Html);
+                if (fullpath == "/")
+                {
+                    using (Stream stream = App.MainAssembly.GetManifestResourceStream(App.MainAddress + "Index.html"))
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            OutputContent(context, reader.ReadToEnd());
+                        }
+                    }
+                }
+                else if (fullpath == "/LoadBoard")
+                {
+                    OutputContent(context, OutputCurrentField());
+                }
+                else
+                {
+                    OutputContent(context, HttpStatusCode.InternalServerError.ToString());
+                }                            
             }
-            else if (fullpath == "/Testing")
+            else if (context.Request.HttpMethod == "POST")
             {
-                OutputContent(context, OutputFieldQuery());
+                if (fullpath == "/UploadIcon")
+                {
+                    if (context.Request.HasEntityBody)
+                    {
+                        MultipartFormDataParser parser = new MultipartFormDataParser(context.Request.InputStream);
+
+                        string checkboxResponses = parser.GetParameterValue("test");
+
+                        Debug.WriteLineIf(App.Debugging, checkboxResponses);
+
+                        OutputContent(context, "Success");
+                    }
+                    else
+                    {
+                        OutputContent(context, "Failure");
+                    }                   
+                }
             }
-            else if (fullpath == "/LoadBoard")
-            {
-                OutputContent(context, OutputFieldQuery());
-            }
-            else
-            {
-                OutputContent(context, HttpStatusCode.InternalServerError.ToString());
-            }            
         }
 
-        private string OutputFieldQuery()
+        private string OutputCurrentField()
         {
             List<TableIcons> icons = App.Database.GetIconsAsync().Result;
             List<TableStoredIcons> iconsSaved = App.Database.GetStoredIconsAsync().Result;

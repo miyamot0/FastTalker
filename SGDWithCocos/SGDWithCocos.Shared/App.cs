@@ -35,6 +35,9 @@ using SGDWithCocos.Layers;
 using SGDWithCocos.Shared.Layers;
 using SGDWithCocos.Scenes;
 using SGDWithCocos.Utilities;
+using System.Reflection;
+using System.IO;
+using System.Diagnostics;
 
 namespace SGDWithCocos.Shared
 {
@@ -49,6 +52,34 @@ namespace SGDWithCocos.Shared
         public static GameLayer GamingLayer;
 
         public static UserInput InputFactory;
+
+        private static Assembly assembly;
+        public static Assembly MainAssembly
+        {
+            get
+            {
+                if (assembly == null)
+                {
+                    assembly = typeof(App).GetTypeInfo().Assembly;
+                }
+
+                return assembly;
+            }
+        }
+
+        public static string MainAddress
+        {
+            get 
+            {
+                #if __IOS__
+                    return "SGDWithCocos.iOS.ServerPages.";
+                #endif
+
+                #if __ANDROID__
+                    return "SGDWithCocos.Droid.ServerPages.";
+                #endif                
+            }
+        }
 
         public static bool HasAdmin;
 

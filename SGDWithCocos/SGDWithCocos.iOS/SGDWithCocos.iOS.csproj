@@ -210,6 +210,9 @@
     <Reference Include="SQLitePCLRaw.provider.sqlite3">
       <HintPath>..\..\packages\SQLitePCLRaw.provider.sqlite3.ios_unified.1.1.8\lib\Xamarin.iOS10\SQLitePCLRaw.provider.sqlite3.dll</HintPath>
     </Reference>
+    <Reference Include="HttpMultipartParser">
+      <HintPath>..\..\packages\HttpMultipartParser.2.2.4\lib\netstandard1.3\HttpMultipartParser.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Icon-72.png" />
