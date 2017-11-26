@@ -187,14 +187,8 @@ namespace SGDWithCocos.Server
 
                             if (req != null)
                             {
-                                Debug.WriteLineIf(App.Debugging, req.Name);
-
-                                App.GamingLayer.RemoteManageIcon(req);
-                                
+                                App.GamingLayer.RemoteManageIcon(req);                                
                             }
-
-
-                            Debug.WriteLineIf(App.Debugging, jsonString);
                         }
 
                         OutputContent(context, "Success");

@@ -149,6 +149,11 @@
                     mButton.addEventListener('click', function() {
                         console.log(event.srcElement);
                         httpPost(serverLocation, "Delete", "Active", event.srcElement["DataText"], event.srcElement["DataHashCode"]);
+
+                        //row
+                        event.srcElement.parentNode.parentNode.parentNode.removeChild(event.srcElement.parentNode.parentNode);
+
+
                     }, false);
 
 

@@ -2093,36 +2093,48 @@ namespace SGDWithCocos.Shared.Layers
         {
             if (serverReq.Method.Contains("Delete"))
             {
-                Debug.WriteLineIf(App.Debugging, "in Delte call");
+                Debug.WriteLineIf(App.Debugging, "in Delete call");
 
-                //var refSprite = iconList2.Where(t => t.Sprite.)
-            }
+                var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == serverReq.HashCode).FirstOrDefault();
 
-            /*
-            var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
+                ScheduleOnce((dt) => {
 
-            ScheduleOnce((dt) => {
-                //RemoveChild(target);
+                    CCSprite temp = caller.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
 
-                // <!-- Note: Edited Cleanup Here 
+                    if (temp != null)
+                    {
+                        CCTextureCache.SharedTextureCache.RemoveTexture(temp.Texture);
+                        temp.Texture.Dispose();
+                    }
 
-                CCSprite temp = caller.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
+                    mSprite.Sprite.RemoveAllChildren();
+                    mSprite.Sprite.RemoveEventListeners(false);
+                    mSprite.Sprite.RemoveFromParent();
+                }, 0);
 
-                if (temp != null)
+                iconList2.Remove(mSprite);
+
+                // Force saving
+
+                lock (iconList2)
                 {
-                    CCTextureCache.SharedTextureCache.RemoveTexture(temp.Texture);
-                    temp.Texture.Dispose();
+                    lock (storedList)
+                    {
+                        try
+                        {
+                            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Saving...");
+
+                            FileTools.SaveToDatabase(iconList2, storedList, inSingleMode, unselectAuto);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLineIf(App.Debugging, "Ex: " + ex.ToString());
+                        }
+                    }
                 }
 
-                caller.RemoveAllChildren();
-                caller.RemoveEventListeners(false);
-                caller.RemoveFromParent();
 
-                // -->
-            }, 0);
-
-            iconList2.Remove(mSprite);      
-            */
+            }
         }
 
         /// <summary>
