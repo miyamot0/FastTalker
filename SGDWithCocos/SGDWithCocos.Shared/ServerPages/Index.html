@@ -53,36 +53,11 @@
                 }
             }
 
-            var data = {
+            xmlhttp.send(JSON.stringify({
                 Method: rest,
                 Type: type,
                 Name: name
-            };
-
-            xmlhttp.send(JSON.stringify(data));
-
-            /*
-            var xmlHttp = new XMLHttpRequest();
-            url = 'http://' + url + '/' + rest;
-            var params = "Type=" + type +
-                "&Name=" + name;
-                
-            xmlHttp.open("POST", url, true);            
-
-            console.log(url);
-
-            xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-            xmlHttp.onreadystatechange = function() 
-            {
-                if(xmlHttp.readyState == 4 && xmlHttp.status == 200) 
-                {
-                    console.log(xmlHttp.responseText);
-                }
-            }
-
-            xmlHttp.send(params);
-            */
+            }));
         }
 
         function ShowResults(responseData)

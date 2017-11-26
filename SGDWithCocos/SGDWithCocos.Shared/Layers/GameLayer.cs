@@ -2307,6 +2307,11 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void SaveContent()
         {
+            if (ServerActive)
+            {
+                return;
+            }
+
             lock (iconList2)
             {
                 lock (storedList)
