@@ -164,6 +164,7 @@ namespace SGDWithCocos.Server
                     {
                         MultipartFormDataParser parser = new MultipartFormDataParser(context.Request.InputStream);
 
+                        // TODO: parse base64
                         string checkboxResponses = parser.GetParameterValue("test");
 
                         Debug.WriteLineIf(App.Debugging, checkboxResponses);
@@ -178,6 +179,10 @@ namespace SGDWithCocos.Server
             }
         }
 
+        /// <summary>
+        /// Outputs the current field.
+        /// </summary>
+        /// <returns>The current field.</returns>
         private string OutputCurrentField()
         {
             List<TableIcons> icons = App.Database.GetIconsAsync().Result;
@@ -219,7 +224,7 @@ namespace SGDWithCocos.Server
                 }
 
                 mResponse += "{\"Text\": \"" + icon.Text + "\",";
-                mResponse += "\"Folder\": ," + icon.Folder + "',";
+                mResponse += "\"Folder\": \"" + icon.Folder + "\",";
                 mResponse += "\"X\": " + icon.X + ",";
                 mResponse += "\"Y\": " + icon.Y + ",";
                 mResponse += "\"Base64\": \"" + icon.Base64 + "\",";

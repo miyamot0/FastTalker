@@ -4,65 +4,238 @@
     <title>Fast Talker Web Setup</title>
     <meta name='description' content='Fast Talker Local Server'>
     <meta name='author' content='Shawn Gilroy'>
-    <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
     <script>
 
         var serverLocation;
 
-        function LoadCurrentLocation() {
+        function LoadCurrentLocation() 
+        {
             serverLocation = window.location.href.toString();
             serverLocation = serverLocation.replace('http://', '');
             serverLocation = serverLocation.replace('/', '');
-
-            var address = document.getElementById('ipAddressInput');
-            address.value = serverLocation;
         }
 
-        function ClickedRequest() {
+        function ClickedRequest() 
+        {
             var httpResponse = httpGet(serverLocation, 'LoadBoard');
         }
 
-        function httpGet(url, rest) {
-            url = url + '/' + rest;
+        function httpGet(url, rest) 
+        {
+            url = 'http://' + url + '/' + rest;
 
-            var request = $.ajax({
-              url: '/Testing',
-              method: 'GET',
-              dataType: 'html'
-            });
+            console.log(url);
 
-            request.done(function( msg ) {
-                var content = document.createTextNode(msg);
-                document.body.appendChild(content);
-                console.log(msg);
-            });
+            var xmlHttp = new XMLHttpRequest();
 
-            request.fail(function( jqXHR, textStatus ) {
-                alert( 'Request failed: ' + textStatus );
-            });
-
-            /*
-            $.ajax({
-                url: url,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
-                    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-                },
-                method: 'GET',
-                dataType: 'text/html',
-                success: function(e) {
-                    console.log(e);
-
-                    //return e;
+            xmlHttp.onreadystatechange = function() 
+            { 
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                {
+                    ShowResults(xmlHttp.responseText);
                 }
-            });
-            */
+            }
+            xmlHttp.open("GET", url, true); // true for asynchronous 
+            xmlHttp.send(null);
+        }
+
+        function ShowResults(responseData)
+        {
+            var jsonStuff = JSON.parse(responseData);
+
+            if (jsonStuff)
+            {
+                var mBodyDiv = document.getElementById("status");
+
+                // Remove child nodes
+                while (mBodyDiv.firstChild) {
+                    mBodyDiv.removeChild(mBodyDiv.firstChild);
+                }                
+
+                console.log(jsonStuff);
+
+                // Display Status (Format)
+                var frameStatus = document.createElement('div');
+                frameStatus.innerHTML = "<p>Single Icon Output Mode: " + jsonStuff.SingleModel + "</p>";
+                mBodyDiv.appendChild(frameStatus);
+
+                var tbl     = document.createElement("table");
+                tbl.style.border = "1px solid #000";
+                tbl.style.borderCollapse = "collapse";
+
+                var tblBody = document.createElement("tbody");
+
+                var newRow = document.createElement('tr');
+                var newCell = document.createElement('td');
+                newCell.style.border = "1px solid #000";
+
+                var textChildElement = document.createTextNode("Active Icon");
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);
+
+                newCell = document.createElement('td');    
+                newCell.style.border = "1px solid #000";
+
+                textChildElement = document.createTextNode("Image");
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);
+
+                tblBody.appendChild(newRow);
+
+                var storedIcon = undefined;
+                var storedIconImg = undefined;
+
+                for (var i = 0; i < jsonStuff.TableIcons.length; i++)
+                {
+                    newRow = document.createElement('tr');
+
+                    storedIcon = document.createElement('td');
+                    storedIcon.innerHTML = "Name: " + jsonStuff.TableIcons[i].Text + "<br/>" +
+                    "X: " + jsonStuff.TableIcons[i].X + "<br/>" +
+                    "Y: " + jsonStuff.TableIcons[i].Y + "<br/>" +
+                    "Scale: " + jsonStuff.TableIcons[i].Scale + "<br/><br/>";
+                    storedIcon.style.border = "1px solid #000";
+                    storedIcon.style.width = "256px";
+
+                    newRow.appendChild(storedIcon);
+
+                    storedIconImg = document.createElement('img');
+                    storedIconImg.setAttribute(
+                        'src', 'data:image/png;base64,' + jsonStuff.TableIcons[i].Base64);
+                    storedIconImg.style.height = '256px';
+                    storedIconImg.style.width = '256px';
+                    storedIconImg.style.border = "1px solid #000";
+
+                    newRow.appendChild(storedIconImg);
+
+                    tblBody.appendChild(newRow);                    
+                }
+
+                tbl.appendChild(tblBody);
+
+                mBodyDiv.appendChild(tbl);
+
+                var hackNode = document.createTextNode("---");
+
+                mBodyDiv.appendChild(hackNode);
+
+                tbl     = document.createElement("table");
+                tbl.style.border = "1px solid #000";
+                tbl.style.borderCollapse = "collapse";
+
+                tblBody = document.createElement("tbody");
+
+                newRow = document.createElement('tr');
+                newCell = document.createElement('td');
+                newCell.style.border = "1px solid #000";
+
+                textChildElement = document.createTextNode("Folder");
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);
+
+                newCell = document.createElement('td');    
+                newCell.style.border = "1px solid #000";
+
+                textChildElement = document.createTextNode("Image");                   
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);
+
+                tblBody.appendChild(newRow);
+
+                for (var i = 0; i < jsonStuff.TableFolders.length; i++)
+                {
+                    newRow = document.createElement('tr');
+
+                    storedIcon = document.createElement('td');
+                    storedIcon.innerHTML = "Name: " + jsonStuff.TableFolders[i].Text + "<br/>" +
+                    "X: " + jsonStuff.TableFolders[i].X + "<br/>" +
+                    "Y: " + jsonStuff.TableFolders[i].Y + "<br/>" +
+                    "Scale: " + jsonStuff.TableFolders[i].Scale + "<br/><br/>";
+                    storedIcon.style.border = "1px solid #000";
+                    storedIcon.style.width = "256px";
+                        newRow.appendChild(storedIcon);
+
+                    hackNode = document.createTextNode("---");
+                        newRow.appendChild(hackNode);
+
+                    tblBody.appendChild(newRow);   
+                }
+
+                tbl.appendChild(tblBody);
+
+                mBodyDiv.appendChild(tbl);
+
+                var hackNode = document.createTextNode("---");
+
+                mBodyDiv.appendChild(hackNode);
+
+                // Stored Icons
+                tbl     = document.createElement("table");
+                tbl.style.border = "1px solid #000";
+                tbl.style.borderCollapse = "collapse";
+
+                tblBody = document.createElement("tbody");
+
+                newRow = document.createElement('tr');
+                newCell = document.createElement('td');
+                newCell.style.border = "1px solid #000";
+
+                textChildElement = document.createTextNode("Active Icon");
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);
+
+                newCell = document.createElement('td');    
+                newCell.style.border = "1px solid #000";
+
+                textChildElement = document.createTextNode("Image");
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);
+
+                tblBody.appendChild(newRow);
+
+                for (var i = 0; i < jsonStuff.TableStoredIcons.length; i++)
+                {
+                    newRow = document.createElement('tr');
+
+                    storedIcon = document.createElement('td');
+                    storedIcon.innerHTML = "Name: " + jsonStuff.TableStoredIcons[i].Text + "<br/>" +
+                    "Folder: " + jsonStuff.TableStoredIcons[i].Folder + "<br/>" +
+                    "X: " + jsonStuff.TableStoredIcons[i].X + "<br/>" +
+                    "Y: " + jsonStuff.TableStoredIcons[i].Y + "<br/>" +
+                    "Scale: " + jsonStuff.TableStoredIcons[i].Scale + "<br/><br/>";
+                    storedIcon.style.border = "1px solid #000";
+                    storedIcon.style.width = "256px";
+
+                        newRow.appendChild(storedIcon);
+
+                    var storedIconImg = document.createElement('img');
+                    storedIconImg.setAttribute(
+                        'src', 'data:image/png;base64,' + jsonStuff.TableStoredIcons[i].Base64);
+                    storedIconImg.style.height = '256px';
+                    storedIconImg.style.width = '256px';
+                    storedIconImg.style.border = "1px solid #000";
+
+                        newRow.appendChild(storedIconImg);
+
+                        tblBody.appendChild(newRow);                    
+                }
+
+                tbl.appendChild(tblBody);
+
+                mBodyDiv.appendChild(tbl);
+            }
         }
     </script>
 </head>
 <body onload='LoadCurrentLocation()'>
-    <input id='ipAddressInput' type='text' name='ipAddress' value='' />
-    <button id='getRequestStart' onclick='ClickedRequest()'>Hit button</button>
+    <p>FastTalker Web-based Management System</p> 
+
+    <p>Load Current Board: <button id='getRequestStart' onclick='ClickedRequest()'>Hit button</button> </p> 
+
+    <br/>
+
+    <div id="status">
+        
+    </div>
 </body>
 </html>
