@@ -52,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\SpriteTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserInput.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\PopUpWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ServerComms.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)ServerPages\" />

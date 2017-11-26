@@ -229,9 +229,6 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.4.0.18342\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HttpMultipartParser">
-      <HintPath>..\..\packages\HttpMultipartParser.2.2.4\lib\netstandard1.3\HttpMultipartParser.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\DeviceAdminReceiverClass.cs" />

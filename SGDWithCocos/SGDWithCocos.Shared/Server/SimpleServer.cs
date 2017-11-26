@@ -46,7 +46,7 @@ using SGDWithCocos.Models;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using HttpMultipartParser;
+using Newtonsoft.Json;
 
 namespace SGDWithCocos.Server
 {
@@ -162,12 +162,7 @@ namespace SGDWithCocos.Server
                 {
                     if (context.Request.HasEntityBody)
                     {
-                        MultipartFormDataParser parser = new MultipartFormDataParser(context.Request.InputStream);
-
-                        // TODO: parse base64
-                        string checkboxResponses = parser.GetParameterValue("test");
-
-                        Debug.WriteLineIf(App.Debugging, checkboxResponses);
+                        Debug.WriteLineIf(App.Debugging, "in upload " + context.Request.HasEntityBody);
 
                         OutputContent(context, "Success");
                     }
@@ -175,6 +170,37 @@ namespace SGDWithCocos.Server
                     {
                         OutputContent(context, "Failure");
                     }                   
+                }
+                else if (fullpath == "/Delete")
+                {
+                    Debug.WriteLineIf(App.Debugging, "In post");
+
+                    if (context.Request.HasEntityBody)
+                    {
+                        Debug.WriteLineIf(App.Debugging, "has entity body");
+
+                        using (StreamReader reader = new StreamReader(context.Request.InputStream))
+                        {
+                            string jsonString = reader.ReadToEnd();
+
+                            ServerComms req = JsonConvert.DeserializeObject<ServerComms>(jsonString);
+
+                            if (req != null)
+                            {
+                                Debug.WriteLineIf(App.Debugging, req.Name);
+                                
+                            }
+
+
+                            Debug.WriteLineIf(App.Debugging, jsonString);
+                        }
+
+                        OutputContent(context, "Success");
+                    }
+                    else
+                    {
+                        OutputContent(context, "Failure");
+                    }                        
                 }
             }
         }

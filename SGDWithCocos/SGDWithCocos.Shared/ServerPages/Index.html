@@ -24,8 +24,6 @@
         {
             url = 'http://' + url + '/' + rest;
 
-            console.log(url);
-
             var xmlHttp = new XMLHttpRequest();
 
             xmlHttp.onreadystatechange = function() 
@@ -37,6 +35,54 @@
             }
             xmlHttp.open("GET", url, true); // true for asynchronous 
             xmlHttp.send(null);
+        }
+
+        function httpPost(url, rest, type, name)
+        {
+            url = 'http://' + url + '/' + rest;
+
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", url, true);   
+            xmlhttp.setRequestHeader("Content-Type", "application/json");
+
+            xmlhttp.onreadystatechange = function() 
+            {
+                if(xmlhttp.readyState == 4 && xmlhttp.status == 200) 
+                {
+                    console.log(xmlhttp.responseText);
+                }
+            }
+
+            var data = {
+                Method: rest,
+                Type: type,
+                Name: name
+            };
+
+            xmlhttp.send(JSON.stringify(data));
+
+            /*
+            var xmlHttp = new XMLHttpRequest();
+            url = 'http://' + url + '/' + rest;
+            var params = "Type=" + type +
+                "&Name=" + name;
+                
+            xmlHttp.open("POST", url, true);            
+
+            console.log(url);
+
+            xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+            xmlHttp.onreadystatechange = function() 
+            {
+                if(xmlHttp.readyState == 4 && xmlHttp.status == 200) 
+                {
+                    console.log(xmlHttp.responseText);
+                }
+            }
+
+            xmlHttp.send(params);
+            */
         }
 
         function ShowResults(responseData)
@@ -80,10 +126,18 @@
                 newCell.appendChild(textChildElement);
                     newRow.appendChild(newCell);
 
+                newCell = document.createElement('td');    
+                newCell.style.border = "1px solid #000";
+
+                textChildElement = document.createTextNode("Action");
+                newCell.appendChild(textChildElement);
+                    newRow.appendChild(newCell);                    
+
                 tblBody.appendChild(newRow);
 
                 var storedIcon = undefined;
                 var storedIconImg = undefined;
+                var storedButton = undefined;
 
                 for (var i = 0; i < jsonStuff.TableIcons.length; i++)
                 {
@@ -107,6 +161,22 @@
                     storedIconImg.style.border = "1px solid #000";
 
                     newRow.appendChild(storedIconImg);
+
+                    storedButton = document.createElement('td');
+                    storedButton.style.border = "1px solid #000";
+
+                    var mButton = document.createElement('button');
+                    mButton.innerHTML = "Delete";
+                    mButton.addEventListener('click', function() {
+                        httpPost(serverLocation, "Delete", "Active", jsonStuff.TableIcons[i].Text);
+                    }, false);
+
+
+                    //mButton.onclick = "httpPost(" + serverLocation + ", delete, active, " + jsonStuff.TableIcons[i].Text + ")";
+
+                    storedButton.appendChild(mButton);
+
+                    newRow.appendChild(storedButton);
 
                     tblBody.appendChild(newRow);                    
                 }
