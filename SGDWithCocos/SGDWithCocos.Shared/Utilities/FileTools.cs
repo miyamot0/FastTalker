@@ -58,7 +58,7 @@ namespace SGDWithCocos.Utilities
                 {
                     if (iconRef.Sprite.Tag == SpriteTypes.IconTag)
                     {
-                        iconModel = new TableIcons("", "", 0, 0, -1, iconRef.Sprite.ScaleX);
+                        iconModel = new TableIcons("", "", 0, 0, -1, iconRef.Sprite.ScaleX, iconRef.Sprite.GetHashCode());
 
                         spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
@@ -81,7 +81,7 @@ namespace SGDWithCocos.Utilities
                     {
                         spriteLabel = iconRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CCLabel;
 
-                        folderModel = new TableFolders("", "", "", 0, 0, -1, iconRef.Sprite.ScaleX);
+                        folderModel = new TableFolders("", "", "", 0, 0, -1, iconRef.Sprite.ScaleX, iconRef.GetHashCode());
 
                         if (spriteLabel != null)
                         {
@@ -125,9 +125,7 @@ namespace SGDWithCocos.Utilities
                 catch (Exception ex)
                 {
                     Debug.WriteLineIf(App.Debugging, ex.ToString());
-                    
                 }
-
 
                 List<TableStoredIcons> mStoredIconArray = new List<TableStoredIcons>();
                 TableStoredIcons storedIconModel;
@@ -136,7 +134,7 @@ namespace SGDWithCocos.Utilities
                 {
                     Debug.WriteLineIf(App.Debugging, mStoredRef.FolderName);
 
-                    storedIconModel = new TableStoredIcons("", "", 0, 0, -1, mStoredRef.Base64, mStoredRef.Sprite.ScaleX);
+                    storedIconModel = new TableStoredIcons("", "", 0, 0, -1, mStoredRef.Base64, mStoredRef.Sprite.ScaleX, mStoredRef.Sprite.GetHashCode());
 
                     spriteLabel = mStoredRef.Sprite.GetChildByTag(SpriteTypes.ContentTag) as CocosSharp.CCLabel;
 

@@ -7,6 +7,7 @@ namespace SGDWithCocos.Models
         public string Type;
         public string Name;
         public string Base64;
+        public int HashCode;
 
         public ServerComms()
         {

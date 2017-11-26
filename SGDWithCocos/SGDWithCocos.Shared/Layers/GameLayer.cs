@@ -2089,6 +2089,42 @@ namespace SGDWithCocos.Shared.Layers
             }
         }
 
+        public void RemoteManageIcon(ServerComms serverReq)
+        {
+            if (serverReq.Method.Contains("Delete"))
+            {
+                Debug.WriteLineIf(App.Debugging, "in Delte call");
+
+                //var refSprite = iconList2.Where(t => t.Sprite.)
+            }
+
+            /*
+            var mSprite = iconList2.Where(t => t.Sprite.GetHashCode() == caller.GetHashCode()).FirstOrDefault();
+
+            ScheduleOnce((dt) => {
+                //RemoveChild(target);
+
+                // <!-- Note: Edited Cleanup Here 
+
+                CCSprite temp = caller.GetChildByTag(Tags.SpriteTypes.ImageTag) as CCSprite;
+
+                if (temp != null)
+                {
+                    CCTextureCache.SharedTextureCache.RemoveTexture(temp.Texture);
+                    temp.Texture.Dispose();
+                }
+
+                caller.RemoveAllChildren();
+                caller.RemoveEventListeners(false);
+                caller.RemoveFromParent();
+
+                // -->
+            }, 0);
+
+            iconList2.Remove(mSprite);      
+            */
+        }
+
         /// <summary>
         /// Active move listener
         /// </summary>

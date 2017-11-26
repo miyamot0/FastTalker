@@ -46,6 +46,7 @@ namespace SGDWithCocos.Models
         public int Tag { get; set; }
         public float TextScale { get; set; }
         public bool TextVisible { get; set; }
+        public int HashCode { get; set; }
 
         /// <summary>
         /// Default constructor for SQL
@@ -62,7 +63,7 @@ namespace SGDWithCocos.Models
         /// <param name="y"></param>
         /// <param name="tag"></param>
         /// <param name="scale"></param>
-        public TableFolders(string text, string assetName, string base64, float x, float y, int tag, float scale)
+        public TableFolders(string text, string assetName, string base64, float x, float y, int tag, float scale, int hashCode)
         {
             Text = text;
             AssetName = assetName;
@@ -73,6 +74,7 @@ namespace SGDWithCocos.Models
             Scale = scale;
             TextScale = 1f;
             TextVisible = true;
+            HashCode = hashCode;
         }
     }
 }

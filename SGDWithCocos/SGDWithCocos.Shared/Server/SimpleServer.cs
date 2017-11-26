@@ -188,6 +188,8 @@ namespace SGDWithCocos.Server
                             if (req != null)
                             {
                                 Debug.WriteLineIf(App.Debugging, req.Name);
+
+                                App.GamingLayer.RemoteManageIcon(req);
                                 
                             }
 
@@ -231,6 +233,7 @@ namespace SGDWithCocos.Server
                 mResponse += "{\"Text\": \"" + icon.Text + "\",";
                 mResponse += "\"X\": " + icon.X + ",";
                 mResponse += "\"Y\": " + icon.Y + ",";
+                mResponse += "\"HashCode\": " + icon.HashCode + ",";
                 mResponse += "\"Base64\": \"" + icon.Base64 + "\",";
                 mResponse += "\"Scale\": " + icon.Scale + "}";
 
@@ -253,6 +256,7 @@ namespace SGDWithCocos.Server
                 mResponse += "\"Folder\": \"" + icon.Folder + "\",";
                 mResponse += "\"X\": " + icon.X + ",";
                 mResponse += "\"Y\": " + icon.Y + ",";
+                mResponse += "\"HashCode\": " + icon.HashCode + ",";
                 mResponse += "\"Base64\": \"" + icon.Base64 + "\",";
                 mResponse += "\"Scale\": " + icon.Scale + "}";
 
@@ -274,11 +278,13 @@ namespace SGDWithCocos.Server
                 mResponse += "{\"Text\": \"" + icon.Text + "\",";
                 mResponse += "\"X\": " + icon.X + ",";
                 mResponse += "\"Y\": " + icon.Y + ",";
+                mResponse += "\"HashCode\": " + icon.HashCode + ",";
                 mResponse += "\"Base64\": \"" + icon.Base64 + "\",";
                 mResponse += "\"Scale\": " + icon.Scale + "}";
 
                 comma = true;
             }
+
             mResponse += "],";
             mResponse += "\"SingleModel\": ";
             mResponse += (settings.SingleMode) ? "true" : "false";
@@ -313,7 +319,6 @@ namespace SGDWithCocos.Server
 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                     context.Response.OutputStream.Flush();
-
                 }
 
                 context.Response.OutputStream.Close();

@@ -46,6 +46,7 @@ namespace SGDWithCocos.Models
         public string Folder { get; set; }
         public float TextScale { get; set; }
         public bool TextVisible { get; set; }
+        public int HashCode { get; set; }
 
         /// <summary>
         /// Default constructor
@@ -62,7 +63,7 @@ namespace SGDWithCocos.Models
         /// <param name="tag"></param>
         /// <param name="folder"></param>
         /// <param name="scale"></param>
-        public TableStoredIcons(string text, string base64, float x, float y, int tag, string folder, float scale)
+        public TableStoredIcons(string text, string base64, float x, float y, int tag, string folder, float scale, int hashCode)
         {
             Text = text;
             Base64 = base64;
@@ -73,6 +74,7 @@ namespace SGDWithCocos.Models
             Scale = scale;
             TextScale = 1f;
             TextVisible = true;
+            HashCode = hashCode;
         }
     }
 }

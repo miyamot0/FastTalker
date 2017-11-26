@@ -37,7 +37,7 @@
             xmlHttp.send(null);
         }
 
-        function httpPost(url, rest, type, name)
+        function httpPost(url, rest, type, name, hash)
         {
             url = 'http://' + url + '/' + rest;
 
@@ -56,7 +56,8 @@
             xmlhttp.send(JSON.stringify({
                 Method: rest,
                 Type: type,
-                Name: name
+                Name: name,
+                HashCode: hash
             }));
         }
 
@@ -142,8 +143,12 @@
 
                     var mButton = document.createElement('button');
                     mButton.innerHTML = "Delete";
+                    mButton["DataHashCode"] = jsonStuff.TableIcons[i].HashCode;
+                    mButton["DataText"] = jsonStuff.TableIcons[i].Text;
+
                     mButton.addEventListener('click', function() {
-                        httpPost(serverLocation, "Delete", "Active", jsonStuff.TableIcons[i].Text);
+                        console.log(event.srcElement);
+                        httpPost(serverLocation, "Delete", "Active", event.srcElement["DataText"], event.srcElement["DataHashCode"]);
                     }, false);
 
 
