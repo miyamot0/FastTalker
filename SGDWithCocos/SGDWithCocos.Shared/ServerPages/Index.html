@@ -5,8 +5,8 @@
     <meta name='description' content='Fast Talker Local Server'>
     <meta name='author' content='Shawn Gilroy'>
     <script>
-
         var serverLocation;
+        var isAwaiting = false;
 
         function LoadCurrentLocation() 
         {
@@ -15,13 +15,56 @@
             serverLocation = serverLocation.replace('/', '');
         }
 
+        function AddIcon()
+        {
+            alert('add icon listner');
+        }
+
+        function AddFolder()
+        {
+            alert('add folder listner');
+        }
+
         function ClickedRequest() 
         {
             var httpResponse = httpGet(serverLocation, 'LoadBoard');
         }
 
+        function ClickedDownload() 
+        {
+            if (isAwaiting)
+            {
+                return;
+            }
+
+            if (document.getElementById('savedJson').innerHTML.length <= 0)
+            {
+                return;
+            }
+
+            filename = "SavedBoard.json";
+
+            var hackElement = document.createElement('a');
+            hackElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(document.getElementById('savedJson').innerHTML.trim()));
+            hackElement.setAttribute('download', filename);
+
+            if (document.createEvent) {
+                var mouseEvent = document.createEvent('MouseEvents');
+                mouseEvent.initEvent('click', true, true);
+                hackElement.dispatchEvent(mouseEvent);
+            }
+            else {
+                hackElement.click();
+            }            
+        }
+
         function httpGet(url, rest) 
         {
+            if (isAwaiting)
+            {
+                return;
+            }
+
             url = 'http://' + url + '/' + rest;
 
             var xmlHttp = new XMLHttpRequest();
@@ -32,13 +75,22 @@
                 {
                     ShowResults(xmlHttp.responseText);
                 }
+
+                isAwaiting = false;
             }
             xmlHttp.open("GET", url, true); // true for asynchronous 
             xmlHttp.send(null);
+
+            isAwaiting = true;
         }
 
         function httpPost(url, rest, type, name, hash)
         {
+            if (isAwaiting)
+            {
+                return;
+            }
+
             url = 'http://' + url + '/' + rest;
 
             var xmlhttp = new XMLHttpRequest();
@@ -49,8 +101,13 @@
             {
                 if(xmlhttp.readyState == 4 && xmlhttp.status == 200) 
                 {
+                    document.getElementById('savedJson').innerHTML = "";
+                    document.getElementById('getBoardTag').style.display = "none";                
+
                     console.log(xmlhttp.responseText);
                 }
+
+                isAwaiting = false;
             }
 
             xmlhttp.send(JSON.stringify({
@@ -59,6 +116,8 @@
                 Name: name,
                 HashCode: hash
             }));
+
+            isAwaiting = true;
         }
 
         function ShowResults(responseData)
@@ -67,11 +126,14 @@
 
             if (jsonStuff)
             {
-                var mBodyDiv = document.getElementById("status");
+                document.getElementById('savedJson').innerHTML = responseData;
+                document.getElementById('getBoardTag').style.display = "block";
 
-                // Remove child nodes
-                while (mBodyDiv.firstChild) {
-                    mBodyDiv.removeChild(mBodyDiv.firstChild);
+                var mActiveDiv = document.getElementById("activeIcons");
+
+                // Remove child nodes exist
+                while (mActiveDiv.firstChild) {
+                    mActiveDiv.removeChild(mActiveDiv.firstChild);
                 }                
 
                 console.log(jsonStuff);
@@ -79,7 +141,7 @@
                 // Display Status (Format)
                 var frameStatus = document.createElement('div');
                 frameStatus.innerHTML = "<p>Single Icon Output Mode: " + jsonStuff.SingleModel + "</p>";
-                mBodyDiv.appendChild(frameStatus);
+                mActiveDiv.appendChild(frameStatus);
 
                 var tbl     = document.createElement("table");
                 tbl.style.border = "1px solid #000";
@@ -156,9 +218,6 @@
 
                     }, false);
 
-
-                    //mButton.onclick = "httpPost(" + serverLocation + ", delete, active, " + jsonStuff.TableIcons[i].Text + ")";
-
                     storedButton.appendChild(mButton);
 
                     newRow.appendChild(storedButton);
@@ -168,11 +227,27 @@
 
                 tbl.appendChild(tblBody);
 
-                mBodyDiv.appendChild(tbl);
+                mActiveDiv.appendChild(tbl);
 
-                var hackNode = document.createTextNode("---");
+                /* Stubbed
 
-                mBodyDiv.appendChild(hackNode);
+                var mButton = document.createElement('button');
+                mButton.innerHTML = "Add New Icon";
+
+                mButton.addEventListener('click', function() {
+                    AddIcon();
+                }, false);
+
+                mActiveDiv.appendChild(mButton);
+
+                */
+
+                var mFolderDiv = document.getElementById("activeFolders");
+
+                // Remove child nodes exist
+                while (mFolderDiv.firstChild) {
+                    mFolderDiv.removeChild(mFolderDiv.firstChild);
+                }       
 
                 tbl     = document.createElement("table");
                 tbl.style.border = "1px solid #000";
@@ -218,11 +293,27 @@
 
                 tbl.appendChild(tblBody);
 
-                mBodyDiv.appendChild(tbl);
+                mFolderDiv.appendChild(tbl);
 
-                var hackNode = document.createTextNode("---");
+                /* Stubbed
 
-                mBodyDiv.appendChild(hackNode);
+                var mButton = document.createElement('button');
+                mButton.innerHTML = "Add New Folder";
+
+                mButton.addEventListener('click', function() {
+                    AddFolder();
+                }, false);
+
+                mFolderDiv.appendChild(mButton);
+
+                */
+
+                var mStoredIconDiv = document.getElementById("storedIcons");
+
+                // Remove child nodes exist
+                while (mStoredIconDiv.firstChild) {
+                    mStoredIconDiv.removeChild(mStoredIconDiv.firstChild);
+                }  
 
                 // Stored Icons
                 tbl     = document.createElement("table");
@@ -277,20 +368,36 @@
 
                 tbl.appendChild(tblBody);
 
-                mBodyDiv.appendChild(tbl);
+                mStoredIconDiv.appendChild(tbl);
             }
         }
     </script>
 </head>
-<body onload='LoadCurrentLocation()'>
+<body onload='LoadCurrentLocation()' style="background-color: #6CA3B2; color: #fff;">
     <p>FastTalker Web-based Management System</p> 
 
-    <p>Load Current Board: <button id='getRequestStart' onclick='ClickedRequest()'>Hit button</button> </p> 
+    <p id="sendBoardTag" >Upload Saved Board: <button id='getBoardJson' onclick='ClickedDownload()'>Download Board</button> </p>     
+    <p>Load Current Board: <button id='getRequestStart' onclick='ClickedRequest()'>Hit button</button> </p>
+    <p id="getBoardTag" style="display: none;">Download Current Board: <button id='getBoardJson' onclick='ClickedDownload()'>Download Board</button> </p> 
 
     <br/>
 
-    <div id="status">
+    <div id="activeIcons">
         
     </div>
+
+    <br/>
+
+    <div id="activeFolders">
+        
+    </div>
+
+    <br/>    
+
+    <div id="storedIcons">
+        
+    </div>
+
+    <div id="savedJson" style="display: none;"></div>
 </body>
 </html>
