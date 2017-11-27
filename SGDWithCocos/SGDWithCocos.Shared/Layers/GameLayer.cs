@@ -2385,14 +2385,10 @@ namespace SGDWithCocos.Shared.Layers
         /// </summary>
         public void LoadJsonContent()
         {
-            string mJson = StoredJson.LoadJson();
-
             using (Stream stream = App.MainAssembly.GetManifestResourceStream(App.JsonAddress))
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    //OutputContent(context, reader.ReadToEnd());
-                    //storageInformation = JsonConvert.DeserializeObject<StorageContainer>(mJson);
                     storageInformation = JsonConvert.DeserializeObject<StorageContainer>(reader.ReadToEnd());
                 }
             }

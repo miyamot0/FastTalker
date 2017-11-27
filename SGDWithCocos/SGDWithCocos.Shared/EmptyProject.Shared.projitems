@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Data\BoardDatabase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Data\StoredJson.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CCControlUtils.cs" />
