@@ -57,7 +57,7 @@ namespace SGDWithCocos.Server
 
         public IPAddress IP { get; set; }
         public int Port { get; set; }
-        public string IconJSON { get; set; }
+        //public string IconJSON { get; set; }
 
         /// <summary>
         /// Initialize server, polling for an open port along the way
@@ -162,7 +162,7 @@ namespace SGDWithCocos.Server
                 {
                     if (context.Request.HasEntityBody)
                     {
-                        Debug.WriteLineIf(App.Debugging, "in upload " + context.Request.HasEntityBody);
+                        // TODO: add an icon to field remotely
 
                         OutputContent(context, "Success");
                     }
@@ -170,6 +170,19 @@ namespace SGDWithCocos.Server
                     {
                         OutputContent(context, "Failure");
                     }                   
+                }
+                else if (fullpath == "/UploadBoard")
+                {
+                    if (context.Request.HasEntityBody)
+                    {
+                        // TODO: handle json-encoded board
+
+                        OutputContent(context, "Success");
+                    }
+                    else
+                    {
+                        OutputContent(context, "Failure");
+                    }
                 }
                 else if (fullpath == "/Delete")
                 {

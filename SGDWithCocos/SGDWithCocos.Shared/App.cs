@@ -81,6 +81,20 @@ namespace SGDWithCocos.Shared
             }
         }
 
+        public static string JsonAddress
+        {
+            get
+            {
+                #if __IOS__
+                    return "SGDWithCocos.iOS.Data.StoredJson.json";
+                #endif
+
+                #if __ANDROID__
+                    return "SGDWithCocos.Droid.Data.StoredJson.json";
+                #endif
+            }
+        }
+
         public static bool HasAdmin;
 
         public static bool Loaded = false;

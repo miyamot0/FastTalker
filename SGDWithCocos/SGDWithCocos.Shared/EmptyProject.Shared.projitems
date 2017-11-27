@@ -59,5 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)ServerPages\Index.html" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Data\StoredJson.json" />
   </ItemGroup>
 </Project>
