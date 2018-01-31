@@ -970,6 +970,11 @@ namespace SGDWithCocos.Utilities
 
                     var results = await GetImageCamera();
 
+                    if (results[0].Length == 0 && results[1].Length == 0 && results[2].Length == 0)
+                    {
+                        return;
+                    }
+
                     mLayer.CallBackIcon(results[0], results[1], results[2], null);
                 }
                 else if (status != PermissionStatus.Unknown)
@@ -1043,12 +1048,16 @@ namespace SGDWithCocos.Utilities
                     {
                         string newPath = "";
 
-                        if (file == null || file.Path == null)
+                        Debug.WriteLine("In Taker");
+
+                        if (file == null || file.Path == null || file.Path == "")
                         {
+                            Debug.WriteLine("In First If");
+
                             tcs.SetResult(new string[] { "", "", "" });
                         }
-
-                        if (File.Exists(@file.Path))
+                        // Manuall ditch if errorred
+                        else if (File.Exists(@file.Path))
                         {
                             var path = Path.GetDirectoryName(@file.Path);
 
@@ -1083,9 +1092,9 @@ namespace SGDWithCocos.Utilities
 
                                     tcs.SetResult(new string[]
                                     {
-                                    base64ImageRepresentation,
-                                    closedArgs.Text,
-                                    extension
+                                        base64ImageRepresentation,
+                                        closedArgs.Text,
+                                        extension
                                     });
                                 }
                                 else
