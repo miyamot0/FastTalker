@@ -39,8 +39,4 @@ namespace SGDWithCocos.iOS
             UIApplication.Main(args, null, "AppDelegate");
         }
     }
-
 }
-
-
-
