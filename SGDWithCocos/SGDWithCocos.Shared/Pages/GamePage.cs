@@ -138,8 +138,8 @@ namespace SGDWithCocos.Shared.Pages
                 };
 
                 // Launch stats
-                App.GameView.Stats.Enabled = true;
-                App.GameView.Stats.Scale = 2;
+                //App.GameView.Stats.Enabled = true;
+                //App.GameView.Stats.Scale = 2;
 
                 App.StartScene = new GameStartScene();
 

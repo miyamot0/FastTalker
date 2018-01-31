@@ -302,7 +302,14 @@ namespace SGDWithCocos.Shared.Layers
                 storedList.Add(storedIconRef);
             }
 
-            var settings = await App.Database.GetSettingsAsync();
+            TableSettings settings = null;
+
+            try 
+            {
+                settings = await App.Database.GetSettingsAsync();
+            }
+            catch {}
+
 
             if (settings != null)
             {
