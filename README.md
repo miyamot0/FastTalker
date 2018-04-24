@@ -1,6 +1,8 @@
 # Fast Talker
 Fast Talker is a native extension of earlier work to establish a free and open source application for use in the treatment of communication disorders.  Fast Tasker is built upon Xamarin Forms and CocosSharp2d, both open-source frameworks for use in native development of applications for Android, iOS, Windows Mobile, and Blackberry.  Fast Talker is fully supported on all platforms, though only Android and iOS are actively maintained and under evaluation at this point.
 
+[DEPRECATED - Fast Talker has been ported to use Skia rather than Cocos2D and this modified version can be found here](https://github.com/miyamot0/FastTalkerSkiaSharp)
+
 Features include:
   - Native views in both iOS and Android
   - Dynamically add picture icons and text
